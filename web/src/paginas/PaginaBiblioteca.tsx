@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate, useNavigationType, useParams } from 'react-router-dom';
 import { api } from '../api';
 import { ApresentacaoSlides } from '../componentes/ApresentacaoSlides';
 import { BarraPesquisaTags } from '../componentes/BarraPesquisaTags';
@@ -20,10 +20,16 @@ import { Visualizador } from '../componentes/Visualizador';
 
 export function PaginaBiblioteca() {
   const id = Number(useParams().id);
-  const [parametros] = useSearchParams();
+  const { search } = useLocation();
+  const tipoNavegacao = useNavigationType();
   const navegar = useNavigate();
   const plataforma = usePlataforma();
-  const pesquisa = estadoPesquisaDaUrl(parametros.toString());
+  // A pesquisa vive no estado (atualiza na hora) e é espelhada na URL. A URL só manda de volta
+  // em Voltar/Avançar: a troca de URL é adiada pelo roteador e não pode desfazer mudanças mais novas.
+  const [pesquisa, setPesquisa] = useState(() => estadoPesquisaDaUrl(search));
+  useEffect(() => {
+    if (tipoNavegacao === 'POP') setPesquisa(estadoPesquisaDaUrl(search));
+  }, [search, tipoNavegacao]);
   const chavePesquisa = urlDaPesquisa(pesquisa);
   // "Mostrar ocultos" não é salvo: ao recarregar, os ocultos voltam a ficar escondidos.
   const [mostrarOcultos, setMostrarOcultos] = useState(false);
@@ -63,7 +69,10 @@ export function PaginaBiblioteca() {
     return [...contagem].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'pt-BR')).slice(0, 5).map(([tag, usos]) => ({ tag, usos }));
   }, [listaAlbuns, pesquisa.tags]);
 
-  const mudarPesquisa = (estado: EstadoPesquisa) => navegar(`${caminhoBiblioteca(id)}${urlDaPesquisa(estado)}`, { replace: true });
+  const mudarPesquisa = (estado: EstadoPesquisa) => {
+    setPesquisa(estado);
+    navegar(`${caminhoBiblioteca(id)}${urlDaPesquisa(estado)}`, { replace: true });
+  };
 
   const aleatorio = () => {
     const indice = sortearIndice(fotosDoResultado.length);

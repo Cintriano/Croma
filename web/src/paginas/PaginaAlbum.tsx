@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { api, ErroApi } from '../api';
 import { ApresentacaoSlides } from '../componentes/ApresentacaoSlides';
@@ -46,6 +46,25 @@ export function PaginaAlbum() {
   const visiveis = useMemo(() => ordenarFotos(filtrarPorNivel(todas, filtro), ordem), [todas, filtro, ordem]);
   const existentes = useMemo(() => (tags.dados ?? []).map((t) => ({ tag: t.tag, usos: t.usos })), [tags.dados]);
 
+  // Fecha a foto voltando no histórico quando ela foi aberta pela grade (Voltar e Esc fazem o mesmo).
+  const fecharRef = useRef<() => void>(() => {});
+  fecharRef.current = () => {
+    if ((window.history.state as { usr?: { doAlbum?: boolean } } | null)?.usr?.doAlbum) navegar(-1);
+    else if (album.dados) navegar(caminhoAlbum(album.dados), { replace: true });
+  };
+  // A troca de tela é adiada pelo roteador: um Esc logo após o clique chega antes do visualizador montar.
+  // Se ninguém tratou a tecla e a URL já é de uma foto, fecha por aqui.
+  useEffect(() => {
+    const aoTeclar = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setTimeout(() => {
+        if (!e.defaultPrevented && /\/foto\/\d+$/.test(window.location.pathname)) fecharRef.current();
+      }, 0);
+    };
+    window.addEventListener('keydown', aoTeclar);
+    return () => window.removeEventListener('keydown', aoTeclar);
+  }, []);
+
   if (album.erro) {
     return <p className="pagina-vazia">{album.erro instanceof ErroApi && album.erro.status === 404 ? 'Álbum não encontrado.' : album.erro.message}</p>;
   }
@@ -57,10 +76,7 @@ export function PaginaAlbum() {
   const indiceAberto = fotoId !== null ? listaVisualizador.findIndex((f) => f.id === fotoId) : -1;
 
   const abrirFoto = (foto: FotoUI) => navegar(caminhoFoto(a, foto.id), { state: { doAlbum: true } });
-  const fecharFoto = () => {
-    if ((local.state as { doAlbum?: boolean } | null)?.doAlbum) navegar(-1);
-    else navegar(caminhoAlbum(a), { replace: true });
-  };
+  const fecharFoto = () => fecharRef.current();
 
   const aleatorio = () => {
     const atual = indiceAberto >= 0 ? indiceAberto : null;

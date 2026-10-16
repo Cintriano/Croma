@@ -1,4 +1,4 @@
-import { useId, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { sugestoesTags, type TagExistente } from '../logica/tagPicker';
 import { chaveBusca, normalizarTag } from '../logica/tags';
 
@@ -19,7 +19,11 @@ export function TagPicker({ valor, existentes, onChange, prioritarias, rotulo = 
   const [aberto, setAberto] = useState(false);
   const [ativo, setAtivo] = useState(-1);
   const campo = useRef<HTMLInputElement>(null);
+  const fechamento = useRef<ReturnType<typeof setTimeout> | null>(null);
   const idLista = useId();
+  useEffect(() => () => {
+    if (fechamento.current) clearTimeout(fechamento.current);
+  }, []);
 
   const s = useMemo(() => sugestoesTags({ existentes, aplicadas: valor, texto, prioritarias }), [existentes, valor, texto, prioritarias]);
 
@@ -112,8 +116,15 @@ export function TagPicker({ valor, existentes, onChange, prioritarias, rotulo = 
           aria-activedescendant={ativo >= 0 ? `${idLista}-${ativo}` : undefined}
           placeholder="digite uma tag..."
           value={texto}
-          onFocus={() => setAberto(true)}
-          onBlur={() => setAberto(false)}
+          onFocus={() => {
+            if (fechamento.current) clearTimeout(fechamento.current);
+            setAberto(true);
+          }}
+          // A lista fica no fluxo da página; fechar só depois do clique evita que o conteúdo
+          // suba no meio dele e o clique caia em outro elemento.
+          onBlur={() => {
+            fechamento.current = setTimeout(() => setAberto(false), 200);
+          }}
           onChange={(e) => {
             setTexto(e.target.value.replace(',', ''));
             setAtivo(-1);

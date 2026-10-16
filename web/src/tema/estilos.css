@@ -515,13 +515,10 @@ code {
   padding: 0.25rem;
   box-shadow: none;
 }
+/* A lista abre embaixo do campo, empurrando o conteúdo: assim nunca cobre botões como Salvar. */
 .tag-picker-lista {
-  position: absolute;
-  z-index: 30;
-  top: calc(100% + 0.25rem);
-  left: 0;
-  right: 0;
-  max-height: 20rem;
+  margin-top: 0.25rem !important;
+  max-height: 16rem;
   overflow: auto;
   list-style: none;
   margin: 0;
@@ -529,7 +526,6 @@ code {
   background: var(--superficie-alta);
   border: 1px solid var(--borda);
   border-radius: var(--raio);
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
 }
 .tag-picker-grupo {
   padding: 0.5rem 0.6rem 0.25rem;

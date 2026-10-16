@@ -27,8 +27,8 @@ export function FiltroNivel({ contagem, valor, onChange }: { contagem: Contagem;
         </button>
       ))}
       {contagem.semNivel > 0 && (
-        <button type="button" className="chip" aria-pressed={valor === 'sem'} onClick={() => onChange('sem')}>
-          sem nível {contagem.semNivel}
+        <button type="button" className="chip" aria-label={`Sem nível: ${contagem.semNivel}`} aria-pressed={valor === 'sem'} onClick={() => onChange('sem')}>
+          Sem nível · {contagem.semNivel}
         </button>
       )}
     </div>
