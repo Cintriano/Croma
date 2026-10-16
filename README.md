@@ -7,9 +7,24 @@ A primeira fase cobre a biblioteca de **Fotos**. Músicas aparece só como prév
 - [`DOCUMENTACAO.md`](DOCUMENTACAO.md): o que o site deve fazer (telas, regras, identidade visual).
 - [`PLANO_IMPLEMENTACAO.md`](PLANO_IMPLEMENTACAO.md): como é construído (módulos, contratos, testes e situação atual).
 
-## Como rodar
+## Requisitos
 
-Requisito: **Node.js 22.13 ou mais novo** (o banco usa o SQLite nativo do Node, `node:sqlite`).
+| Requisito | Versão | Para quê |
+| --- | --- | --- |
+| Node.js | 22.13 ou mais novo (testado no 24) | Servidor e build; o banco usa o SQLite nativo do Node (`node:sqlite`) |
+| npm | o que vem com o Node | Instalar as dependências |
+| Git | qualquer versão recente | Clonar o repositório |
+| Chromium do Playwright | baixado com `npx playwright install chromium` | Só para os testes ponta a ponta |
+
+- **Sistema:** desenvolvido e testado no Windows 11. Deve funcionar em Linux e macOS, mas sem testes nessas plataformas.
+- **Nada para compilar:** as dependências nativas (sharp) já vêm pré-compiladas, e não há banco externo para instalar.
+- **Navegadores:** Chrome, Edge ou Firefox atuais no desktop e no celular; na TV, o navegador próprio da Samsung (Tizen).
+- **Rede:** a máquina, o celular e a TV na mesma rede local. Libere a porta do servidor (8080 por padrão) no firewall do Windows para acessar de outros aparelhos.
+- **Disco:** espaço para o cache de imagens, em torno de 3 versões JPEG pequenas por foto, na pasta `dados/cache`.
+
+As dependências do projeto estão no `package.json`; `npm install` instala todas.
+
+## Como rodar
 
 ```bash
 npm install
