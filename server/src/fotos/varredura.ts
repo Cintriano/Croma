@@ -4,7 +4,7 @@ import path from 'node:path';
 import type { Aviso } from '../avisos';
 import { lerExif, type Exif } from '../imagens/exif';
 import { lerColecao, type Colecao } from '../metadados/colecao';
-import { lerFotosJson, type FotosJson } from '../metadados/fotosJson';
+import { lerFotosJson, reconciliarFotosJson, type FotosJson } from '../metadados/fotosJson';
 import { classificarSubpasta } from './niveis';
 
 export const EXTENSOES_FOTO = new Set(['.jpg', '.jpeg', '.png', '.webp']);
@@ -75,17 +75,27 @@ export async function varrerBibliotecaFotos(raiz: string, opcoes: OpcoesVarredur
   for (const nome of pastas) {
     const caminho = path.join(raiz, nome);
     const estrutura = await lerEstruturaAlbum(caminho, avisos);
-    const { fotosJson, aviso } = await lerFotosJson(caminho);
-    if (aviso) avisos.push(aviso);
+    const leitura = await lerFotosJson(caminho);
+    if (leitura.aviso) avisos.push(leitura.aviso);
 
-    const fotos = await lerFotos(estrutura.arquivos, anteriores.get(nome));
+    const fotosAnteriores = anteriores.get(nome);
+    const fotos = await lerFotos(estrutura.arquivos, fotosAnteriores);
+    const { fotosJson, corrigidas, orfas } = reconciliarFotosJson(
+      leitura.fotosJson,
+      fotos.map((f) => ({ caminhoRelativo: f.caminhoRelativo, tamanho: f.tamanho, dataCaptura: f.exif?.dataCaptura ?? null })),
+      { datasAnteriores: datasDeCaptura(fotosAnteriores) },
+    );
+    for (const chave of orfas) {
+      avisos.push({ tipo: 'tag-orfa', caminho: path.join(caminho, chave), mensagem: 'Foto com tags no fotos.json não foi encontrada no álbum; a entrada foi mantida.' });
+    }
+
     albuns.push({
       nome,
       caminho,
       titulo: tituloDoAlbum(nome, estrutura.colecao),
       colecao: estrutura.colecao,
       fotosJson,
-      fotosJsonAlterado: false,
+      fotosJsonAlterado: corrigidas.length > 0,
       fotos,
       contagem: contar(fotos),
     });
@@ -186,6 +196,12 @@ function contar(fotos: FotoVarrida[]): ContagemNiveis {
     else contagem.semNivel++;
   }
   return contagem;
+}
+
+function datasDeCaptura(fotos?: Map<string, FotoVarrida>): Record<string, string | null> {
+  const datas: Record<string, string | null> = {};
+  for (const [chave, foto] of fotos ?? []) datas[chave] = foto.exif?.dataCaptura ?? null;
+  return datas;
 }
 
 function indexarAnterior(anterior?: ResultadoVarredura): Map<string, Map<string, FotoVarrida>> {
