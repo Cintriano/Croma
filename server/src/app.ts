@@ -1,3 +1,6 @@
+import { existsSync } from 'node:fs';
+import path from 'node:path';
+import fastifyStatic from '@fastify/static';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { abrirBanco, type Banco } from './db/banco';
 import { rotasArquivos } from './rotas/arquivos';
@@ -9,7 +12,11 @@ export interface OpcoesApp {
   caminhoBanco: string;
   caminhoCache: string;
   logger?: boolean;
+  /** Pasta do front-end compilado (npm run build:web); sem ela, o servidor responde só a API. */
+  pastaWeb?: string;
 }
+
+const PASTA_WEB_PADRAO = path.resolve('dist/web');
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -50,8 +57,14 @@ export async function construirApp(opcoes: OpcoesApp): Promise<FastifyInstance> 
     { prefix: '/api' },
   );
 
+  const pastaWeb = opcoes.pastaWeb ?? PASTA_WEB_PADRAO;
+  const temWeb = existsSync(path.join(pastaWeb, 'index.html'));
+  if (temWeb) await app.register(fastifyStatic, { root: pastaWeb, wildcard: false });
+
+  // /api desconhecida responde 404 em JSON; as demais rotas GET são telas do site (o React Router decide).
   app.setNotFoundHandler((requisicao, resposta) => {
-    resposta.code(404).send({ codigo: 'nao-encontrado', mensagem: `Rota não encontrada: ${requisicao.method} ${requisicao.url}` });
+    if (temWeb && requisicao.method === 'GET' && !requisicao.url.startsWith('/api/')) return resposta.sendFile('index.html');
+    return resposta.code(404).send({ codigo: 'nao-encontrado', mensagem: `Rota não encontrada: ${requisicao.method} ${requisicao.url}` });
   });
 
   return app;

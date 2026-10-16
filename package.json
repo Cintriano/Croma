@@ -11,7 +11,10 @@
     "test:web": "vitest run --project web",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "servidor:teste": "tsx server/src/principal.ts",
+    "servidor": "tsx server/src/principal.ts",
+    "servidor:teste": "vite build --logLevel warn && tsx server/src/principal.ts",
+    "web": "vite",
+    "build:web": "vite build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
