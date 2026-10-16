@@ -29,6 +29,8 @@ export interface Album {
   disponivel: boolean;
   contagem: ContagemNiveis;
   tags: string[];
+  /** Foto usada como imagem do card enquanto não há artes próprias. */
+  capaFotoId: number | null;
 }
 
 export interface Foto {
@@ -182,18 +184,24 @@ export function listarAlbuns(db: Banco, bibliotecaId: number, opcoes: OpcoesList
   const condicoes = ['biblioteca_id = ?'];
   if (!opcoes.incluirOcultos) condicoes.push('oculto = 0');
   if (!opcoes.incluirIndisponiveis) condicoes.push('disponivel = 1');
-  const linhas = db.prepare(`SELECT * FROM albuns WHERE ${condicoes.join(' AND ')}`).all(bibliotecaId) as any[];
+  const linhas = db.prepare(`${SELECT_ALBUM} WHERE ${condicoes.join(' AND ')}`).all(bibliotecaId) as any[];
 
   const tags = tagsPorAlbum(db, bibliotecaId);
   return linhas.map((linha) => linhaParaAlbum(linha, tags.get(linha.id) ?? [])).sort((a, b) => compararNomes(a.nome, b.nome));
 }
 
 export function obterAlbum(db: Banco, id: number): Album | undefined {
-  const linha = db.prepare('SELECT * FROM albuns WHERE id = ?').get(id);
+  const linha = db.prepare(`${SELECT_ALBUM} WHERE id = ?`).get(id);
   if (!linha) return undefined;
   const tags = (db.prepare('SELECT tag FROM album_tags WHERE album_id = ? ORDER BY posicao').all(id) as any[]).map((t) => t.tag);
   return linhaParaAlbum(linha, tags);
 }
+
+// A capa provisória do card é a primeira foto do álbum (artes próprias ainda não existem).
+const SELECT_ALBUM = `
+  SELECT a.*, (SELECT f.id FROM fotos f WHERE f.album_id = a.id
+               ORDER BY f.nivel IS NULL, f.nivel, f.caminho_relativo LIMIT 1) AS capa_foto_id
+  FROM albuns a`;
 
 function tagsPorAlbum(db: Banco, bibliotecaId: number): Map<number, string[]> {
   const linhas = db
@@ -217,6 +225,7 @@ function linhaParaAlbum(linha: any, tags: string[]): Album {
     disponivel: linha.disponivel === 1,
     contagem: { total: linha.total, nivel1: linha.nivel1, nivel2: linha.nivel2, nivel3: linha.nivel3, semNivel: linha.sem_nivel },
     tags,
+    capaFotoId: linha.capa_foto_id ?? null,
   };
 }
 

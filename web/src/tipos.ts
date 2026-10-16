@@ -29,6 +29,7 @@ export interface AlbumUI {
   bibliotecaId?: number;
   disponivel?: boolean;
   colecao?: Record<string, unknown> | null;
+  capaFotoId?: number | null;
 }
 
 export interface FotoUI {
