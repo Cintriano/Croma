@@ -62,6 +62,11 @@ const MIGRACOES: string[] = [
   );
   CREATE INDEX foto_tags_chave ON foto_tags (chave);
   `,
+  // Posição da tag no JSON, para devolver as tags na mesma ordem em que foram gravadas.
+  `
+  ALTER TABLE album_tags ADD COLUMN posicao INTEGER NOT NULL DEFAULT 0;
+  ALTER TABLE foto_tags ADD COLUMN posicao INTEGER NOT NULL DEFAULT 0;
+  `,
 ];
 
 export function abrirBanco(caminho: string): Banco {
@@ -78,16 +83,23 @@ export function versaoDoBanco(db: Banco): number {
   return linha.user_version;
 }
 
+export function emTransacao<T>(db: Banco, fn: () => T): T {
+  db.exec('BEGIN');
+  try {
+    const resultado = fn();
+    db.exec('COMMIT');
+    return resultado;
+  } catch (erro) {
+    db.exec('ROLLBACK');
+    throw erro;
+  }
+}
+
 function migrar(db: Banco) {
   for (let versao = versaoDoBanco(db); versao < MIGRACOES.length; versao++) {
-    db.exec('BEGIN');
-    try {
+    emTransacao(db, () => {
       db.exec(MIGRACOES[versao]);
       db.exec(`PRAGMA user_version = ${versao + 1}`);
-      db.exec('COMMIT');
-    } catch (erro) {
-      db.exec('ROLLBACK');
-      throw erro;
-    }
+    });
   }
 }

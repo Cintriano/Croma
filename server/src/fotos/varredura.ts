@@ -5,6 +5,7 @@ import type { Aviso } from '../avisos';
 import { lerExif, type Exif } from '../imagens/exif';
 import { lerColecao, type Colecao } from '../metadados/colecao';
 import { lerFotosJson, reconciliarFotosJson, type FotosJson } from '../metadados/fotosJson';
+import { compararNomes } from '../ordenacao';
 import { classificarSubpasta } from './niveis';
 
 export const EXTENSOES_FOTO = new Set(['.jpg', '.jpeg', '.png', '.webp']);
@@ -234,9 +235,6 @@ function compararComAnterior(albuns: AlbumVarrido[], anterior?: ResultadoVarredu
 }
 
 const ehFoto = (nome: string) => EXTENSOES_FOTO.has(path.extname(nome).toLowerCase());
-
-const comparador = new Intl.Collator('pt-BR', { numeric: true, sensitivity: 'base' });
-const compararNomes = (a: string, b: string) => comparador.compare(a, b);
 
 async function mapearComLimite<T, R>(itens: T[], limite: number, fn: (item: T) => Promise<R>): Promise<R[]> {
   const resultados = new Array<R>(itens.length);
