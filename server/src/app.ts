@@ -1,5 +1,9 @@
 import Fastify, { type FastifyInstance } from 'fastify';
 import { abrirBanco, type Banco } from './db/banco';
+import { rotasArquivos } from './rotas/arquivos';
+import { rotasBibliotecas } from './rotas/bibliotecas';
+import { rotasColecoes } from './rotas/colecoes';
+import { ErroHttp, STATUS_POR_CODIGO } from './rotas/erros';
 
 export interface OpcoesApp {
   caminhoBanco: string;
@@ -22,15 +26,32 @@ export async function construirApp(opcoes: OpcoesApp): Promise<FastifyInstance> 
   app.decorate('caminhoCache', opcoes.caminhoCache);
   app.addHook('onClose', async () => db.close());
 
+  app.setErrorHandler((erro: any, requisicao, resposta) => {
+    if (erro instanceof ErroHttp) {
+      return resposta.code(erro.status).send({ codigo: erro.codigo, mensagem: erro.message });
+    }
+    if (typeof erro.codigo === 'string' && STATUS_POR_CODIGO[erro.codigo]) {
+      return resposta.code(STATUS_POR_CODIGO[erro.codigo]).send({ codigo: erro.codigo, mensagem: erro.message });
+    }
+    if (erro.validation || (erro.statusCode && erro.statusCode < 500)) {
+      return resposta.code(erro.statusCode ?? 400).send({ codigo: 'pedido-invalido', mensagem: erro.message });
+    }
+    requisicao.log.error(erro);
+    return resposta.code(500).send({ codigo: 'erro-interno', mensagem: 'Erro interno do servidor.' });
+  });
+
   await app.register(
     async (api) => {
       api.get('/saude', async () => ({ status: 'ok' }));
+      await api.register(rotasBibliotecas);
+      await api.register(rotasColecoes);
+      await api.register(rotasArquivos);
     },
     { prefix: '/api' },
   );
 
   app.setNotFoundHandler((requisicao, resposta) => {
-    resposta.code(404).send({ erro: 'nao-encontrado', mensagem: `Rota não encontrada: ${requisicao.method} ${requisicao.url}` });
+    resposta.code(404).send({ codigo: 'nao-encontrado', mensagem: `Rota não encontrada: ${requisicao.method} ${requisicao.url}` });
   });
 
   return app;

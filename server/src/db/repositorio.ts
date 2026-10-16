@@ -1,5 +1,5 @@
 import path from 'node:path';
-import type { AlbumVarrido, ContagemNiveis, ResultadoVarredura } from '../fotos/varredura';
+import type { AlbumVarrido, ContagemNiveis, ResultadoVarredura, VarreduraAnterior } from '../fotos/varredura';
 import type { Colecao } from '../metadados/colecao';
 import { chaveBusca } from '../metadados/tags';
 import { compararNomes } from '../ordenacao';
@@ -242,6 +242,36 @@ export function obterFoto(db: Banco, id: number): Foto | undefined {
   if (!linha) return undefined;
   const tags = (db.prepare('SELECT tag FROM foto_tags WHERE foto_id = ? ORDER BY posicao').all(id) as any[]).map((t) => t.tag);
   return linhaParaFoto(linha, tags);
+}
+
+// Estado guardado da última varredura, para a próxima ser incremental (reaproveitar EXIF, reencontrar fotos).
+export function varreduraAnterior(db: Banco, bibliotecaId: number): VarreduraAnterior {
+  const albuns = db.prepare('SELECT id, nome FROM albuns WHERE biblioteca_id = ?').all(bibliotecaId) as any[];
+  const fotos = db.prepare('SELECT * FROM fotos WHERE album_id IN (SELECT id FROM albuns WHERE biblioteca_id = ?)').all(bibliotecaId) as any[];
+  const porAlbum = new Map<number, VarreduraAnterior['albuns'][number]['fotos']>();
+  for (const f of fotos) {
+    const lista = porAlbum.get(f.album_id) ?? [];
+    lista.push({
+      caminhoRelativo: f.caminho_relativo,
+      nivel: f.nivel,
+      tamanho: f.tamanho,
+      modificadoEm: f.modificado_em,
+      exif: { camera: f.camera, orientacao: f.orientacao, dataCaptura: f.data_captura },
+    });
+    porAlbum.set(f.album_id, lista);
+  }
+  return { albuns: albuns.map((a) => ({ nome: a.nome, fotos: porAlbum.get(a.id) ?? [] })) };
+}
+
+// Atualiza o álbum no banco depois de uma edição do colecao.json, sem esperar a próxima varredura.
+export function atualizarColecaoDoAlbum(db: Banco, albumId: number, colecao: Colecao): void {
+  const album = obterAlbum(db, albumId);
+  if (!album) return;
+  const titulo = typeof colecao.titulo === 'string' && colecao.titulo.trim() ? colecao.titulo.trim() : album.nome;
+  emTransacao(db, () => {
+    db.prepare('UPDATE albuns SET titulo = ?, colecao = ?, oculto = ? WHERE id = ?').run(titulo, JSON.stringify(colecao), colecao.oculto ? 1 : 0, albumId);
+    substituirTagsAlbum(db, albumId, colecao.tags);
+  });
 }
 
 function compararFotos(a: Foto, b: Foto): number {

@@ -57,9 +57,14 @@ export interface ResultadoVarredura {
   alteracoes: AlteracoesVarredura;
 }
 
+/** O que a varredura incremental precisa da anterior; pode vir de um resultado ou do banco. */
+export interface VarreduraAnterior {
+  albuns: { nome: string; fotos: FotoVarrida[] }[];
+}
+
 export interface OpcoesVarredura {
   /** Varredura anterior: fotos com mesmo tamanho e data reaproveitam o EXIF já lido. */
-  anterior?: ResultadoVarredura;
+  anterior?: VarreduraAnterior;
 }
 
 export interface PreviaBiblioteca {
@@ -205,7 +210,7 @@ function datasDeCaptura(fotos?: Map<string, FotoVarrida>): Record<string, string
   return datas;
 }
 
-function indexarAnterior(anterior?: ResultadoVarredura): Map<string, Map<string, FotoVarrida>> {
+function indexarAnterior(anterior?: VarreduraAnterior): Map<string, Map<string, FotoVarrida>> {
   const indice = new Map<string, Map<string, FotoVarrida>>();
   for (const album of anterior?.albuns ?? []) {
     indice.set(album.nome, new Map(album.fotos.map((f) => [f.caminhoRelativo, f])));
@@ -213,7 +218,7 @@ function indexarAnterior(anterior?: ResultadoVarredura): Map<string, Map<string,
   return indice;
 }
 
-function compararComAnterior(albuns: AlbumVarrido[], anterior?: ResultadoVarredura): AlteracoesVarredura {
+function compararComAnterior(albuns: AlbumVarrido[], anterior?: VarreduraAnterior): AlteracoesVarredura {
   const alteracoes: AlteracoesVarredura = { novas: [], alteradas: [], removidas: [] };
   if (!anterior) return alteracoes;
 

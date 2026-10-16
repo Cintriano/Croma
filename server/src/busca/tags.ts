@@ -43,7 +43,7 @@ export function tagsEfetivas(proprias: string[], doAlbum: string[]): { proprias:
   return { proprias: [...proprias], herdadas: doAlbum.filter((tag) => !chaves.has(chaveBusca(tag))) };
 }
 
-export function filtrarAlbuns<A extends AlbumBusca<any>>(albuns: A[], filtro: FiltroTags & { incluirOcultos?: boolean }): A[] {
+export function filtrarAlbuns<A extends { tags: string[]; oculto: boolean }>(albuns: A[], filtro: FiltroTags & { incluirOcultos?: boolean }): A[] {
   const combina = criarCombinador(filtro);
   return albuns.filter((album) => (filtro.incluirOcultos || !album.oculto) && combina(album.tags));
 }
