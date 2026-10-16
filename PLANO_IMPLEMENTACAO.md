@@ -367,7 +367,18 @@ Estas escolhas não estavam fechadas na documentação. Os testes já as seguem;
 
 ## Situação atual
 
-- A estrutura de testes está instalada e funcionando. `tests/ajuda/fixtures.test.ts` passa (3 de 3) e confirma que as fotos de teste, com EXIF, são geradas corretamente.
-- Os 17 arquivos de módulos falham só porque o código ainda não existe ("Cannot find module").
-- O Playwright reconhece os 16 fluxos ponta a ponta. Os navegadores ainda não foram baixados; para isso, rode `npx playwright install chromium`.
-- O npm bloqueou o script de instalação do `esbuild`. O Vitest funcionou mesmo assim; se o Vite reclamar ao subir o front-end, rode `npm install-scripts approve esbuild`.
+Atualizado em 16/10/2026.
+
+- **Fases 1 e 2 implementadas (M0–M17).** `npm test` passa 237 de 237; `npm run test:e2e` passa os 16 fluxos (9 desktop, 3 mobile, 4 TV); `npm run typecheck` sem erros.
+- **Como rodar:** `npm run servidor` sobe a API e o site já compilado na porta 8080 (compile antes com `npm run build:web`). Para desenvolver o front-end com recarga automática, rode `npm run servidor` e `npm run web` juntos; o Vite repassa `/api` para o servidor.
+- **Ainda não validado na QN90B real:** códigos reais das teclas, Voltar dentro do site e desempenho de grades grandes (validação manual obrigatória do M17).
+- **Simplificações a revisitar:**
+  - Enquanto não há artes próprias (poster, miniatura e capa), os cards e o cabeçalho do álbum usam a primeira foto do álbum.
+  - Na TV, a página do álbum ainda não tem a fileira de filtro por nível.
+  - No visualizador da TV e da pesquisa de fotos, a foto aberta não muda a URL.
+- **Decisões tomadas na implementação:**
+  - Extensões aceitas: jpg, jpeg, png e webp.
+  - Subpastas dentro de uma pasta de nível não são lidas e geram aviso.
+  - Pastas de sistema do Windows na raiz da biblioteca são ignoradas.
+  - JPEG do cache com qualidade 82; transparência achatada sobre `#140c0a`.
+- **Fases 3 e 4 (M18–M21):** ainda sem testes, como previsto.

@@ -26,7 +26,7 @@ export function Layout({ children }: { children: ReactNode }) {
 
   return (
     <div className={`layout plataforma-${plataforma}`} onClick={aoClicar}>
-      <nav className="navegacao" aria-label="Principal">
+      <nav className="navegacao" aria-label={plataforma === 'mobile' ? 'Navegação inferior' : 'Barra lateral'}>
         <span className="marca" aria-hidden="true">Croma</span>
         {itens.map((item) => (
           <NavLink key={item.para} to={item.para} end={item.para === '/'} className="item-navegacao">
