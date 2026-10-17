@@ -105,7 +105,7 @@ Estrutura do projeto, servidor que sobe, banco com migrações e configuração.
 
 - **Arquivos:** `server/src/config.ts`, `server/src/app.ts`, `server/src/db/banco.ts`, `server/src/principal.ts`
 - **Contrato:**
-  - `carregarConfig(env)` → `{ porta, caminhoBanco, caminhoCache }`; porta padrão 8080; erro se a porta for inválida.
+  - `carregarConfig(env)` → `{ porta, caminhoBanco, caminhoCache }`; porta padrão 8001; erro se a porta for inválida.
   - `construirApp({ caminhoBanco, caminhoCache })` → instância Fastify com as rotas sob `/api`.
   - `abrirBanco(caminho | ':memory:')` aplica migrações; `versaoDoBanco(db)`.
   - Tabelas: `bibliotecas`, `albuns`, `fotos`, `album_tags`, `foto_tags`.
@@ -370,7 +370,7 @@ Estas escolhas não estavam fechadas na documentação. Os testes já as seguem;
 Atualizado em 16/10/2026.
 
 - **Fases 1 e 2 implementadas (M0–M17).** `npm test` passa 237 de 237; `npm run test:e2e` passa os 16 fluxos (9 desktop, 3 mobile, 4 TV); `npm run typecheck` sem erros.
-- **Como rodar:** `npm run servidor` sobe a API e o site já compilado na porta 8080 (compile antes com `npm run build:web`). Para desenvolver o front-end com recarga automática, rode `npm run servidor` e `npm run web` juntos; o Vite repassa `/api` para o servidor.
+- **Como rodar:** `npm run servidor` sobe a API e o site já compilado na porta 8001 (compile antes com `npm run build:web`). Para desenvolver o front-end com recarga automática, rode `npm run servidor` e `npm run web` juntos; o Vite repassa `/api` para o servidor.
 - **Ainda não validado na QN90B real:** códigos reais das teclas, Voltar dentro do site e desempenho de grades grandes (validação manual obrigatória do M17).
 - **Simplificações a revisitar:**
   - Enquanto não há artes próprias (poster, miniatura e capa), os cards e o cabeçalho do álbum usam a primeira foto do álbum.

@@ -6,7 +6,7 @@ export interface Config {
   caminhoCache: string;
 }
 
-const PORTA_PADRAO = 8080;
+const PORTA_PADRAO = 8001;
 const PASTA_DADOS = path.resolve('dados');
 
 export function carregarConfig(env: Record<string, string | undefined> = process.env): Config {

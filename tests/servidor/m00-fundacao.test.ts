@@ -9,7 +9,7 @@ import path from 'node:path';
 describe('M0 · configuração', () => {
   it('usa padrões quando não há variáveis de ambiente', () => {
     const config = carregarConfig({});
-    expect(config.porta).toBe(8080);
+    expect(config.porta).toBe(8001);
     expect(config.caminhoBanco).toMatch(/central-midia\.sqlite$/);
     expect(config.caminhoCache).toBeTruthy();
   });

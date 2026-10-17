@@ -19,7 +19,7 @@ A primeira fase cobre a biblioteca de **Fotos**. Músicas aparece só como prév
 - **Sistema:** desenvolvido e testado no Windows 11. Deve funcionar em Linux e macOS, mas sem testes nessas plataformas.
 - **Nada para compilar:** as dependências nativas (sharp) já vêm pré-compiladas, e não há banco externo para instalar.
 - **Navegadores:** Chrome, Edge ou Firefox atuais no desktop e no celular; na TV, o navegador próprio da Samsung (Tizen).
-- **Rede:** a máquina, o celular e a TV na mesma rede local. Libere a porta do servidor (8080 por padrão) no firewall do Windows para acessar de outros aparelhos.
+- **Rede:** a máquina, o celular e a TV na mesma rede local. Libere a porta do servidor (8001 por padrão) no firewall do Windows para acessar de outros aparelhos.
 - **Disco:** espaço para o cache de imagens, em torno de 3 versões JPEG pequenas por foto, na pasta `dados/cache`.
 
 As dependências do projeto estão no `package.json`; `npm install` instala todas.
@@ -29,19 +29,21 @@ As dependências do projeto estão no `package.json`; `npm install` instala toda
 ```bash
 npm install
 npm run build:web   # compila o front-end em dist/web
-npm run servidor    # sobe a API e o site em http://localhost:8080
+npm run servidor    # sobe a API e o site em http://localhost:8001
 ```
 
-Para usar, abra http://localhost:8080 e vá em **Configurações → Bibliotecas → Nova biblioteca**. Escolha o caminho da pasta de fotos (ex.: `F:\Fotos`); a prévia mostra os álbuns e os avisos antes de salvar. Na mesma rede, o celular acessa pelo IP da máquina (ex.: `http://192.168.0.10:8080`) e a TV por `http://<ip>:8080/tv`.
+Para usar, abra http://localhost:8001 e vá em **Configurações → Bibliotecas → Nova biblioteca**. Escolha o caminho da pasta de fotos (ex.: `F:\Fotos`); a prévia mostra os álbuns e os avisos antes de salvar. Na mesma rede, o celular acessa pelo IP da máquina (ex.: `http://192.168.0.10:8001`) e a TV por `http://<ip>:8001/tv`.
 
 ### Desenvolvimento do front-end
 
 Com recarga automática, em dois terminais:
 
 ```bash
-npm run servidor    # API na porta 8080
-npm run web         # Vite em http://localhost:5173, repassando /api para a 8080
+npm run servidor    # API na porta 8001
+npm run web         # Vite em http://localhost:5173, repassando /api para a 8001
 ```
+
+Os scripts ficam no `package.json` da raiz: rode sempre na pasta `Croma` e com `npm run` (ex.: `npm run build:web`; `npm build:web` não funciona).
 
 ### Configuração
 
@@ -49,7 +51,7 @@ Variáveis de ambiente opcionais:
 
 | Variável | Padrão | Uso |
 | --- | --- | --- |
-| `PORTA` | `8080` | Porta do servidor |
+| `PORTA` | `8001` | Porta do servidor |
 | `CAMINHO_BANCO` | `dados/central-midia.sqlite` | Arquivo do banco (`:memory:` para um banco temporário) |
 | `CAMINHO_CACHE` | `dados/cache` | Versões redimensionadas das fotos |
 
