@@ -386,6 +386,10 @@ code {
 .grade-albuns.modo-poster {
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 }
+/* min-width: 0 impede que títulos longos (nowrap) alarguem a coluna: todos os cards ficam do mesmo tamanho. */
+.grade-albuns > li {
+  min-width: 0;
+}
 .alternar-modo {
   display: inline-flex;
   gap: 0.4rem;
@@ -1142,11 +1146,11 @@ code {
   gap: 0.25rem;
 }
 .plataforma-mobile .grade-albuns {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.6rem;
 }
 .plataforma-mobile .grade-albuns.modo-poster {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .plataforma-mobile .visualizador-fundo {
   padding: 3.5rem 0;
