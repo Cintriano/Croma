@@ -7,5 +7,6 @@ export default defineConfig({
   root: 'web',
   plugins: [react()],
   build: { outDir: '../dist/web', emptyOutDir: true },
-  server: { proxy: { '/api': 'http://localhost:8001' } },
+  // host: true expõe o Vite na rede local, para acessar do celular/TV pelo IP do PC.
+  server: { host: true, proxy: { '/api': 'http://localhost:8001' } },
 });
