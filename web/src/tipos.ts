@@ -29,7 +29,10 @@ export interface AlbumUI {
   bibliotecaId?: number;
   disponivel?: boolean;
   colecao?: Record<string, unknown> | null;
+  /** Fotos escolhidas para cada arte (ou a primeira foto, se não houver escolha). */
+  posterFotoId?: number | null;
   capaFotoId?: number | null;
+  miniaturaFotoId?: number | null;
 }
 
 export interface FotoUI {

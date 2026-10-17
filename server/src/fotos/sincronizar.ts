@@ -1,6 +1,7 @@
 import type { Banco } from '../db/banco';
 import { salvarVarredura, varreduraAnterior, type Biblioteca } from '../db/repositorio';
 import type { Aviso } from '../avisos';
+import { atualizarColecao, reapontarArtes } from '../metadados/colecao';
 import { gravarFotosJson } from '../metadados/fotosJson';
 import { varrerBibliotecaFotos, type AlteracoesVarredura } from './varredura';
 
@@ -32,6 +33,17 @@ async function sincronizar(db: Banco, biblioteca: Biblioteca): Promise<Resultado
       await gravarFotosJson(album.caminho, album.fotosJson);
     } catch (erro: any) {
       resultado.avisos.push({ tipo: 'json-invalido', caminho: album.caminho, mensagem: `Não foi possível gravar as correções do fotos.json: ${erro.message}` });
+    }
+  }
+
+  // Poster, capa e miniatura acompanham a foto quando ela muda de pasta (ex.: de nível).
+  for (const album of resultado.albuns) {
+    const correcoes = reapontarArtes(album.colecao, album.fotos.map((f) => f.caminhoRelativo));
+    if (!Object.keys(correcoes).length) continue;
+    try {
+      album.colecao = await atualizarColecao(album.caminho, correcoes);
+    } catch (erro: any) {
+      resultado.avisos.push({ tipo: 'json-invalido', caminho: album.caminho, mensagem: `Não foi possível reapontar as imagens do álbum: ${erro.message}` });
     }
   }
 

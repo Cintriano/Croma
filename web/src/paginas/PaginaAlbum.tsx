@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { api, ErroApi } from '../api';
+import { ArtesFoto } from '../componentes/ArtesFoto';
 import { ApresentacaoSlides } from '../componentes/ApresentacaoSlides';
 import { BotoesAleatorioSlides } from '../componentes/BotoesAleatorioSlides';
 import { ContagemNiveis } from '../componentes/ContagemNiveis';
@@ -14,6 +15,7 @@ import { urlImagem } from '../logica/imagens';
 import { urlDaPesquisa } from '../logica/pesquisa';
 import { caminhoAlbum, caminhoBiblioteca, caminhoFoto } from '../logica/rotas';
 import { sortearIndice, type ModoSlides } from '../logica/slides';
+import type { CampoArte } from '../componentes/ArtesAlbum';
 import { calcularAlteracoesMassa } from '../logica/edicaoMassa';
 import { usePlataforma } from '../plataforma';
 import type { AlbumUI, FotoUI } from '../tipos';
@@ -94,6 +96,14 @@ export function PaginaAlbum() {
     tags.recarregar();
   };
 
+  const definirArte = async (foto: FotoUI, campo: CampoArte) => {
+    try {
+      album.definir(await api.editarAlbum(a.id, { artes: { [campo]: foto.id } }));
+    } catch (falha) {
+      alert((falha as Error).message);
+    }
+  };
+
   const colecao = a.colecao ?? {};
   const outrosCampos = Object.entries(colecao).filter(([campo, valor]) => !CAMPOS_EXIBIDOS.has(campo) && ['string', 'number'].includes(typeof valor));
   const total = a.contagem.total;
@@ -104,7 +114,7 @@ export function PaginaAlbum() {
         {a.capaFotoId && <div className="capa-fundo" style={{ backgroundImage: `url(${urlImagem(a.capaFotoId, 1200)})` }} aria-hidden="true" />}
         <div className="cabecalho-conteudo">
           <div className="poster">
-            {a.capaFotoId ? <img src={urlImagem(a.capaFotoId, 600)} alt="" /> : <div className="card-sem-imagem">▣</div>}
+            {(a.posterFotoId ?? a.capaFotoId) ? <img src={urlImagem((a.posterFotoId ?? a.capaFotoId)!, 600)} alt="" /> : <div className="card-sem-imagem">▣</div>}
           </div>
           <div className="informacoes">
             {a.oculto && <p className="aviso-oculto">Este álbum está oculto</p>}
@@ -172,6 +182,7 @@ export function PaginaAlbum() {
             setSlides({ modo: 'sequencia', inicio });
           }}
           informacoesExtras={(f) => (
+            <>
             <PainelTagsFoto
               proprias={f.tags}
               herdadas={a.tags.filter((t) => !f.tags.includes(t))}
@@ -180,6 +191,13 @@ export function PaginaAlbum() {
               prioritarias={a.tags}
               onChange={(novas) => salvarTagsFoto(f, novas)}
             />
+            {plataforma === 'desktop' && (
+              <ArtesFoto
+                atuais={{ poster: a.posterFotoId === f.id, capa: a.capaFotoId === f.id, miniatura: a.miniaturaFotoId === f.id }}
+                onEscolher={(campo) => definirArte(f, campo)}
+              />
+            )}
+            </>
           )}
         />
       )}
@@ -187,6 +205,7 @@ export function PaginaAlbum() {
       {configurando && (
         <PainelAlbum
           album={a}
+          fotos={todas}
           existentes={existentes}
           onFechar={() => setConfigurando(false)}
           onSalvo={(novo: AlbumUI) => {

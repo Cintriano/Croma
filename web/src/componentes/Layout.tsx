@@ -1,13 +1,17 @@
 import type { ReactNode } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { caminhoConfiguracoes, caminhoInicio } from '../logica/rotas';
 import { usePlataforma } from '../plataforma';
 
-// Barra lateral no desktop e barra inferior no mobile. Também faz a navegação interna dos <a> comuns
+// Barra no topo (desktop e mobile) com voltar, nome do site, Início e Configurações. Também faz a navegação interna dos <a> comuns
 // (cards e outros componentes que não dependem do roteador), sem recarregar a página.
 export function Layout({ children }: { children: ReactNode }) {
   const navegar = useNavigate();
   const plataforma = usePlataforma();
+  const { pathname } = useLocation();
+  // O roteador guarda em history.state.idx quantas entradas do próprio site há antes desta.
+  const temAnterior = ((window.history.state as { idx?: number } | null)?.idx ?? 0) > 0;
+  const voltar = () => (temAnterior ? navegar(-1) : navegar(caminhoInicio()));
 
   const aoClicar = (e: React.MouseEvent) => {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -26,15 +30,19 @@ export function Layout({ children }: { children: ReactNode }) {
 
   return (
     <div className={`layout plataforma-${plataforma}`} onClick={aoClicar}>
-      <nav className="navegacao" aria-label={plataforma === 'mobile' ? 'Navegação inferior' : 'Barra lateral'}>
-        <span className="marca" aria-hidden="true">Croma</span>
-        {itens.map((item) => (
-          <NavLink key={item.para} to={item.para} end={item.para === '/'} className="item-navegacao">
-            <span className="icone" aria-hidden="true">{item.icone}</span>
-            <span>{item.rotulo}</span>
-          </NavLink>
-        ))}
-      </nav>
+      <header className="barra-topo">
+        <button type="button" className="item-navegacao" aria-label="Voltar" title="Voltar" disabled={!temAnterior && pathname === caminhoInicio()} onClick={voltar}>
+          <span className="icone" aria-hidden="true">←</span>
+        </button>
+        <NavLink to={caminhoInicio()} className="marca">Croma</NavLink>
+        <nav className="navegacao" aria-label="Navegação principal">
+          {itens.map((item) => (
+            <NavLink key={item.para} to={item.para} end={item.para === '/'} className="item-navegacao" aria-label={item.rotulo} title={item.rotulo}>
+              <span className="icone" aria-hidden="true">{item.icone}</span>
+            </NavLink>
+          ))}
+        </nav>
+      </header>
       <main className="conteudo">{children}</main>
     </div>
   );

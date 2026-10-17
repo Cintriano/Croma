@@ -71,7 +71,7 @@ export function PaginaTVBiblioteca() {
           <li key={album.id}>
             <a className="card-tv" href={caminhoAlbumTV(album)} data-foco={`album-${album.id}`} aria-label={album.titulo}>
               <div className="card-imagem">
-                {album.capaFotoId ? <img src={urlImagem(album.capaFotoId, 600)} alt="" /> : <div className="card-sem-imagem">▣</div>}
+                {(album.miniaturaFotoId ?? album.capaFotoId) ? <img src={urlImagem((album.miniaturaFotoId ?? album.capaFotoId)!, 600)} alt="" /> : <div className="card-sem-imagem">▣</div>}
               </div>
               <span className="titulo-card">{album.titulo}</span>
             </a>

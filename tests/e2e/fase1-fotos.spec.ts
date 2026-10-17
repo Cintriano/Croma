@@ -97,6 +97,32 @@ test('ocultar álbum e vê-lo com "Mostrar ocultos"', async ({ page }) => {
   await expect(page.getByRole('link', { name: /Sem Metadados/ })).toHaveCount(0);
 });
 
+test('trocar o poster pelo ⚙ escolhendo outra foto do álbum', async ({ page }) => {
+  await page.goto(`/biblioteca/${bibliotecaId}`);
+  await page.getByRole('link', { name: /Viagem Nordeste/ }).click();
+  const poster = page.locator('.cabecalho-album .poster img');
+  const antes = await poster.getAttribute('src');
+  await page.getByRole('button', { name: 'Configurar álbum' }).click();
+  await page.getByRole('button', { name: 'Trocar' }).first().click();
+  await page.getByRole('button', { name: 'Usar IMG_0042.jpg como poster' }).click();
+  await page.getByRole('button', { name: 'Salvar' }).click();
+  await expect(poster).not.toHaveAttribute('src', antes!);
+  await page.reload();
+  await expect(poster).not.toHaveAttribute('src', antes!);
+});
+
+test('exibir álbuns como poster ou miniatura, lembrando a escolha', async ({ page }) => {
+  await page.goto(`/biblioteca/${bibliotecaId}`);
+  const card = page.getByRole('article', { name: /Viagem Nordeste/ });
+  await expect(card).toHaveClass(/card-miniatura/);
+  await page.getByRole('group', { name: 'Exibir álbuns como' }).getByRole('button', { name: 'Poster' }).click();
+  await expect(card).toHaveClass(/card-poster/);
+  await page.reload();
+  await expect(card).toHaveClass(/card-poster/);
+  await page.getByRole('group', { name: 'Exibir álbuns como' }).getByRole('button', { name: 'Miniatura' }).click();
+  await expect(card).toHaveClass(/card-miniatura/);
+});
+
 test('Slides abre em tela cheia e Aleatório sorteia uma foto', async ({ page }) => {
   await page.goto(`/biblioteca/${bibliotecaId}`);
   await page.getByRole('link', { name: /Viagem Nordeste/ }).click();
@@ -106,6 +132,21 @@ test('Slides abre em tela cheia e Aleatório sorteia uma foto', async ({ page })
   await page.getByRole('button', { name: /Slides/ }).click();
   await page.getByRole('menuitem', { name: 'Sequência' }).click();
   await expect(page.getByRole('dialog', { name: /apresentação/i })).toBeVisible();
+});
+
+test('barra no topo: Voltar volta, Início e Configurações navegam', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('button', { name: 'Voltar' })).toBeDisabled();
+  await page.getByRole('link', { name: 'Configurações' }).click();
+  await expect(page).toHaveURL(/\/configuracoes/);
+  await page.getByRole('button', { name: 'Voltar' }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await page.goto(`/biblioteca/${bibliotecaId}`);
+  await page.getByRole('link', { name: 'Início' }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await page.goto(`/biblioteca/${bibliotecaId}`);
+  await page.getByRole('button', { name: 'Voltar' }).click();
+  await expect(page).toHaveURL(/\/$/);
 });
 
 test('Músicas aparece com selo Em breve', async ({ page }) => {

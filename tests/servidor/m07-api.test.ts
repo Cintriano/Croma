@@ -142,6 +142,36 @@ describe('M7 · edição', () => {
     expect((await lerJson('Sem Metadados', 'metadados', 'colecao.json')).tags).toEqual(['teste']);
   });
 
+  it('PUT artes grava o caminho da foto no colecao.json e o álbum passa a usá-la', async () => {
+    const id = await albumId('Viagem Nordeste');
+    const fotos = (await app.inject(`/api/collections/${id}/photos`)).json().fotos as any[];
+    const outra = fotos[fotos.length - 1];
+    const r = await app.inject({ method: 'PUT', url: `/api/collections/${id}`, payload: { artes: { poster: outra.id, capa: outra.id, miniatura: fotos[0].id } } });
+    expect(r.statusCode).toBe(200);
+    expect(r.json()).toMatchObject({ posterFotoId: outra.id, capaFotoId: outra.id, miniaturaFotoId: fotos[0].id });
+    expect(await lerJson('Viagem Nordeste', 'metadados', 'colecao.json')).toMatchObject({ poster: outra.caminhoRelativo, capa: outra.caminhoRelativo, descricao: 'Férias de julho' });
+    expect((await app.inject(`/api/collections/${id}`)).json().posterFotoId).toBe(outra.id);
+  });
+
+  it('PUT artes com null volta ao automático (primeira foto)', async () => {
+    const id = await albumId('Viagem Nordeste');
+    const fotos = (await app.inject(`/api/collections/${id}/photos`)).json().fotos as any[];
+    const r = await app.inject({ method: 'PUT', url: `/api/collections/${id}`, payload: { artes: { poster: null } } });
+    expect(r.json().posterFotoId).toBe(fotos[0].id);
+    expect((await lerJson('Viagem Nordeste', 'metadados', 'colecao.json')).poster).toBeNull();
+  });
+
+  it('PUT artes recusa foto de outro álbum e arte desconhecida', async () => {
+    const id = await albumId('Viagem Nordeste');
+    const outro = await albumId('Aniversario 2025', true);
+    const deOutro = (await app.inject(`/api/collections/${outro}/photos?incluirOcultos=true`)).json().fotos[0];
+    const a = await app.inject({ method: 'PUT', url: `/api/collections/${id}`, payload: { artes: { poster: deOutro.id } } });
+    expect(a.statusCode).toBe(400);
+    expect(a.json().codigo).toBe('arte-invalida');
+    const b = await app.inject({ method: 'PUT', url: `/api/collections/${id}`, payload: { artes: { fundo: 1 } } });
+    expect(b.statusCode).toBe(400);
+  });
+
   it('PATCH de tags em massa adiciona e remove em vários álbuns', async () => {
     const ids = [await albumId('Viagem Nordeste'), await albumId('Sem Metadados')];
     const r = await app.inject({ method: 'PATCH', url: '/api/collections/tags', payload: { colecoes: ids, adicionar: ['verão'], remover: ['teste'] } });

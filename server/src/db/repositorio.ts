@@ -29,8 +29,10 @@ export interface Album {
   disponivel: boolean;
   contagem: ContagemNiveis;
   tags: string[];
-  /** Foto usada como imagem do card enquanto não há artes próprias. */
+  /** Fotos escolhidas (no colecao.json) para cada arte; sem escolha válida, vale a primeira foto do álbum. */
+  posterFotoId: number | null;
   capaFotoId: number | null;
+  miniaturaFotoId: number | null;
 }
 
 export interface Foto {
@@ -197,10 +199,14 @@ export function obterAlbum(db: Banco, id: number): Album | undefined {
   return linhaParaAlbum(linha, tags);
 }
 
-// A capa provisória do card é a primeira foto do álbum (artes próprias ainda não existem).
+// Cada arte (poster, capa, miniatura) é o caminho relativo de uma foto do álbum guardado no colecao.json.
+// Se o campo falta ou a foto não existe mais, cai na primeira foto do álbum.
+const arteSql = (campo: string) => `COALESCE(
+    (SELECT f.id FROM fotos f WHERE f.album_id = a.id AND f.caminho_relativo = json_extract(a.colecao, '$.${campo}')),
+    (SELECT f.id FROM fotos f WHERE f.album_id = a.id ORDER BY f.nivel IS NULL, f.nivel, f.caminho_relativo LIMIT 1)
+  )`;
 const SELECT_ALBUM = `
-  SELECT a.*, (SELECT f.id FROM fotos f WHERE f.album_id = a.id
-               ORDER BY f.nivel IS NULL, f.nivel, f.caminho_relativo LIMIT 1) AS capa_foto_id
+  SELECT a.*, ${arteSql('poster')} AS poster_foto_id, ${arteSql('capa')} AS capa_foto_id, ${arteSql('miniatura')} AS miniatura_foto_id
   FROM albuns a`;
 
 function tagsPorAlbum(db: Banco, bibliotecaId: number): Map<number, string[]> {
@@ -225,7 +231,9 @@ function linhaParaAlbum(linha: any, tags: string[]): Album {
     disponivel: linha.disponivel === 1,
     contagem: { total: linha.total, nivel1: linha.nivel1, nivel2: linha.nivel2, nivel3: linha.nivel3, semNivel: linha.sem_nivel },
     tags,
+    posterFotoId: linha.poster_foto_id ?? null,
     capaFotoId: linha.capa_foto_id ?? null,
+    miniaturaFotoId: linha.miniatura_foto_id ?? null,
   };
 }
 

@@ -12,6 +12,10 @@ export interface Colecao {
   titulo?: string;
   tags: string[];
   oculto: boolean;
+  /** Caminho relativo (posix) de uma foto do próprio álbum; null ou ausente = automático (primeira foto). */
+  poster?: string | null;
+  capa?: string | null;
+  miniatura?: string | null;
   [campo: string]: unknown;
 }
 
@@ -21,6 +25,9 @@ export interface LeituraColecao {
   dados: Colecao | null;
   aviso: Aviso | null;
 }
+
+export const CAMPOS_ARTE = ['poster', 'capa', 'miniatura'] as const;
+export type CampoArte = (typeof CAMPOS_ARTE)[number];
 
 export const caminhoColecao = (pastaAlbum: string) => path.join(pastaAlbum, PASTA_METADADOS, ARQUIVO_COLECAO);
 
@@ -52,6 +59,22 @@ export async function atualizarColecao(pastaAlbum: string, alteracoes: DadosCole
   const final = prepararParaGravar(mesclado);
   await gravarJsonAtomico(arquivo, final);
   return normalizarColecao(final);
+}
+
+// Artes cuja foto saiu do lugar (ex.: movida para outra pasta de nível) são reapontadas
+// para a única foto do álbum com o mesmo nome de arquivo. Devolve só os campos que mudam.
+export function reapontarArtes(colecao: Colecao | null, caminhosDasFotos: string[]): Partial<Record<CampoArte, string>> {
+  const correcoes: Partial<Record<CampoArte, string>> = {};
+  if (!colecao) return correcoes;
+  const noAlbum = new Set(caminhosDasFotos);
+  for (const campo of CAMPOS_ARTE) {
+    const atual = colecao[campo];
+    if (typeof atual !== 'string' || noAlbum.has(atual)) continue;
+    const nome = path.posix.basename(atual);
+    const achados = caminhosDasFotos.filter((c) => path.posix.basename(c) === nome);
+    if (achados.length === 1) correcoes[campo] = achados[0];
+  }
+  return correcoes;
 }
 
 function normalizarColecao(objeto: Record<string, unknown>): Colecao {

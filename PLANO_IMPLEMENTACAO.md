@@ -221,7 +221,7 @@ Junta tudo em rotas HTTP. Os testes rodam o servidor em memória sobre a bibliot
 
 ### M8 · Front-end base
 
-- **Arquivos:** `web/src/tema/tokens.css`, `web/src/logica/rotas.ts`, `web/src/tipos.ts`, `web/src/main.tsx`, layout com barra lateral, cliente da API.
+- **Arquivos:** `web/src/tema/tokens.css`, `web/src/logica/rotas.ts`, `web/src/tipos.ts`, `web/src/main.tsx`, layout com barra no topo, cliente da API.
 - **Contrato:**
   - Tokens da paleta Brasa Neon com os valores da documentação.
   - `slug(texto)`.
@@ -321,12 +321,12 @@ Rodam no Chromium, em 1440 × 900, contra o servidor real e uma biblioteca tempo
 
 ### M16 · Layout responsivo
 
-- **Arquivos:** `web/src/plataforma.ts`, CSS por plataforma, barra inferior no mobile.
+- **Arquivos:** `web/src/plataforma.ts`, CSS por plataforma.
 - **Contrato:** `detectarPlataforma({ largura, userAgent, caminho })` → `'mobile' | 'desktop' | 'tv'` e `colunasDaGrade(plataforma, modo, largura)`.
 - **Regras testadas:**
   - Menos de 768 px é mobile; Tizen ou `/tv` é TV; monitor grande sem Tizen continua desktop.
   - Colunas da tabela "Layout responsivo" da documentação.
-- **Testes:** `tests/web/m16-responsivo.test.ts` (8) e `tests/e2e/fase2-mobile.spec.ts` (3 fluxos: barra inferior, sem ⚙ no celular, tocar e deslizar no visualizador).
+- **Testes:** `tests/web/m16-responsivo.test.ts` (8) e `tests/e2e/fase2-mobile.spec.ts` (3 fluxos: barra no topo sem Configurações, sem ⚙ no celular, tocar e deslizar no visualizador).
 
 ### M17 · Modo TV
 
@@ -372,8 +372,9 @@ Atualizado em 16/10/2026.
 - **Fases 1 e 2 implementadas (M0–M17).** `npm test` passa 237 de 237; `npm run test:e2e` passa os 16 fluxos (9 desktop, 3 mobile, 4 TV); `npm run typecheck` sem erros.
 - **Como rodar:** `npm run servidor` sobe a API e o site já compilado na porta 8001 (compile antes com `npm run build:web`). Para desenvolver o front-end com recarga automática, rode `npm run servidor` e `npm run web` juntos; o Vite repassa `/api` para o servidor.
 - **Ainda não validado na QN90B real:** códigos reais das teclas, Voltar dentro do site e desempenho de grades grandes (validação manual obrigatória do M17).
+- **M18 · Artes do álbum (implementado).** Poster, capa de fundo e miniatura vêm de campos `poster`, `capa` e `miniatura` do `colecao.json` (caminho relativo de uma foto do próprio álbum; `null` ou ausente = primeira foto). `PUT /api/collections/:id` aceita `artes: { poster?, capa?, miniatura? }` com ids de fotos do álbum (ou `null`) e recusa fotos de outro álbum (`arte-invalida`). A API devolve `posterFotoId`, `capaFotoId` e `miniaturaFotoId`. Interface: seção "Imagens do álbum" no painel ⚙ e "Usar como" no painel ⓘ do visualizador. Na varredura, uma arte cuja foto mudou de pasta (ex.: de nível) é reapontada para a única foto do álbum com o mesmo nome de arquivo (`reapontarArtes`). A grade de álbuns da biblioteca alterna entre Miniatura (16:9) e Poster (2:3), e a escolha fica no `localStorage` do navegador; a TV continua só com miniaturas. Proporções ideais (recorte pelo centro com `object-fit: cover`): poster 2:3 (mín. 600 × 900), miniatura 16:9 (mín. 600 × 338), capa de fundo 16:9 (mín. 1200 × 675); tabela no README.
+- **Barra no topo (substitui a barra lateral do desktop e a inferior do mobile).** `Layout.tsx`: botão Voltar (volta no histórico do site; sem histórico, vai para o Início; desativado no Início sem histórico), nome do site (link para o Início), Início e ⚙ Configurações (só desktop). Fixa no topo (`--altura-topo: 56px`); escondida na TV. Teste: fluxo "barra no topo" em `fase1-fotos.spec.ts`. Testes: `tests/web/m18-artes-album.test.tsx`, `tests/servidor/m18-artes.test.ts`, 3 casos em `m07-api.test.ts` e 2 fluxos em `fase1-fotos.spec.ts`.
 - **Simplificações a revisitar:**
-  - Enquanto não há artes próprias (poster, miniatura e capa), os cards e o cabeçalho do álbum usam a primeira foto do álbum.
   - Na TV, a página do álbum ainda não tem a fileira de filtro por nível.
   - No visualizador da TV e da pesquisa de fotos, a foto aberta não muda a URL.
 - **Decisões tomadas na implementação:**

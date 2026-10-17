@@ -5,7 +5,7 @@ import type { AlbumUI } from '../tipos';
 export type ModoCard = 'miniatura' | 'poster';
 
 interface Props {
-  album: Pick<AlbumUI, 'id' | 'titulo' | 'contagem' | 'tags' | 'oculto'> & { capaFotoId?: number | null };
+  album: Pick<AlbumUI, 'id' | 'titulo' | 'contagem' | 'tags' | 'oculto'> & Pick<AlbumUI, 'posterFotoId' | 'capaFotoId' | 'miniaturaFotoId'>;
   modo: ModoCard;
   selecionado?: boolean;
   onSelecionar?: (evento: React.MouseEvent) => void;
@@ -14,6 +14,7 @@ interface Props {
 // Link comum (<a>): a navegação interna é feita pelo Layout, então o card funciona também fora do roteador.
 export function CardAlbum({ album, modo, selecionado, onSelecionar }: Props) {
   const total = album.contagem.total;
+  const imagemId = (modo === 'poster' ? album.posterFotoId : album.miniaturaFotoId) ?? album.capaFotoId;
   return (
     <article
       className={`card-album card-${modo}`}
@@ -32,7 +33,7 @@ export function CardAlbum({ album, modo, selecionado, onSelecionar }: Props) {
         }}
       >
         <div className="card-imagem">
-          {album.capaFotoId ? <img src={urlImagem(album.capaFotoId, 600)} alt="" loading="lazy" /> : <div className="card-sem-imagem" aria-hidden="true">▣</div>}
+          {imagemId ? <img src={urlImagem(imagemId, 600)} alt="" loading="lazy" /> : <div className="card-sem-imagem" aria-hidden="true">▣</div>}
           {album.oculto && (
             <span className="selo-oculto" aria-label="Álbum oculto" title="Álbum oculto">
               <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">

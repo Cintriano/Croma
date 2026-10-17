@@ -8,7 +8,7 @@ import {
   type Album,
   type Foto,
 } from '../db/repositorio';
-import { atualizarColecao, lerColecao } from '../metadados/colecao';
+import { atualizarColecao, CAMPOS_ARTE, lerColecao, type CampoArte } from '../metadados/colecao';
 import { aplicarTagsFotos, gravarFotosJson, lerFotosJson } from '../metadados/fotosJson';
 import { normalizarTags } from '../metadados/tags';
 import { lerBooleano, lerId, lerListaDeIds, lerListaDeTexto, naoEncontrado, pedidoInvalido } from './erros';
@@ -45,7 +45,25 @@ export async function rotasColecoes(api: FastifyInstance) {
     if ('tags' in alteracoes) lerListaDeTexto(alteracoes.tags, 'tags');
     if ('oculto' in alteracoes && typeof alteracoes.oculto !== 'boolean') throw pedidoInvalido('"oculto" deve ser verdadeiro ou falso.');
 
-    const colecao = await atualizarColecao(a.caminho, alteracoes);
+    // As artes chegam como { poster?, capa?, miniatura? } com ids de fotos deste álbum (ou null = automático)
+    // e são gravadas como caminho relativo da foto.
+    const { artes, ...resto } = alteracoes;
+    const gravar: Record<string, unknown> = { ...resto };
+    if (artes !== undefined) {
+      if (artes === null || typeof artes !== 'object' || Array.isArray(artes)) throw pedidoInvalido('"artes" deve ser um objeto.');
+      const fotosDoAlbum = new Map(listarFotosDoAlbum(db, a.id).map((f) => [f.id, f.caminhoRelativo]));
+      for (const [campo, valor] of Object.entries(artes)) {
+        if (!(CAMPOS_ARTE as readonly string[]).includes(campo)) throw pedidoInvalido(`Arte desconhecida: "${campo}".`, 'arte-invalida');
+        if (valor === null) gravar[campo as CampoArte] = null;
+        else {
+          const caminho = typeof valor === 'number' ? fotosDoAlbum.get(valor) : undefined;
+          if (caminho === undefined) throw pedidoInvalido(`A arte "${campo}" precisa ser uma foto deste álbum.`, 'arte-invalida');
+          gravar[campo as CampoArte] = caminho;
+        }
+      }
+    }
+
+    const colecao = await atualizarColecao(a.caminho, gravar);
     atualizarColecaoDoAlbum(db, a.id, colecao);
     return obterAlbum(db, a.id);
   });

@@ -62,52 +62,69 @@ code {
 
 /* ── Layout ─────────────────────────────────────────────── */
 .layout {
-  display: grid;
-  grid-template-columns: var(--largura-lateral) 1fr;
   min-height: 100vh;
 }
 
-.navegacao {
+.barra-topo {
   position: sticky;
   top: 0;
-  height: 100vh;
+  z-index: 50;
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  padding: 1.25rem 0.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  height: var(--altura-topo);
+  padding: 0 1rem;
   background: var(--superficie);
-  border-right: 1px solid var(--borda);
+  border-bottom: 1px solid var(--borda);
+}
+
+.navegacao {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: auto;
 }
 
 .marca {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 800;
   letter-spacing: 0.04em;
-  padding: 0 0.75rem 1rem;
+  padding: 0 0.5rem;
   background: var(--degrade-botao);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   text-shadow: 0 0 24px var(--brilho-laranja);
 }
+.marca:hover {
+  text-decoration: none;
+}
 
 .item-navegacao {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.6rem 0.75rem;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: none;
   border-radius: var(--raio-pequeno);
+  background: none;
   color: var(--texto-suave);
+  font-size: 1.25rem;
+  cursor: pointer;
 }
-.item-navegacao:hover {
+.item-navegacao:hover:not(:disabled) {
   background: var(--superficie-alta);
   color: var(--texto);
   text-decoration: none;
 }
+.item-navegacao:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
 .item-navegacao.active {
   color: var(--texto);
   background: var(--superficie-alta);
-  box-shadow: inset 3px 0 0 var(--neon-magenta), 0 0 18px rgba(255, 46, 126, 0.15);
+  box-shadow: inset 0 -3px 0 var(--neon-magenta), 0 0 18px rgba(255, 46, 126, 0.15);
 }
 
 .conteudo {
@@ -365,6 +382,14 @@ code {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   gap: 1.1rem;
+}
+.grade-albuns.modo-poster {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+.alternar-modo {
+  display: inline-flex;
+  gap: 0.4rem;
+  margin-left: auto;
 }
 
 .card-album {
@@ -1088,31 +1113,8 @@ code {
 }
 
 /* ── Mobile ─────────────────────────────────────────────── */
-.plataforma-mobile.layout {
-  grid-template-columns: 1fr;
-  padding-bottom: 4rem;
-}
-.plataforma-mobile .navegacao {
-  position: fixed;
-  top: auto;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: auto;
-  z-index: 50;
-  flex-direction: row;
-  justify-content: space-around;
-  padding: 0.4rem;
-  border-right: none;
-  border-top: 1px solid var(--borda);
-}
-.plataforma-mobile .marca {
-  display: none;
-}
-.plataforma-mobile .item-navegacao {
-  flex-direction: column;
-  gap: 0.1rem;
-  font-size: 0.75rem;
+.plataforma-mobile .barra-topo {
+  padding: 0 0.5rem;
 }
 .plataforma-mobile .pagina {
   padding: 1rem;
@@ -1143,6 +1145,9 @@ code {
   grid-template-columns: repeat(2, 1fr);
   gap: 0.6rem;
 }
+.plataforma-mobile .grade-albuns.modo-poster {
+  grid-template-columns: repeat(3, 1fr);
+}
 .plataforma-mobile .visualizador-fundo {
   padding: 3.5rem 0;
 }
@@ -1157,10 +1162,9 @@ code {
 /* ── TV ─────────────────────────────────────────────────── */
 /* Escala maior para leitura a 3 m; o foco é borda neon + aumento de 1,1× (anima só transform). */
 .plataforma-tv.layout {
-  grid-template-columns: 1fr;
   font-size: 1.5rem;
 }
-.plataforma-tv .navegacao {
+.plataforma-tv .barra-topo {
   display: none;
 }
 .plataforma-tv .pagina {
@@ -1242,3 +1246,60 @@ code {
   box-shadow: 0 0 0 4px var(--neon-laranja), 0 0 24px var(--brilho-laranja);
   outline: none;
 }
+
+/* ── Imagens do álbum (poster, capa, miniatura) ───────────── */
+.artes-album .arte-linha {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.artes-album .arte-nome {
+  flex: 1;
+  color: var(--texto);
+}
+.arte-previa {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--superficie);
+  color: var(--texto-apagado);
+}
+.arte-previa.arte-poster { width: 38px; height: 56px; }
+.arte-previa.arte-capa { width: 100px; height: 56px; }
+.arte-previa.arte-miniatura { width: 100px; height: 56px; }
+.arte-previa img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.arte-escolha {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 0.4rem;
+  max-height: 260px;
+  overflow: auto;
+  padding: 0.4rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+}
+.arte-foto {
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  overflow: hidden;
+  background: none;
+  cursor: pointer;
+  aspect-ratio: 1;
+}
+.arte-foto[data-atual='true'] { border-color: var(--neon-magenta); }
+.arte-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.artes-foto { margin-top: 1rem; }

@@ -78,7 +78,7 @@ Cada subpasta do caminho escolhido vira um álbum. Dentro dele, as fotos ficam s
 F:\Fotos\
   Viagem Nordeste\
     metadados\
-      colecao.json    ← título, tags, descrição, oculto e outros campos do álbum
+      colecao.json    ← título, tags, descrição, oculto, poster, capa, miniatura e outros campos do álbum
       fotos.json      ← tags de cada foto (criado na primeira tag)
     Nivel_1\          ← fotos de nível 1 (★1)
     Nivel_2\
@@ -87,6 +87,20 @@ F:\Fotos\
 ```
 
 - **Formatos aceitos:** jpg, jpeg, png e webp. Outras subpastas (ex.: `Extras`, `Nivel_4`) são ignoradas e geram um aviso na varredura.
+- **Poster, capa de fundo e miniatura** do álbum são escolhidos entre as fotos do próprio álbum (painel ⚙ do álbum, ou "Usar como" no painel ⓘ da foto) e gravados no `colecao.json` como caminho relativo (ex.: `"poster": "Nivel_1/IMG_0001.jpg"`). Sem escolha válida, vale a primeira foto do álbum. Se a foto mudar de pasta (ex.: de `Nivel_1` para `Nivel_2`), a próxima varredura reaponta a arte para ela.
+- **Exibição dos álbuns:** a grade da biblioteca alterna entre **Miniatura** e **Poster**; o navegador lembra a escolha.
+
+### Proporções ideais das imagens do álbum
+
+As artes são recortadas pelo centro para caber no espaço (sem distorcer). Uma foto já na proporção certa aparece inteira; nas outras, as bordas são cortadas.
+
+| Arte | Onde aparece | Proporção ideal | Tamanho mínimo recomendado |
+| --- | --- | --- | --- |
+| **Poster** | Card no modo Poster e cabeçalho do álbum (ao lado do título) | **2:3** (retrato) | 600 × 900 px |
+| **Miniatura** | Card no modo Miniatura e cards da TV | **16:9** (paisagem) | 600 × 338 px |
+| **Capa de fundo** | Fundo do cabeçalho do álbum (desfocado, com degradê escuro por cima) | **16:9** (paisagem) | 1200 × 675 px |
+
+Os tamanhos mínimos vêm das versões que o servidor gera: 600 px de largura para cards e poster, 1200 px para a capa de fundo. Imagens maiores não melhoram a exibição; menores aparecem esticadas. No desktop o cabeçalho é bem mais largo que alto, então da capa aparece sobretudo a faixa central: deixe o assunto no meio da foto. Como a capa é desfocada, ela tolera mais a falta de nitidez; o poster é o que mais aparece em detalhe. Fotos tiradas na vertical servem bem de poster, e fotos na horizontal servem de miniatura e capa.
 - **Fotos nunca são alteradas.** O sistema só escreve no `colecao.json` e no `fotos.json`, e sempre por gravação atômica: grava um temporário e depois troca o arquivo.
 - **Foto movida ou renomeada fora do sistema:** a varredura reencontra as tags dela pelo nome e tamanho, ou pelo tamanho e data EXIF. Se não achar, a entrada fica guardada como órfã e gera um aviso.
 
@@ -105,7 +119,8 @@ F:\Fotos\
   - Navegação por ← →, botões ou deslizar o dedo; fecha com Esc, Voltar ou clique fora.
   - Painel ⓘ com EXIF e as tags da foto: as próprias são editáveis e as herdadas do álbum aparecem separadas.
 - **Escolha de tags:** a lista das tags existentes abre ao focar o campo, com as mais usadas e todas de A a Z. Ela avisa quando o texto parece uma tag existente digitada errado (ex.: `famila` → `família`).
-- **Celular:** barra inferior, sem configurações nem ⚙, tags só para leitura.
+- **Barra no topo:** botão Voltar, nome do site (leva ao Início), Início e ⚙ Configurações (só no desktop).
+- **Celular:** sem configurações nem ⚙, tags só para leitura.
 - **TV:** em `/tv/...`, tudo por setas, OK e Voltar.
   - Aceita os códigos do controle Samsung.
   - O foco volta ao card de onde você saiu.

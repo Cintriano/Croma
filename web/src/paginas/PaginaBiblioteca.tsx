@@ -4,7 +4,7 @@ import { api } from '../api';
 import { ApresentacaoSlides } from '../componentes/ApresentacaoSlides';
 import { BarraPesquisaTags } from '../componentes/BarraPesquisaTags';
 import { BotoesAleatorioSlides } from '../componentes/BotoesAleatorioSlides';
-import { CardAlbum } from '../componentes/CardAlbum';
+import { CardAlbum, type ModoCard } from '../componentes/CardAlbum';
 import { GradeFotos } from '../componentes/GradeFotos';
 import { ResultadoVazio } from '../componentes/ResultadoVazio';
 import { TagPicker } from '../componentes/TagPicker';
@@ -17,6 +17,16 @@ import { usePlataforma } from '../plataforma';
 import type { FotoUI } from '../tipos';
 import { useDados } from '../usarDados';
 import { Visualizador } from '../componentes/Visualizador';
+
+// Modo da grade de álbuns, lembrado neste navegador.
+const CHAVE_MODO_CARD = 'croma:modo-albuns';
+function lerModoCard(): ModoCard {
+  try {
+    return localStorage.getItem(CHAVE_MODO_CARD) === 'poster' ? 'poster' : 'miniatura';
+  } catch {
+    return 'miniatura';
+  }
+}
 
 export function PaginaBiblioteca() {
   const id = Number(useParams().id);
@@ -47,6 +57,15 @@ export function PaginaBiblioteca() {
 
   const [visualizando, setVisualizando] = useState<number | null>(null);
   const [slides, setSlides] = useState<{ modo: ModoSlides; inicio?: number } | null>(null);
+  const [modoCard, setModoCard] = useState<ModoCard>(lerModoCard);
+  const mudarModoCard = (modo: ModoCard) => {
+    setModoCard(modo);
+    try {
+      localStorage.setItem(CHAVE_MODO_CARD, modo);
+    } catch {
+      // Sem armazenamento (aba anônima etc.): a escolha vale só até recarregar.
+    }
+  };
   const [selecionando, setSelecionando] = useState(false);
   const [selecionados, setSelecionados] = useState<number[]>([]);
 
@@ -100,6 +119,13 @@ export function PaginaBiblioteca() {
         <>
           <div className="barra-ferramentas">
             <span className="texto-suave">{listaAlbuns.length === 1 ? '1 álbum' : `${listaAlbuns.length} álbuns`}</span>
+            <div className="alternar-modo" role="group" aria-label="Exibir álbuns como">
+              {(['miniatura', 'poster'] as const).map((modo) => (
+                <button key={modo} type="button" className="botao" aria-pressed={modoCard === modo} onClick={() => mudarModoCard(modo)}>
+                  {modo === 'poster' ? 'Poster' : 'Miniatura'}
+                </button>
+              ))}
+            </div>
             {plataforma === 'desktop' && (
               <>
                 <button type="button" className="botao" aria-pressed={mostrarOcultos} onClick={() => setMostrarOcultos((m) => !m)}>
@@ -122,12 +148,12 @@ export function PaginaBiblioteca() {
           {!albuns.carregando && listaAlbuns.length === 0 && pesquisa.tags.length > 0 ? (
             <ResultadoVazio busca="albuns" onLimpar={() => mudarPesquisa({ ...pesquisa, tags: [] })} />
           ) : (
-            <ul className="grade-albuns" aria-label="Álbuns">
+            <ul className={`grade-albuns modo-${modoCard}`} aria-label="Álbuns">
               {listaAlbuns.map((album) => (
                 <li key={album.id}>
                   <CardAlbum
                     album={album}
-                    modo="miniatura"
+                    modo={modoCard}
                     selecionado={selecionando && selecionados.includes(album.id)}
                     onSelecionar={selecionando ? () => alternarSelecao(album.id) : undefined}
                   />
