@@ -4,6 +4,7 @@ import { api } from '../api';
 import { ApresentacaoSlides } from '../componentes/ApresentacaoSlides';
 import { BarraPesquisaTags } from '../componentes/BarraPesquisaTags';
 import { BotoesAleatorioSlides } from '../componentes/BotoesAleatorioSlides';
+import { Carregando } from '../componentes/Carregando';
 import { CardAlbum, type ModoCard } from '../componentes/CardAlbum';
 import { GradeFotos } from '../componentes/GradeFotos';
 import { ResultadoVazio } from '../componentes/ResultadoVazio';
@@ -145,7 +146,9 @@ export function PaginaBiblioteca() {
               onConcluido={() => { setSelecionando(false); setSelecionados([]); albuns.recarregar(); tags.recarregar(); }}
             />
           )}
-          {!albuns.carregando && listaAlbuns.length === 0 && pesquisa.tags.length > 0 ? (
+          {albuns.dados === undefined && albuns.carregando ? (
+            <Carregando />
+          ) : !albuns.carregando && listaAlbuns.length === 0 && pesquisa.tags.length > 0 ? (
             <ResultadoVazio busca="albuns" onLimpar={() => mudarPesquisa({ ...pesquisa, tags: [] })} />
           ) : (
             <ul className={`grade-albuns modo-${modoCard}`} aria-label="Álbuns">
@@ -167,7 +170,9 @@ export function PaginaBiblioteca() {
           <div className="barra-ferramentas">
             <span className="texto-suave">{fotosDoResultado.length === 1 ? '1 foto' : `${fotosDoResultado.length} fotos`}</span>
           </div>
-          {!fotos.carregando && fotosDoResultado.length === 0 && pesquisa.tags.length > 0 ? (
+          {fotos.dados === undefined && fotos.carregando ? (
+            <Carregando />
+          ) : !fotos.carregando && fotosDoResultado.length === 0 && pesquisa.tags.length > 0 ? (
             <ResultadoVazio busca="fotos" onLimpar={() => mudarPesquisa({ ...pesquisa, tags: [] })} />
           ) : (
             <GradeFotos fotos={fotosDoResultado} onAbrir={setVisualizando} mostrarAlbum />

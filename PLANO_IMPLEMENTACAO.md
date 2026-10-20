@@ -223,7 +223,7 @@ Junta tudo em rotas HTTP. Os testes rodam o servidor em memória sobre a bibliot
 
 - **Arquivos:** `web/src/tema/tokens.css`, `web/src/logica/rotas.ts`, `web/src/tipos.ts`, `web/src/main.tsx`, layout com barra no topo, cliente da API.
 - **Contrato:**
-  - Tokens da paleta Brasa Neon com os valores da documentação.
+  - Tokens CAPRA (tema Dark, acento Ciano) com os valores da documentação.
   - `slug(texto)`.
   - `caminhoBiblioteca(id)` → `/biblioteca/3`.
   - `caminhoAlbum(album)` → `/album/12/viagem-nordeste`.

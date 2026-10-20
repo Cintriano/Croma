@@ -1,25 +1,25 @@
-// M8 — Front-end base: tokens da paleta Brasa Neon e rotas (URLs) do site.
+// M8 — Front-end base: tokens CAPRA e rotas (URLs) do site.
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { caminhoAlbum, caminhoBiblioteca, caminhoFoto, slug } from '../../web/src/logica/rotas';
 
-describe('M8 · tokens da paleta Brasa Neon', () => {
+describe('M8 · tokens CAPRA (tema Dark, acento Ciano)', () => {
   const css = readFileSync(path.resolve('web/src/tema/tokens.css'), 'utf8');
 
   it.each([
-    ['--fundo', '#0C0809'],
-    ['--superficie', '#17100F'],
-    ['--superficie-alta', '#231816'],
-    ['--borda', '#3A2622'],
-    ['--texto', '#F7EEE8'],
-    ['--texto-suave', '#BFA79B'],
-    ['--texto-apagado', '#7D665C'],
-    ['--neon-laranja', '#FF6B1A'],
-    ['--neon-magenta', '#FF2E7E'],
-    ['--neon-ambar', '#FFB627'],
-    ['--neon-vermelho', '#FF3B3B'],
-    ['--neon-verde', '#3DFF9A'],
+    ['--background', '#121416'],
+    ['--surface', '#181B1E'],
+    ['--surface-elevated', '#202428'],
+    ['--border', '#2A3035'],
+    ['--border-strong', '#68737A'],
+    ['--text-primary', '#E8ECEE'],
+    ['--text-secondary', '#AAB4B9'],
+    ['--accent', '#8FB8C5'],
+    ['--on-accent', '#121416'],
+    ['--success', '#9DBBAA'],
+    ['--warning', '#D6C58F'],
+    ['--danger', '#E8877F'],
   ])('define %s = %s', (token, cor) => {
     expect(css).toMatch(new RegExp(`${token}\\s*:\\s*${cor}`, 'i'));
   });

@@ -155,7 +155,7 @@ web/src/
   componentes/ ← visualizador, slides, TagPicker, cards, filtros...
   logica/      ← regras sem interface (ordenação, slides, pesquisa, rotas)
   tv/          ← navegação por controle remoto e telas da TV
-  tema/        ← paleta Brasa Neon e estilos
+  tema/        ← tokens CAPRA e estilos
 tests/
   servidor/    ← M0–M7
   web/         ← M8–M17

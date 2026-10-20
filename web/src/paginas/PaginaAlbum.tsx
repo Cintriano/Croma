@@ -4,6 +4,7 @@ import { api, ErroApi } from '../api';
 import { ArtesFoto } from '../componentes/ArtesFoto';
 import { ApresentacaoSlides } from '../componentes/ApresentacaoSlides';
 import { BotoesAleatorioSlides } from '../componentes/BotoesAleatorioSlides';
+import { Carregando } from '../componentes/Carregando';
 import { ContagemNiveis } from '../componentes/ContagemNiveis';
 import { FiltroNivel } from '../componentes/FiltroNivel';
 import { GradeFotos } from '../componentes/GradeFotos';
@@ -71,7 +72,7 @@ export function PaginaAlbum() {
     return <p className="pagina-vazia">{album.erro instanceof ErroApi && album.erro.status === 404 ? 'Álbum não encontrado.' : album.erro.message}</p>;
   }
   const a = album.dados;
-  if (!a) return <p className="pagina-vazia">Carregando…</p>;
+  if (!a) return <Carregando />;
 
   // Foto aberta pela URL; se o filtro atual a esconde, o visualizador usa todas as fotos.
   const listaVisualizador = fotoId !== null && !visiveis.some((f) => f.id === fotoId) ? ordenarFotos(todas, ordem) : visiveis;

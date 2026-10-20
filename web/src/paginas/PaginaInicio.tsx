@@ -1,4 +1,5 @@
 import { api } from '../api';
+import { Carregando } from '../componentes/Carregando';
 import { caminhoBiblioteca, caminhoConfiguracoes, caminhoMusicas } from '../logica/rotas';
 import musicas from '../mocks/musicas.json';
 import { usePlataforma } from '../plataforma';
@@ -30,6 +31,7 @@ export function PaginaInicio() {
           </a>
         </li>
       </ul>
+      {carregando && bibliotecas === undefined && <Carregando />}
       {!carregando && bibliotecas?.length === 0 && (
         <p className="texto-suave">
           Nenhuma biblioteca ainda.{' '}

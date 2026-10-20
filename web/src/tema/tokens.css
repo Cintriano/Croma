@@ -1,36 +1,76 @@
-/* Paleta Brasa Neon: fundo escuro, cores quentes e brilho neon só no que está em destaque. */
+/* Tokens CAPRA (manual de marca v1.6), tema Dark. Croma é produto da área Plataforma: acento Ciano, neutro preto. */
+
+/* Inter variável auto-hospedada (Capra/fontes/Inter), só o subconjunto latino com os acentos do português. */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fontes/inter-latin.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+/* Reserva com as medidas da Inter, para o texto não pular quando a fonte chega. */
+@font-face {
+  font-family: 'Inter reserva';
+  src: local('Arial');
+  size-adjust: 107%;
+  ascent-override: 90.5%;
+  descent-override: 22.5%;
+  line-gap-override: 0%;
+}
+
 :root {
+  color-scheme: dark;
+
   /* Base */
-  --fundo: #0C0809;
-  --superficie: #17100F;
-  --superficie-alta: #231816;
-  --borda: #3A2622;
-  --texto: #F7EEE8;
-  --texto-suave: #BFA79B;
-  --texto-apagado: #7D665C;
+  --background: #121416;
+  --surface: #181B1E;
+  --surface-elevated: #202428;
+  --border: #2A3035;
+  --border-strong: #68737A;
+  --text-primary: #E8ECEE;
+  --text-secondary: #AAB4B9;
 
-  /* Neon */
-  --neon-laranja: #FF6B1A;
-  --neon-magenta: #FF2E7E;
-  --neon-ambar: #FFB627;
-  --neon-vermelho: #FF3B3B;
-  --neon-verde: #3DFF9A;
+  /* Acento do produto e texto sobre ele */
+  --accent: #8FB8C5;
+  --on-accent: #121416;
 
-  /* Brilhos */
-  --brilho-laranja: rgba(255, 107, 26, 0.55);
-  --brilho-magenta: rgba(255, 46, 126, 0.5);
-  --brilho-ambar: rgba(255, 182, 39, 0.5);
-  --brilho-vermelho: rgba(255, 59, 59, 0.5);
-  --brilho-verde: rgba(61, 255, 154, 0.4);
+  /* Estados */
+  --success: #9DBBAA;
+  --warning: #D6C58F;
+  --danger: #E8877F;
+  --info: #8FB8C5;
 
-  /* Degradês */
-  --degrade-capa: linear-gradient(to bottom, rgba(12, 8, 9, 0.55) 0%, rgba(12, 8, 9, 0.75) 60%, #0C0809 100%);
-  --degrade-botao: linear-gradient(135deg, #FF6B1A, #FF2E7E);
+  /* Véus sobre fotos (background com opacidade) */
+  --veu: rgba(18, 20, 22, 0.72);
+  --veu-forte: rgba(18, 20, 22, 0.95);
+  --degrade-capa: linear-gradient(to bottom, rgba(18, 20, 22, 0.55) 0%, rgba(18, 20, 22, 0.75) 60%, #121416 100%);
 
-  /* Medidas */
-  --raio: 10px;
-  --raio-pequeno: 6px;
-  --espaco: 1rem;
+  /* Foco: respiro na cor do fundo e anel de 2 px no acento */
+  --focus-ring: 0 0 0 2px #121416, 0 0 0 4px #8FB8C5;
+
+  /* Raios */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* Espaços */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+
+  /* Movimento */
+  --motion-fast: 100ms;
+  --motion-base: 200ms;
+  --motion-screen: 300ms;
+  --motion-slow: 450ms;
+  --ease-enter: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 1, 1);
+
+  /* Medidas do Croma */
   --altura-topo: 56px;
-  --fonte: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fonte: 'Inter', 'Inter reserva', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }

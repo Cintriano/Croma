@@ -16,7 +16,7 @@ Princípios:
 - **Metadados só locais:** tudo vem de arquivos JSON nas pastas; nenhuma busca online.
 - **Sem transcodificação:** os arquivos são entregues como estão e tocados direto pelo navegador.
 - **Foco em Fotos:** a biblioteca de Fotos é a primeira a ser mapeada e construída; Músicas fica fora do escopo por enquanto, com dados mockados.
-- **Visual quente e neon:** fundo escuro, cores quentes e brilho neon nos destaques.
+- **Identidade CAPRA:** fundo escuro, superfícies discretas e um único acento (Ciano), sem brilho.
 
 ## Decisões tomadas
 
@@ -39,7 +39,7 @@ Princípios:
 | Álbum oculto | Um álbum pode ser ocultado; só aparece no desktop com "Mostrar ocultos" ligado |
 | Tags por foto | Guardadas em `metadados/fotos.json` de cada álbum; a foto herda as tags do álbum na pesquisa |
 | Escolha de tags | Ao adicionar uma tag, as já existentes aparecem para só selecionar; digitar filtra a lista ou cria uma nova |
-| Estilo visual | Cores quentes, fundo escuro, efeito neon, paleta "Brasa Neon" |
+| Estilo visual | Manual de marca CAPRA v1.6, área Plataforma (acento Ciano, neutro preto), logo filha CR |
 
 ## Modelo de conteúdo
 
@@ -164,7 +164,7 @@ A página do álbum tem um cabeçalho com a capa ao fundo, o poster à esquerda 
 - **Capa de fundo:** a `capa.jpg` ocupa toda a largura do cabeçalho, escurecida (ex.: camada preta a 55–65%), e a parte de baixo se mescla em degradê com o fundo escuro da página, escondendo o fim da imagem horizontal.
 - **Poster:** no canto superior esquerdo, sobre a capa, em proporção 2:3.
 - **Informações:** ao lado do poster, vindas do `colecao.json` (título, ano, quantidade de fotos, tags, descrição e demais campos que forem definidos).
-- **Contagem por nível:** abaixo do total, uma linha com a quantidade de fotos de cada nível (`★1 40 · ★2 60 · ★3 28`), com a estrela em `--neon-ambar`. Clicar num nível aplica o filtro correspondente na grade. Fotos soltas na raiz do álbum entram no total, mas não em nenhum nível; se existirem, aparece também `sem nível 5`. A contagem vem da varredura e é guardada no banco, sem recontar as pastas a cada abertura.
+- **Contagem por nível:** abaixo do total, uma linha com a quantidade de fotos de cada nível (`★1 40 · ★2 60 · ★3 28`), com a estrela em `--accent`. Clicar num nível aplica o filtro correspondente na grade. Fotos soltas na raiz do álbum entram no total, mas não em nenhum nível; se existirem, aparece também `sem nível 5`. A contagem vem da varredura e é guardada no banco, sem recontar as pastas a cada abertura.
 - **Botões de ação:** Aleatório e Slides, logo abaixo das informações.
 - **Botão de configuração (⚙):** no canto superior direito, só no desktop; abre a edição do álbum (ver abaixo).
 - No mobile, o poster fica menor e as informações descem para baixo dele; na TV, o primeiro foco da página é o botão Slides.
@@ -442,7 +442,7 @@ O mesmo front-end serve as três plataformas; a largura da tela define o layout,
 | Cards por linha (Miniatura) | 2 | 3 a 5 | 4, rolagem horizontal |
 | Modo Lista | Sim | Sim | Não |
 | Configurações | Apenas preferências do aparelho | Todas | Nenhuma |
-| Hover / foco | Sem hover | Hover com brilho neon e ações rápidas | Foco ampliado 1,1× com borda neon |
+| Hover / foco | Sem hover | Hover com borda no acento e ações rápidas | Foco ampliado 1,1× com anel de foco no acento |
 
 Regras gerais:
 
@@ -453,44 +453,63 @@ Regras gerais:
 
 ## Identidade visual
 
-O estilo usa fundo escuro, cores quentes e brilho neon nos elementos em destaque; o brilho marca o que está ativo, não decora tudo. A paleta se chama **Brasa Neon**.
+O Croma é um produto da CAPRA e segue o manual de marca CAPRA v1.6 (pasta `Capra/`): fundo quase preto, superfícies discretas, um único acento e nenhum brilho. Como não pertence a nenhuma das quatro áreas, o Croma é da área **Plataforma**, com acento **Ciano** e neutro **preto**. Os tokens estão em `web/src/tema/tokens.css`, com os nomes do `capra-tokens.json`.
 
-Base (fundos e texto):
+### Logo
+
+A logo filha do Croma foi gerada pelo kit de logos filhas (`Capra/capra-logos-filhas`), registrada como `Croma,CR,plataforma,preto`. A marca é **CR**: o C já pertence ao Clam, então entra a próxima consoante do nome.
+
+| Arquivo (`web/public/marca/`) | Uso |
+| --- | --- |
+| `croma-marca.svg` | Assinatura do cabeçalho; só sobre fundo `background` |
+| `croma-icone-app.svg` + PNG 1024, 512, 192 e 180 | Ícone de app e `apple-touch-icon` |
+| `croma-favicon.svg` + PNG 48 e 32 | Favicon (`web/public/favicon.svg` é cópia do SVG) |
+| `croma-icone-reduzido.svg` + `croma-favicon-16.png` | Abaixo de 32 px: só disco e letras |
+| `croma-entrada.svg` | Entrada animada, só na primeira visita da sessão |
+
+- **Assinatura do app:** marca + "Croma" em Inter SemiBold (600), espaçamento −2%; altura da marca = 1,5 × o tamanho do nome e distância = 0,35 × o tamanho do nome.
+- **Rodapé com endosso** (desktop e celular; a TV não tem rodapé): assinatura do app + fio de 1 px em `--border` + "por" em `--text-secondary` + logotipo CAPRA (`web/public/marca/capra-logotipo.svg`, cópia de `Capra/kit_logo_capra/logo/`) com altura de 0,4 × o tamanho do nome. O nome CAPRA nunca é digitado: usa-se o arquivo.
+- Não redesenhar nem recolorir a marca: regerar pelo script ou pelo gerador web.
+
+### Fonte
+
+Inter variável (pesos 100 a 900), auto-hospedada em `web/public/fontes/inter-latin.woff2`. O arquivo foi gerado de `Capra/fontes/Inter/Inter-VariableFont_opsz,wght.ttf`, só com o subconjunto latino e os acentos do português, e tem cerca de 100 KB. A licença (`Inter-OFL.txt`) vai junto.
+
+- `font-display: swap` e `preload` no `index.html`.
+- Fonte de reserva "Inter reserva" (Arial com `size-adjust` e métricas da Inter), para o texto não pular quando a Inter chega.
+- O site não usa itálico, então a Inter itálica não é carregada.
+- Para regerar: `python -m fontTools.subset "Capra/fontes/Inter/Inter-VariableFont_opsz,wght.ttf" --flavor=woff2 --layout-features='*' --unicodes="U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2190-2193,U+2212,U+2215,U+2605,U+FEFF,U+FFFD" --output-file=web/public/fontes/inter-latin.woff2` (requer `fonttools` e `brotli`).
+
+### Cores
 
 | Token | Cor | Uso |
 | --- | --- | --- |
-| `--fundo` | `#0C0809` | Fundo da página; destino do degradê da capa |
-| `--superficie` | `#17100F` | Cards, barra lateral, barra inferior |
-| `--superficie-alta` | `#231816` | Painéis, menus, modais, painel ⚙ |
-| `--borda` | `#3A2622` | Divisórias e bordas discretas |
-| `--texto` | `#F7EEE8` | Texto principal |
-| `--texto-suave` | `#BFA79B` | Texto secundário, metadados |
-| `--texto-apagado` | `#7D665C` | Placeholders, itens desativados |
+| `--background` | `#121416` | Fundo da página; destino do degradê da capa |
+| `--surface` | `#181B1E` | Cards, barra do topo, campos |
+| `--surface-elevated` | `#202428` | Painéis, menus, botões secundários, item ativo |
+| `--border` | `#2A3035` | Divisórias decorativas |
+| `--border-strong` | `#68737A` | Bordas de campos e botões (3:1) |
+| `--text-primary` | `#E8ECEE` | Texto principal |
+| `--text-secondary` | `#AAB4B9` | Texto secundário, metadados, rótulos |
+| `--accent` | `#8FB8C5` | Links, botão principal, seleção, item ativo, estrela do selo |
+| `--on-accent` | `#121416` | Texto sobre o acento |
+| `--success` | `#9DBBAA` | Confirmação de salvamento |
+| `--warning` | `#D6C58F` | Tag parecida com uma existente |
+| `--danger` | `#E8877F` | Remover tag, erros, ações destrutivas |
 
-Neon (destaques):
+- **Capa do álbum:** `--degrade-capa`, de `rgba(18, 20, 22, 0.55)` a `#121416`, sobre a imagem desfocada, para o cabeçalho se fundir com a página.
+- **Véus** (`--veu`, `--veu-forte`): `background` com opacidade, atrás de selos e controles sobre fotos.
 
-| Token | Cor | Brilho (`rgba`) | Uso |
-| --- | --- | --- | --- |
-| `--neon-laranja` | `#FF6B1A` | `rgba(255, 107, 26, 0.55)` | Cor principal: foco, botões principais, links |
-| `--neon-magenta` | `#FF2E7E` | `rgba(255, 46, 126, 0.50)` | Seleção (modo Selecionar, chips de tags), item ativo do menu |
-| `--neon-ambar` | `#FFB627` | `rgba(255, 182, 39, 0.50)` | Estrela e número do selo de nível |
-| `--neon-vermelho` | `#FF3B3B` | `rgba(255, 59, 59, 0.50)` | Remover tag, erros, ações destrutivas |
-| `--neon-verde` | `#3DFF9A` | `rgba(61, 255, 154, 0.40)` | Confirmação de salvamento (uso raro, só para sucesso) |
+### Componentes
 
-Degradês:
-
-- **Capa do álbum:** `linear-gradient(to bottom, rgba(12, 8, 9, 0.55) 0%, rgba(12, 8, 9, 0.75) 60%, #0C0809 100%)` sobre a imagem.
-- **Botão principal:** `linear-gradient(135deg, #FF6B1A, #FF2E7E)` com texto `--fundo`.
-
-Contraste: `--texto` e `--texto-suave` sobre `--fundo` e `--superficie` passam do nível AA de leitura; as cores neon são usadas em bordas, ícones, botões e títulos, nunca em texto corrido pequeno.
-
-Efeito neon:
-
-- Brilho com `box-shadow` e `text-shadow` em camadas da cor neon (ex.: `0 0 6px`, `0 0 18px`, `0 0 36px` com opacidade decrescente).
-- Usado em: card em foco ou hover, botões principais (Aleatório, Slides), estrela do selo de nível e item ativo do menu.
-- Títulos grandes podem ter brilho leve; texto corrido nunca, para manter a leitura.
-- Na TV, o foco é a borda neon mais o aumento de 1,1×; animar só `transform` e `opacity`, pois sombras animadas pesam no navegador Tizen.
-- A capa de fundo escurecida termina em degradê para `--fundo`, para o cabeçalho se fundir com a página.
+- **Botões:** altura mínima de 40 px, raio `radius-md` (12 px). Primário em `--accent` com texto `--on-accent`; secundário em `--surface-elevated` com borda `--border-strong`. Hover muda só a luminosidade (cerca de 8%), nunca a cor. Botão marcado (`aria-pressed`) tem borda e texto no acento.
+- **Cartões:** `--surface` com borda `--border` e raio `radius-md`; no hover ou foco, a borda vai para o acento. Cartões não flutuam nem brilham.
+- **Campos:** `--surface`, borda `--border-strong`, raio `radius-sm` (8 px); no foco, borda no acento e `--focus-ring`.
+- **Selos e chips:** pílulas com contorno e texto na cor do contexto, sem fundo.
+- **Rótulos** em caixa de frase, nunca em caixa alta.
+- **Foco:** `--focus-ring` (respiro de 2 px na cor do fundo + anel de 2 px no acento), sem animação. Na TV, o mesmo anel mais o aumento de 1,1×; só `transform` é animado, pois sombras animadas pesam no navegador Tizen.
+- **Carregamento:** componente `Carregando` com o carregamento orbital do kit (`web/public/marca/capra-carregamento.svg`, cópia de `Capra/kit_logo_capra/animacao/`): um ponto no acento percorre a órbita em volta do núcleo, uma volta a cada 1,2 s. Aparece só depois de 300 ms, com esvanecimento, para não piscar em respostas rápidas, e só na primeira carga (ao recarregar, os dados anteriores ficam na tela). Com movimento reduzido, um `<picture>` troca para `capra-carregamento-parado.svg`, porque a regra de dentro do SVG não vale quando ele é usado como imagem. Usado no Início, na biblioteca (álbuns e fotos), na página do álbum e no álbum da TV. O logo nunca gira.
+- **Movimento:** `--motion-fast` (100 ms) em hover e estados, `--motion-base` (200 ms) na abertura do visualizador, `--motion-slow` (450 ms) na troca de slides, todos com `--ease-enter`.
 
 ## Interface de TV
 
@@ -509,7 +528,7 @@ Regras de navegação espacial:
 - A fileira rola sozinha para manter o card em foco visível; nada depende de ponteiro (o cursor do navegador Tizen fica oculto).
 - Ao voltar, o foco retorna ao card de onde o usuário saiu (memória de foco por tela).
 - No fim de uma fileira, → para (não dá a volta), para o usuário não se perder.
-- Foco: card ampliado 1,1×, borda neon de 4 px e título exibido abaixo; transição de 150 ms.
+- Foco: card ampliado 1,1×, anel de foco no acento (`--focus-ring`) e título exibido abaixo; transição de 200 ms (`--motion-base`).
 - Implementação: biblioteca de navegação espacial (ex.: Norigin Spatial Navigation) ou o algoritmo próprio sobre `getBoundingClientRect`.
 
 Cuidados específicos do navegador Tizen (a validar na própria TV):
@@ -631,7 +650,7 @@ Principais rotas da API (todas com o prefixo `/api`; a lista completa e os teste
 
 A construção vai em fases, começando pelas fotos; cada fase termina com algo usável.
 
-1. **Fotos:** servidor, criação da biblioteca pelo caminho, varredura de álbuns com pasta `metadados` e subpastas de nível, banco, API, identidade visual (escuro, quente, neon), grade de álbuns, página do álbum com capa e poster, grade de fotos com selo, filtro, ordenação e contagem por nível, álbuns ocultos, botões Aleatório e Slides, botão ⚙ de edição do álbum, edição de tags (por álbum, por foto e em massa, com seleção das tags existentes), pesquisa por tags (álbuns e fotos, com herança) e foto expandida ao clicar (visualizador em tela cheia) no desktop. Músicas entra só como card com dados mockados.
+1. **Fotos:** servidor, criação da biblioteca pelo caminho, varredura de álbuns com pasta `metadados` e subpastas de nível, banco, API, identidade visual (CAPRA, área Plataforma), grade de álbuns, página do álbum com capa e poster, grade de fotos com selo, filtro, ordenação e contagem por nível, álbuns ocultos, botões Aleatório e Slides, botão ⚙ de edição do álbum, edição de tags (por álbum, por foto e em massa, com seleção das tags existentes), pesquisa por tags (álbuns e fotos, com herança) e foto expandida ao clicar (visualizador em tela cheia) no desktop. Músicas entra só como card com dados mockados.
 2. **Responsivo e TV:** layout mobile; modo TV no navegador Tizen da QN90B com navegação por setas e memória de foco, validado com a biblioteca de Fotos.
 3. **Vídeo:** Filmes, Séries e Vídeos, com player e progresso assistido; testes de formatos na TV.
 4. **Administração:** demais configurações do desktop, edição de metadados e artes, varredura agendada e backup.

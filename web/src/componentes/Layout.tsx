@@ -34,7 +34,10 @@ export function Layout({ children }: { children: ReactNode }) {
         <button type="button" className="item-navegacao" aria-label="Voltar" title="Voltar" disabled={!temAnterior && pathname === caminhoInicio()} onClick={voltar}>
           <span className="icone" aria-hidden="true">←</span>
         </button>
-        <NavLink to={caminhoInicio()} className="marca">Croma</NavLink>
+        <NavLink to={caminhoInicio()} className="marca" aria-label="Croma, página inicial">
+          <img src="/marca/croma-marca.svg" alt="" width={27} height={27} />
+          <span>Croma</span>
+        </NavLink>
         <nav className="navegacao" aria-label="Navegação principal">
           {itens.map((item) => (
             <NavLink key={item.para} to={item.para} end={item.para === '/'} className="item-navegacao" aria-label={item.rotulo} title={item.rotulo}>
@@ -44,6 +47,17 @@ export function Layout({ children }: { children: ReactNode }) {
         </nav>
       </header>
       <main className="conteudo">{children}</main>
+      {/* Assinatura com endosso: marca + nome, fio, "por" e o logotipo CAPRA (arquivo, nunca texto). */}
+      <footer className="rodape">
+        <span className="marca">
+          <img src="/marca/croma-marca.svg" alt="" width={27} height={27} />
+          <span>Croma</span>
+        </span>
+        <span className="rodape-fio" aria-hidden="true" />
+        <span className="rodape-endosso">
+          por <img src="/marca/capra-logotipo.svg" alt="CAPRA" width={52} height={7} />
+        </span>
+      </footer>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { flushSync } from 'react-dom';
 import { useParams } from 'react-router-dom';
 import { api } from '../api';
 import { ApresentacaoSlides } from '../componentes/ApresentacaoSlides';
+import { Carregando } from '../componentes/Carregando';
 import { SeloNivel } from '../componentes/SeloNivel';
 import { Visualizador } from '../componentes/Visualizador';
 import { ORDEM_PADRAO, ordenarFotos } from '../logica/fotos';
@@ -131,7 +132,7 @@ export function PaginaTVAlbum() {
 
   if (album.erro) return <p className="pagina-vazia">Álbum não encontrado.</p>;
   const a = album.dados;
-  if (!a) return <p className="pagina-vazia">Carregando…</p>;
+  if (!a) return <Carregando />;
 
   const fechar = (foco: string) => () => {
     setVisualizando(null);
