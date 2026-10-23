@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { caminhoConfiguracoes, caminhoInicio } from '../logica/rotas';
+import { BarraPlayer } from '../musica/BarraPlayer';
+import { usePlayer } from '../musica/Player';
 import { usePlataforma } from '../plataforma';
 
 // Barra no topo (desktop e mobile) com voltar, nome do site, Início e Configurações. Também faz a navegação interna dos <a> comuns
@@ -8,6 +10,7 @@ import { usePlataforma } from '../plataforma';
 export function Layout({ children }: { children: ReactNode }) {
   const navegar = useNavigate();
   const plataforma = usePlataforma();
+  const { atual } = usePlayer();
   const { pathname } = useLocation();
   // O roteador guarda em history.state.idx quantas entradas do próprio site há antes desta.
   const temAnterior = ((window.history.state as { idx?: number } | null)?.idx ?? 0) > 0;
@@ -29,7 +32,7 @@ export function Layout({ children }: { children: ReactNode }) {
   ];
 
   return (
-    <div className={`layout plataforma-${plataforma}`} onClick={aoClicar}>
+    <div className={`layout plataforma-${plataforma}${atual ? ' com-player' : ''}`} onClick={aoClicar}>
       <header className="barra-topo">
         <button type="button" className="item-navegacao" aria-label="Voltar" title="Voltar" disabled={!temAnterior && pathname === caminhoInicio()} onClick={voltar}>
           <span className="icone" aria-hidden="true">←</span>
@@ -58,6 +61,7 @@ export function Layout({ children }: { children: ReactNode }) {
           por <img src="/marca/capra-logotipo.svg" alt="CAPRA" width={52} height={7} />
         </span>
       </footer>
+      <BarraPlayer />
     </div>
   );
 }

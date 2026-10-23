@@ -73,7 +73,7 @@ export function PaginaConfiguracoes() {
 }
 
 function FormularioBiblioteca({ onCancelar, onCriada }: { onCancelar: () => void; onCriada: (nome: string, avisos: number) => void }) {
-  const [tipo, setTipo] = useState('fotos');
+  const [tipo, setTipo] = useState<'fotos' | 'musicas'>('fotos');
   const [nome, setNome] = useState('');
   const [caminho, setCaminho] = useState('');
   const [previa, setPrevia] = useState<{ albuns: string[]; avisos: Aviso[] } | null>(null);
@@ -88,7 +88,7 @@ function FormularioBiblioteca({ onCancelar, onCriada }: { onCancelar: () => void
     if (!caminho.trim()) return;
     let ativo = true;
     const espera = setTimeout(() => {
-      api.previa(caminho).then(
+      api.previa(caminho, tipo).then(
         (p) => ativo && setPrevia(p),
         (e: ErroApi) => ativo && setErro(e.message),
       );
@@ -97,13 +97,13 @@ function FormularioBiblioteca({ onCancelar, onCriada }: { onCancelar: () => void
       ativo = false;
       clearTimeout(espera);
     };
-  }, [caminho]);
+  }, [caminho, tipo]);
 
   const salvar = async (e: React.FormEvent) => {
     e.preventDefault();
     setSalvando(true);
     try {
-      const criada = await api.criarBiblioteca({ nome: nome.trim(), tipo: 'fotos', caminho });
+      const criada = await api.criarBiblioteca({ nome: nome.trim(), tipo, caminho });
       onCriada(criada.nome, criada.avisos.length);
     } catch (falha) {
       setErro((falha as Error).message);
@@ -116,9 +116,9 @@ function FormularioBiblioteca({ onCancelar, onCriada }: { onCancelar: () => void
     <form className="formulario painel" onSubmit={salvar}>
       <label>
         Tipo
-        <select value={tipo} onChange={(e) => setTipo(e.target.value)}>
+        <select value={tipo} onChange={(e) => setTipo(e.target.value as 'fotos' | 'musicas')}>
           <option value="fotos">Fotos</option>
-          <option value="musicas" disabled>Músicas (em breve)</option>
+          <option value="musicas">Músicas</option>
         </select>
       </label>
       <label>

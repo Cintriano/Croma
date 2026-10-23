@@ -48,7 +48,7 @@ export async function rotasArquivos(api: FastifyInstance) {
   });
 }
 
-function enviarComRange(res: FastifyReply, arquivo: string, tamanho: number, tipo: string, range?: string) {
+export function enviarComRange(res: FastifyReply, arquivo: string, tamanho: number, tipo: string, range?: string) {
   res.header('accept-ranges', 'bytes').header('content-type', tipo);
   const pedido = range && /^bytes=(\d*)-(\d*)$/.exec(range.trim());
   if (!pedido) {

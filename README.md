@@ -2,7 +2,7 @@
 
 Central de mídia pessoal que organiza as fotos guardadas nos discos da máquina e as mostra em três interfaces: **desktop**, **celular** e **TV** (Samsung QN90B, pelo navegador Tizen). Tudo roda na rede de casa, sem nuvem, login nem busca online. O conteúdo, os metadados e o cache ficam na própria máquina.
 
-A primeira fase cobre a biblioteca de **Fotos**. Músicas aparece só como prévia "Em breve", com dados de exemplo. Filmes, Séries e Vídeos estão previstos para as próximas fases.
+A primeira fase cobre a biblioteca de **Fotos**. **Músicas** lê uma pasta de áudio (cada pasta com músicas vira um álbum) e tem player. Filmes, Séries e Vídeos estão previstos para as próximas fases.
 
 - [`DOCUMENTACAO.md`](DOCUMENTACAO.md): o que o site deve fazer (telas, regras, identidade visual).
 - [`PLANO_IMPLEMENTACAO.md`](PLANO_IMPLEMENTACAO.md): como é construído (módulos, contratos, testes e situação atual).
@@ -32,7 +32,9 @@ npm run build:web   # compila o front-end em dist/web
 npm run servidor    # sobe a API e o site em http://localhost:8001
 ```
 
-Para usar, abra http://localhost:8001 e vá em **Configurações → Bibliotecas → Nova biblioteca**. Escolha o caminho da pasta de fotos (ex.: `F:\Fotos`); a prévia mostra os álbuns e os avisos antes de salvar. Na mesma rede, o celular acessa pelo IP da máquina (ex.: `http://192.168.0.10:8001`) e a TV por `http://<ip>:8001/tv`.
+O servidor só lê `dist/web` ao iniciar: depois de um novo `build:web`, **reinicie o servidor** (senão a página fica em branco). `npm run servidor:teste` faz as duas coisas de uma vez.
+
+Para usar, abra http://localhost:8001 e vá em **Configurações → Bibliotecas → Nova biblioteca**. Escolha o tipo (Fotos ou Músicas) e o caminho da pasta (ex.: `F:\Fotos`); a prévia mostra os álbuns e os avisos antes de salvar. Na mesma rede, o celular acessa pelo IP da máquina (ex.: `http://192.168.0.10:8001`) e a TV por `http://<ip>:8001/tv`.
 
 ### Desenvolvimento do front-end
 

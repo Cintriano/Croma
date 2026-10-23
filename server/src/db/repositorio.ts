@@ -5,7 +5,7 @@ import { chaveBusca } from '../metadados/tags';
 import { compararNomes } from '../ordenacao';
 import { emTransacao, type Banco } from './banco';
 
-export type TipoBiblioteca = 'fotos';
+export type TipoBiblioteca = 'fotos' | 'musicas';
 
 export interface Biblioteca {
   id: number;

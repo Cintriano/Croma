@@ -1,26 +1,41 @@
-import { access, readdir } from 'node:fs/promises';
+import { access, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import type { FastifyInstance } from 'fastify';
 import { buscarFotos, contarTags, filtrarAlbuns, type AlbumBusca } from '../busca/tags';
 import { criarBiblioteca, listarAlbuns, listarBibliotecas, listarFotosDoAlbum, obterBiblioteca, type Foto } from '../db/repositorio';
+import { esquecerMusicas, musicasDaBiblioteca } from '../musicas/varredura';
 import { sincronizarBiblioteca } from '../fotos/sincronizar';
 import { previaBibliotecaFotos } from '../fotos/varredura';
 import { compararNomes } from '../ordenacao';
 import { lerBooleano, lerId, lerListaTags, lerModo, naoEncontrado, pedidoInvalido } from './erros';
 
-const TIPOS_ACEITOS = new Set(['fotos']);
+const TIPOS_ACEITOS = new Set(['fotos', 'musicas']);
 
 export async function rotasBibliotecas(api: FastifyInstance) {
   const { db } = api;
   const biblioteca = (id: unknown) => obterBiblioteca(db, lerId(id)) ?? (() => { throw naoEncontrado('Biblioteca'); })();
 
-  api.get('/libraries', async () => ({ bibliotecas: listarBibliotecas(db) }));
+  // Músicas não têm álbuns no banco: a contagem vem de uma leitura da pasta.
+  api.get('/libraries', async () => ({
+    bibliotecas: await Promise.all(
+      listarBibliotecas(db).map(async (b) =>
+        b.tipo === 'musicas' ? { ...b, totalColecoes: (await musicasDaBiblioteca(b.caminho).catch(() => ({ albuns: [] }))).albuns.length } : b,
+      ),
+    ),
+  }));
 
   api.post<{ Body: { nome?: unknown; tipo?: unknown; caminho?: unknown } }>('/libraries', async (req, res) => {
     const { nome, tipo, caminho } = req.body ?? {};
     if (typeof nome !== 'string' || !nome.trim()) throw pedidoInvalido('Informe o nome da biblioteca.');
     if (typeof tipo !== 'string' || !TIPOS_ACEITOS.has(tipo)) throw pedidoInvalido('Tipo de biblioteca não suportado.', 'tipo-invalido');
     if (typeof caminho !== 'string' || !caminho.trim()) throw pedidoInvalido('Informe o caminho.', 'caminho-invalido');
+
+    if (tipo === 'musicas') {
+      if (!(await stat(caminho).then((i) => i.isDirectory(), () => false))) throw pedidoInvalido(`Não foi possível abrir a pasta ${caminho}.`, 'caminho-invalido');
+      const criada = criarBiblioteca(db, { nome: nome.trim(), tipo: 'musicas', caminho });
+      res.code(201);
+      return { ...obterBiblioteca(db, criada.id), totalColecoes: (await musicasDaBiblioteca(caminho)).albuns.length, avisos: [] };
+    }
 
     await previaBibliotecaFotos(caminho); // lança caminho-invalido antes de criar o registro
     const criada = criarBiblioteca(db, { nome: nome.trim(), tipo: 'fotos', caminho });
@@ -29,9 +44,15 @@ export async function rotasBibliotecas(api: FastifyInstance) {
     return { ...obterBiblioteca(db, criada.id), avisos };
   });
 
-  api.post<{ Body: { caminho?: unknown } }>('/libraries/previa', async (req) => {
+  api.post<{ Body: { caminho?: unknown; tipo?: unknown } }>('/libraries/previa', async (req) => {
     const caminho = req.body?.caminho;
     if (typeof caminho !== 'string' || !caminho.trim()) throw pedidoInvalido('Informe o caminho.', 'caminho-invalido');
+    if (req.body?.tipo === 'musicas') {
+      if (!(await stat(caminho).then((i) => i.isDirectory(), () => false))) throw pedidoInvalido(`Não foi possível abrir a pasta ${caminho}.`, 'caminho-invalido');
+      esquecerMusicas(caminho);
+      const { albuns } = await musicasDaBiblioteca(caminho);
+      return { albuns: albuns.map((a) => (a.grupo ? `${a.grupo} / ${a.titulo}` : a.titulo)), avisos: [] };
+    }
     return previaBibliotecaFotos(caminho);
   });
 
@@ -57,7 +78,9 @@ export async function rotasBibliotecas(api: FastifyInstance) {
 
   api.post<{ Body: { bibliotecaId?: unknown } }>('/scan', async (req) => {
     const id = req.body?.bibliotecaId;
-    const alvos = id === undefined ? listarBibliotecas(db) : [biblioteca(id)];
+    const todas = id === undefined ? listarBibliotecas(db) : [biblioteca(id)];
+    for (const musica of todas.filter((b) => b.tipo === 'musicas')) esquecerMusicas(musica.caminho);
+    const alvos = todas.filter((b) => b.tipo === 'fotos');
     const resultados = [];
     for (const alvo of alvos) resultados.push(await sincronizarBiblioteca(db, alvo));
     return {

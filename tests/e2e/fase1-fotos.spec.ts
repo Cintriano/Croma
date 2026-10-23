@@ -24,7 +24,7 @@ test('página do álbum mostra contagem por nível e filtra ao clicar', async ({
   await page.goto(`/biblioteca/${bibliotecaId}`);
   await page.getByRole('link', { name: /Viagem Nordeste/ }).click();
   await expect(page.getByRole('button', { name: /nível 1: 2 fotos/i })).toBeVisible();
-  await expect(page.getByText('sem nível 1')).toBeVisible();
+  await expect(page.getByRole('button', { name: /sem nível 1/i })).toBeVisible();
   await page.getByRole('button', { name: /nível 1: 2 fotos/i }).click();
   await expect(page.getByRole('list', { name: 'Fotos' }).getByRole('listitem')).toHaveCount(2);
 });
@@ -147,10 +147,4 @@ test('barra no topo: Voltar volta, Início e Configurações navegam', async ({ 
   await page.goto(`/biblioteca/${bibliotecaId}`);
   await page.getByRole('button', { name: 'Voltar' }).click();
   await expect(page).toHaveURL(/\/$/);
-});
-
-test('Músicas aparece com selo Em breve', async ({ page }) => {
-  await page.goto('/');
-  const card = page.getByRole('link', { name: /Músicas/ });
-  await expect(card.getByText('Em breve')).toBeVisible();
 });

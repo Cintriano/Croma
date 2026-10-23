@@ -1,4 +1,4 @@
-import type { AlbumUI, Aviso, BibliotecaUI, FotoUI, TagContada } from './tipos';
+import type { AlbumMusicaUI, AlbumUI, Aviso, BibliotecaUI, FotoUI, TagContada } from './tipos';
 
 export class ErroApi extends Error {
   constructor(
@@ -43,9 +43,10 @@ export interface ResultadoMassa {
 
 export const api = {
   bibliotecas: () => pedir<{ bibliotecas: BibliotecaUI[] }>('/api/libraries').then((r) => r.bibliotecas),
-  criarBiblioteca: (dados: { nome: string; tipo: 'fotos'; caminho: string }) =>
+  criarBiblioteca: (dados: { nome: string; tipo: 'fotos' | 'musicas'; caminho: string }) =>
     pedir<BibliotecaUI & { avisos: Aviso[] }>('/api/libraries', enviar('POST', dados)),
-  previa: (caminho: string) => pedir<{ albuns: string[]; avisos: Aviso[] }>('/api/libraries/previa', enviar('POST', { caminho })),
+  previa: (caminho: string, tipo: 'fotos' | 'musicas' = 'fotos') =>
+    pedir<{ albuns: string[]; avisos: Aviso[] }>('/api/libraries/previa', enviar('POST', { caminho, tipo })),
   pastas: (caminho?: string) =>
     pedir<{ caminho: string | null; pai: string | null; pastas: Pasta[] }>(`/api/fs${consulta({ path: caminho })}`),
 
@@ -67,6 +68,10 @@ export const api = {
     pedir<ResultadoMassa>('/api/collections/tags', enviar('PATCH', { colecoes, adicionar, remover })),
   tagsDeFotos: (fotos: number[], adicionar: string[], remover: string[]) =>
     pedir<ResultadoMassa>('/api/photos/tags', enviar('PATCH', { fotos, adicionar, remover })),
+
+  musicas: (bibliotecaId: number) => pedir<{ albuns: AlbumMusicaUI[] }>(`/api/libraries/${bibliotecaId}/music`).then((r) => r.albuns),
+  albumMusica: (bibliotecaId: number, albumId: string) =>
+    pedir<{ album: AlbumMusicaUI }>(`/api/libraries/${bibliotecaId}/music/albums/${albumId}`).then((r) => r.album),
 
   varrer: (bibliotecaId?: number) => pedir<{ avisos: Aviso[] }>('/api/scan', enviar('POST', { bibliotecaId })),
 };

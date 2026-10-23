@@ -5,20 +5,24 @@ import { PaginaAlbum } from './paginas/PaginaAlbum';
 import { PaginaBiblioteca } from './paginas/PaginaBiblioteca';
 import { PaginaConfiguracoes } from './paginas/PaginaConfiguracoes';
 import { PaginaInicio } from './paginas/PaginaInicio';
+import { PaginaAlbumMusica } from './paginas/PaginaAlbumMusica';
 import { PaginaMusicas } from './paginas/PaginaMusicas';
+import { PlayerProvider } from './musica/Player';
 import { PaginaTVAlbum, PaginaTVBiblioteca } from './tv/PaginasTV';
 
 export function App() {
   const plataforma = usePlataformaDetectada(useLocation().pathname);
   return (
     <ContextoPlataforma.Provider value={plataforma}>
+      <PlayerProvider>
       <Layout>
         <Routes>
           <Route path="/" element={<PaginaInicio />} />
           <Route path="/biblioteca/:id" element={<PaginaBiblioteca />} />
           <Route path="/album/:id/:slug?" element={<PaginaAlbum />} />
           <Route path="/album/:id/:slug/foto/:fotoId" element={<PaginaAlbum />} />
-          <Route path="/musicas" element={<PaginaMusicas />} />
+          <Route path="/musicas/:id" element={<PaginaMusicas />} />
+          <Route path="/musicas/:id/album/:albumId/:slug?" element={<PaginaAlbumMusica />} />
           <Route path="/tv" element={<PaginaInicio />} />
           <Route path="/tv/biblioteca/:id" element={<PaginaTVBiblioteca />} />
           <Route path="/tv/album/:id/:slug?" element={<PaginaTVAlbum />} />
@@ -26,6 +30,7 @@ export function App() {
           <Route path="*" element={<p className="pagina-vazia">Página não encontrada.</p>} />
         </Routes>
       </Layout>
+      </PlayerProvider>
     </ContextoPlataforma.Provider>
   );
 }

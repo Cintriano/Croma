@@ -28,11 +28,15 @@ export function ArtesAlbum({ fotos, atuais, onEscolher }: Props) {
           <div className={`arte-previa arte-${campo}`}>
             {atuais[campo] ? <img src={urlImagem(atuais[campo]!, 300)} alt="" /> : <span aria-hidden="true">▣</span>}
           </div>
-          <span className="arte-nome">{ROTULOS_ARTE[campo]}</span>
-          <button type="button" className="botao" aria-expanded={aberta === campo} onClick={() => setAberta(aberta === campo ? null : campo)}>
-            Trocar
-          </button>
-          <button type="button" className="botao" onClick={() => onEscolher(campo, null)}>Automático</button>
+          <div className="arte-controles">
+            <span className="arte-nome">{ROTULOS_ARTE[campo]}</span>
+            <div className="arte-botoes">
+              <button type="button" className="botao" aria-expanded={aberta === campo} onClick={() => setAberta(aberta === campo ? null : campo)}>
+                Trocar
+              </button>
+              <button type="button" className="botao" onClick={() => onEscolher(campo, null)}>Automático</button>
+            </div>
+          </div>
         </div>
       ))}
       {aberta && (

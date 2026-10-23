@@ -15,7 +15,7 @@ Princípios:
 - **Só local, só eu:** acesso apenas pela rede de casa, por um único usuário, sem login nem perfis.
 - **Metadados só locais:** tudo vem de arquivos JSON nas pastas; nenhuma busca online.
 - **Sem transcodificação:** os arquivos são entregues como estão e tocados direto pelo navegador.
-- **Foco em Fotos:** a biblioteca de Fotos é a primeira a ser mapeada e construída; Músicas fica fora do escopo por enquanto, com dados mockados.
+- **Foco em Fotos:** a biblioteca de Fotos é a primeira a ser mapeada e construída; Músicas é a segunda, já com leitura de pastas e player.
 - **Identidade CAPRA:** fundo escuro, superfícies discretas e um único acento (Ciano), sem brilho.
 
 ## Decisões tomadas
@@ -29,7 +29,7 @@ Princípios:
 | Formatos de vídeo | mp4 e mkv ficam como estão; os ts serão convertidos para mp4 antes de entrar na biblioteca; mkv que não tocar num aparelho fica marcado como "não suportado" nele |
 | Bibliotecas | Músicas, Filmes, Séries, Vídeos e Fotos |
 | Foco atual | Biblioteca de Fotos |
-| Músicas | Fora do escopo por enquanto; aparece na interface só com dados mockados |
+| Músicas | Leitura de pastas com player de áudio (ver Biblioteca de Músicas) |
 | Níveis das fotos | Sempre 1, 2 ou 3; cada foto mostra seu nível; o álbum tem filtro e ordenação por nível |
 | Tags | Editáveis por coleção e em massa, selecionando várias coleções na biblioteca |
 | Criação da biblioteca de Fotos | Defino um caminho; cada subpasta dele vira um álbum |
@@ -48,7 +48,7 @@ O conteúdo tem três níveis: **Biblioteca** (um tipo de mídia apontando para 
 | Biblioteca | O que é uma coleção | O que é um item | Subníveis |
 | --- | --- | --- | --- |
 | Fotos | Um álbum (cada subpasta do caminho escolhido) | Foto | Nivel_1, Nivel_2, Nivel_3 dentro do álbum |
-| Músicas | Fora do escopo; dados mockados (ver Biblioteca de Músicas) | — | — |
+| Músicas | Ver Biblioteca de Músicas | — | — |
 | Filmes | Um filme, ou uma saga (ex.: trilogia) | Arquivo de vídeo do filme | Saga → filmes |
 | Séries | Uma série | Episódio | Série → temporada → episódio |
 | Vídeos | Uma pasta ou tema (viagens, eventos, canais) | Arquivo de vídeo | Opcional: subpastas |
@@ -133,7 +133,7 @@ Dentro do álbum, cada foto de uma subpasta de nível mostra um selo no canto su
 
 ### Filtro e ordenação por nível
 
-- **Filtro:** Todos, Nível 1, Nível 2, Nível 3; mostra só as fotos do nível escolhido. Cada botão mostra a quantidade de fotos daquele nível (ex.: `Todos 128 · ★1 40 · ★2 60 · ★3 28`); um nível sem fotos aparece desativado.
+- **Filtro:** Todos, Nível 1, Nível 2, Nível 3; mostra só as fotos do nível escolhido. Os botões são `Todos`, `★ Nível 1`, `★ Nível 2`, `★ Nível 3` e, se houver fotos soltas, `Sem nível`. A quantidade de fotos aparece num selo arredondado e cinza ao lado do nome, para não ser lida como outro nível (ex.: `Todos [128] · ★ Nível 1 [40] · ★ Nível 2 [60]`); um nível sem fotos aparece desativado.
 - **Ordenação:** por nível (crescente ou decrescente), além de data de captura e nome.
 - Disponíveis em desktop, mobile e TV; na TV ficam numa fileira de botões acima da grade, navegável por setas.
 - O slide e o botão Aleatório respeitam o filtro ativo.
@@ -163,9 +163,9 @@ A página do álbum tem um cabeçalho com a capa ao fundo, o poster à esquerda 
 
 - **Capa de fundo:** a `capa.jpg` ocupa toda a largura do cabeçalho, escurecida (ex.: camada preta a 55–65%), e a parte de baixo se mescla em degradê com o fundo escuro da página, escondendo o fim da imagem horizontal.
 - **Poster:** no canto superior esquerdo, sobre a capa, em proporção 2:3.
-- **Informações:** ao lado do poster, vindas do `colecao.json` (título, ano, quantidade de fotos, tags, descrição e demais campos que forem definidos).
-- **Contagem por nível:** abaixo do total, uma linha com a quantidade de fotos de cada nível (`★1 40 · ★2 60 · ★3 28`), com a estrela em `--accent`. Clicar num nível aplica o filtro correspondente na grade. Fotos soltas na raiz do álbum entram no total, mas não em nenhum nível; se existirem, aparece também `sem nível 5`. A contagem vem da varredura e é guardada no banco, sem recontar as pastas a cada abertura.
-- **Botões de ação:** Aleatório e Slides, logo abaixo das informações.
+- **Informações:** ao lado do poster, vindas do `colecao.json`, nesta ordem: título, ano e quantidade de fotos, contagem por nível, descrição, tags (links que abrem a pesquisa de álbuns pela tag, só quando o álbum tem tags) e demais campos de texto ou número. Ficam de fora o que já aparece em outro lugar ou é interno: `titulo`, `tags`, `oculto`, `descricao`, `ano`, `poster`, `capa`, `miniatura`, `id` e `atualizado_em`.
+- **Contagem por nível:** abaixo do total, uma linha com a quantidade de fotos de cada nível (`★1 40 · ★2 60 · ★3 28`), com a estrela em `--accent` e a quantidade no mesmo selo cinza do filtro. Clicar num nível aplica o filtro correspondente na grade. Fotos soltas na raiz do álbum entram no total, mas não em nenhum nível; se existirem, aparece também `sem nível` com a quantidade. A contagem vem da varredura e é guardada no banco, sem recontar as pastas a cada abertura.
+- **Botões de ação:** Aleatório (ícone de dado) e Slides (ícone de play, que abre o menu Sequência / Aleatório), logo abaixo das informações. Ambos são botões redondos na cor de acento, com `title` e nome acessível "Aleatório" e "Slides". O menu abre à direita do botão no álbum e à esquerda na biblioteca, onde o botão fica na borda da tela. O cabeçalho do álbum não corta o menu: a capa de fundo desfocada é contida pelo próprio `clip-path`, e não por `overflow: hidden`.
 - **Botão de configuração (⚙):** no canto superior direito, só no desktop; abre a edição do álbum (ver abaixo).
 - No mobile, o poster fica menor e as informações descem para baixo dele; na TV, o primeiro foco da página é o botão Slides.
 
@@ -173,7 +173,11 @@ A página do álbum tem um cabeçalho com a capa ao fundo, o poster à esquerda 
 
 Os dois botões existem na galeria de Fotos (tela da biblioteca, valendo para todos os álbuns) e dentro de cada álbum (valendo só para aquele álbum).
 
-- **Aleatório:** sorteia uma foto e a abre em tela cheia no visualizador. Dentro do visualizador, um novo sorteio pode ser feito pelo mesmo botão (ou tecla OK na TV).
+- **Aleatório:** sorteia uma foto e, em vez de abri-la na hora, mostra uma **roleta** em tela cheia; ao parar na foto sorteada e esperar um instante, abre a foto. Dentro do visualizador, um novo sorteio continua instantâneo, pelo mesmo botão (ou tecla OK na TV). A TV ainda não tem roleta.
+  - **Na biblioteca (busca de álbuns):** duas etapas. Primeiro gira uma faixa de álbuns (com o poster ou a miniatura) e para no álbum sorteado; após ~1 s, gira uma segunda faixa com as fotos desse álbum; ao parar na foto e após ~1 s, abre a foto no álbum. Na busca por fotos há só a etapa de fotos, e a foto abre no visualizador.
+  - **No álbum:** só a etapa de fotos, entre as fotos visíveis com o filtro e a ordenação ativos.
+  - **Como funciona:** a foto vencedora é sorteada antes de a faixa girar (o sorteio é por foto, então álbuns com mais fotos têm mais chance); a animação só encena o resultado, com giro de ~4 s que desacelera até o marcador central. O vencedor ganha destaque (contorno e brilho no acento).
+  - **Controles:** **Pular** vai direto à foto; **×** e Esc cancelam sem abrir nada. Com "reduzir movimento" ativado no sistema, a roleta mostra o resultado sem girar.
 - **Slides:** inicia a apresentação em tela cheia. Ao abrir, o botão mostra a escolha entre **Sequência** (ordem atual da grade) e **Aleatório** (ordem sorteada, sem repetir até passar por todas).
 - O intervalo entre fotos vem das configurações de Fotos; na TV, ← → avançam ou voltam e OK pausa.
 
@@ -197,6 +201,7 @@ Clicar numa foto da grade a expande na tela: ela cresce a partir do próprio car
 ```
 
 - **Abrir:** clique (desktop), toque (mobile) ou OK (TV) no card; a animação de expansão leva cerca de 200 ms.
+- **Cantos:** a foto expandida tem cantos arredondados (`--radius-lg`, 16 px), também no zoom e no mobile.
 - **Ajuste:** a foto aparece inteira, sem cortes, centralizada sobre fundo `--fundo` a 95%; a orientação do EXIF é respeitada.
 - **Navegar:** setas ‹ › na tela, ← → no teclado e no controle, deslizar para os lados no mobile. A sequência segue o filtro e a ordenação ativos na grade.
 - **Fechar:** botão ×, Esc, clique fora da foto, deslizar para baixo no mobile ou Voltar na TV; a foto encolhe de volta ao card e a grade fica rolada até ela.
@@ -377,15 +382,18 @@ Edição (somente desktop):
 - **Várias fotos:** na grade do álbum, o botão **Selecionar** marca várias fotos (clique, Shift+clique, Ctrl+A no filtro atual) e abre **Editar tags**, com o mesmo painel da edição em massa de álbuns (tags em comum, adicionar a todas, aplicar). As tags herdadas não aparecem nesse painel.
 - Na grade, uma foto com tags próprias mostra um pequeno ícone de etiqueta no canto inferior esquerdo (só desktop e mobile).
 
-## Biblioteca de Músicas (fora do escopo)
+## Biblioteca de Músicas
 
-Músicas não será construída agora. Para a interface já mostrar as cinco bibliotecas, ela aparece no Início com dados mockados.
+Biblioteca do tipo `musicas`, criada em Configurações com o caminho da pasta (ex.: `/home/cintra_man/Arquivos_de_programas/Plex/Music_server`). Os arquivos nunca são alterados.
 
-- O card de Músicas aparece no Início e abre uma grade com 6 a 8 álbuns fictícios, com poster, miniatura e capa de exemplo.
-- Os dados vêm de um arquivo fixo no front-end (ex.: `mocks/musicas.json`), sem varredura de disco nem rotas de API.
-- Abrir um álbum mostra a página da coleção com faixas fictícias; o botão de tocar exibe o aviso "Em breve".
-- Um selo "Em breve" no card da biblioteca deixa claro que o conteúdo é de exemplo.
-- Pastas, artes, player de áudio e configurações de Músicas serão definidos quando a biblioteca entrar no escopo.
+- **Álbuns:** cada pasta que tem áudio (`.mp3`, `.m4a`, `.aac`, `.flac`, `.ogg`, `.opus`, `.wav`) vira um álbum. As pastas acima dele formam o grupo (ex.: `Artistas/Avicii` fica no grupo "Artistas"). Pastas só com imagem, e áudio solto na raiz, não viram álbum.
+- **Capa e descrição:** vêm da pasta `metadados` (qualquer capitalização): a imagem chamada capa/cover/poster ou a primeira, e o primeiro `.txt` como descrição. Sem `metadados`, vale a primeira imagem solta na pasta; sem imagem, o card mostra um espaço reservado.
+- **Faixas:** em ordem natural pelo nome do arquivo; o título é o nome sem a extensão. A duração de cada faixa vem do cabeçalho do arquivo (`music-metadata`; sem ela no cabeçalho, o arquivo é percorrido inteiro) e fica guardada na memória enquanto o arquivo não mudar. O álbum mostra a soma, ex.: "34 faixas · 1 h 52 min". Tags ID3 (título, artista) não são lidas.
+- **Sem banco:** a pasta é lida sob demanda (resultado guardado por 15 s) e "Varrer agora" descarta esse cache. Capas saem redimensionadas pelo mesmo cache das fotos.
+- **Telas:** `/musicas/:biblioteca` (grade de álbuns, com um bloco por grupo) e `/musicas/:biblioteca/album/:album` (capa, descrição, botões Tocar e Aleatório e lista de faixas).
+- **Player:** barra fixa no rodapé, presente em todas as telas, que continua tocando ao navegar. Tem anterior, tocar/pausar, próxima, posição, volume (lembrado) e fechar; "anterior" depois de 3 s volta ao começo da faixa. Ao fim da fila, para. Os botões de mídia do sistema também funcionam.
+- **API:** `GET /api/libraries/:id/music`, `.../music/albums/:albumId`, `.../music/files/:arquivoId` (com Range) e `.../music/capas/:arquivoId?w=`.
+- Fora desta etapa: playlists, pesquisa, fila editável, tags ID3 e a interface de TV.
 
 ## Artes e modos de exibição
 
@@ -427,7 +435,7 @@ Mesmo fluxo no desktop, mobile e TV; Voltar sobe um nível.
 - **Início:** um card por biblioteca (com contagem de coleções) e a fileira "Continuar assistindo".
 - **Biblioteca:** grade de coleções no modo escolhido, com ordenação e filtros (gênero, ano, tags, não assistidos).
 - **Coleção:** capa de fundo, poster, informações, botões de ação e a lista de itens; em séries, seletor de temporada; em álbuns de fotos, botões Aleatório e Slides e a grade de fotos com o selo de nível (ver Página do álbum).
-- **Reprodução:** vídeos abrem o player; fotos abrem o visualizador com apresentação de slides; músicas mostram "Em breve" enquanto estiverem mockadas.
+- **Reprodução:** vídeos abrem o player; fotos abrem o visualizador com apresentação de slides; músicas tocam no player fixo no rodapé (ver Biblioteca de Músicas).
 
 ## Layout responsivo
 
@@ -548,7 +556,7 @@ O desktop concentra toda a administração; as mudanças feitas aqui valem para 
 
 | Grupo | Opções |
 | --- | --- |
-| Bibliotecas | Criar, renomear, excluir e reordenar; tipo (Filmes, Séries, Vídeos, Fotos; Músicas só mockada por enquanto); caminho de origem escolhido por navegador de pastas (um ou vários, em discos diferentes); ícone e cor |
+| Bibliotecas | Criar, renomear, excluir e reordenar; tipo (Filmes, Séries, Vídeos, Fotos; Músicas já suportada); caminho de origem escolhido por navegador de pastas (um ou vários, em discos diferentes); ícone e cor |
 | Varredura | Varrer agora; varredura agendada (horário); monitorar pastas em tempo real; extensões aceitas; pastas ignoradas |
 | Exibição | Modo padrão global, por biblioteca e por coleção; ordenação padrão (título, ano, data de adição); tamanho dos cards; mostrar ou ocultar títulos sob os cards |
 | Coleções | Pelo botão ⚙ dentro de cada coleção: editar título, descrição, ano; adicionar e remover tags (gravando no JSON da pasta `metadados`); trocar poster, miniatura e capa de fundo; recortar arte; ocultar ou mostrar o álbum. Na biblioteca: selecionar várias coleções para editar as tags ou ocultar em massa; botão "Mostrar ocultos" |
@@ -581,7 +589,7 @@ E:\Series\
       Dark S01E01.mp4
 ```
 
-Músicas não tem pasta mapeada enquanto estiver fora do escopo.
+Músicas usa a estrutura descrita em Biblioteca de Músicas; o formato `metadados` segue o das fotos, sem os níveis.
 
 Regras de varredura:
 
@@ -644,13 +652,13 @@ flowchart LR
 | Mídia | sharp (ou Pillow), exifr, ffprobe | Redimensionar fotos e artes, ler EXIF e dados técnicos de vídeo e áudio |
 | Monitoramento | chokidar (Node) ou watchdog (Python) | Detecta arquivos novos nos discos |
 
-Principais rotas da API (todas com o prefixo `/api`; a lista completa e os testes de cada uma estão em `PLANO_IMPLEMENTACAO.md`): `GET /libraries`, `GET /photos/:id/imagem?w=300|600|1200` (foto redimensionada do cache), `GET /libraries/:id/collections`, `GET /collections/:id`, `GET /items/:id/file`, `GET /art/:id?type=poster|thumb&w=600`, `GET /fs?path=` (navegador de pastas, só desktop), `PUT /collections/:id` (edição, só desktop), `PATCH /collections/tags` (edição de tags em massa: lista de coleções, tags a adicionar e a remover), `GET /libraries/:id/tags` (lista de tags existentes para selecionar, com a quantidade de álbuns e fotos por tag), `GET /libraries/:id/collections?tags=praia,familia&modo=todas|qualquer` (pesquisa de álbuns por tags), `GET /libraries/:id/photos?tags=mar,nordeste&modo=todas|qualquer` (pesquisa de fotos, com herança das tags do álbum), `PATCH /photos/tags` (tags de uma ou várias fotos: lista de fotos, tags a adicionar e a remover) e `POST /scan`.
+Principais rotas da API (todas com o prefixo `/api`; a lista completa e os testes de cada uma estão em `PLANO_IMPLEMENTACAO.md`): `GET /libraries`, `GET /photos/:id/imagem?w=300|600|1200` (foto redimensionada do cache), `GET /libraries/:id/collections`, `GET /collections/:id`, `GET /items/:id/file`, `GET /art/:id?type=poster|thumb&w=600`, `GET /fs?path=` (navegador de pastas, só desktop), `PUT /collections/:id` (edição, só desktop), `PATCH /collections/tags` (edição de tags em massa: lista de coleções, tags a adicionar e a remover), `GET /libraries/:id/tags` (lista de tags existentes para selecionar, com a quantidade de álbuns e fotos por tag), `GET /libraries/:id/collections?tags=praia,familia&modo=todas|qualquer` (pesquisa de álbuns por tags), `GET /libraries/:id/photos?tags=mar,nordeste&modo=todas|qualquer` (pesquisa de fotos, com herança das tags do álbum), `PATCH /photos/tags` (tags de uma ou várias fotos: lista de fotos, tags a adicionar e a remover) `POST /scan`, e as de música: `GET /libraries/:id/music` (álbuns, com `totalFaixas` e `duracaoTotal`), `GET /libraries/:id/music/albums/:albumId` (álbum com as faixas e a duração de cada uma), `GET /libraries/:id/music/files/:arquivoId` (faixa, com HTTP Range) e `GET /libraries/:id/music/capas/:arquivoId?w=300|600|1200` (capa redimensionada). `POST /libraries` aceita `tipo: "musicas"` e `POST /libraries/previa` aceita `tipo` para pré-visualizar uma pasta de músicas.
 
 ## Roadmap
 
 A construção vai em fases, começando pelas fotos; cada fase termina com algo usável.
 
-1. **Fotos:** servidor, criação da biblioteca pelo caminho, varredura de álbuns com pasta `metadados` e subpastas de nível, banco, API, identidade visual (CAPRA, área Plataforma), grade de álbuns, página do álbum com capa e poster, grade de fotos com selo, filtro, ordenação e contagem por nível, álbuns ocultos, botões Aleatório e Slides, botão ⚙ de edição do álbum, edição de tags (por álbum, por foto e em massa, com seleção das tags existentes), pesquisa por tags (álbuns e fotos, com herança) e foto expandida ao clicar (visualizador em tela cheia) no desktop. Músicas entra só como card com dados mockados.
+1. **Fotos:** servidor, criação da biblioteca pelo caminho, varredura de álbuns com pasta `metadados` e subpastas de nível, banco, API, identidade visual (CAPRA, área Plataforma), grade de álbuns, página do álbum com capa e poster, grade de fotos com selo, filtro, ordenação e contagem por nível, álbuns ocultos, botões Aleatório e Slides, botão ⚙ de edição do álbum, edição de tags (por álbum, por foto e em massa, com seleção das tags existentes), pesquisa por tags (álbuns e fotos, com herança) e foto expandida ao clicar (visualizador em tela cheia) no desktop. Músicas: leitura de pastas, grade de álbuns e player de áudio.
 2. **Responsivo e TV:** layout mobile; modo TV no navegador Tizen da QN90B com navegação por setas e memória de foco, validado com a biblioteca de Fotos.
 3. **Vídeo:** Filmes, Séries e Vídeos, com player e progresso assistido; testes de formatos na TV.
 4. **Administração:** demais configurações do desktop, edição de metadados e artes, varredura agendada e backup.

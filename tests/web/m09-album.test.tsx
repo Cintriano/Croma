@@ -66,7 +66,7 @@ describe('M9 · contagem por nível', () => {
     const { rerender } = render(<ContagemNiveis contagem={contagem} onSelecionarNivel={() => {}} />);
     expect(screen.queryByText(/sem nível/i)).not.toBeInTheDocument();
     rerender(<ContagemNiveis contagem={{ ...contagem, semNivel: 5 }} onSelecionarNivel={() => {}} />);
-    expect(screen.getByText('sem nível 5')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /sem nível 5/i })).toBeInTheDocument();
   });
 
   it('clicar num nível aplica o filtro', async () => {

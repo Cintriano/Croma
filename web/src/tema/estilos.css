@@ -264,6 +264,14 @@ code {
 .botao-icone:hover:not(:disabled) {
   background: var(--surface-elevated);
 }
+.botao-icone-principal {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.botao-icone-principal:hover:not(:disabled) {
+  background: var(--accent);
+  filter: brightness(1.1);
+}
 .botao-icone:disabled {
   opacity: 0.25;
   cursor: default;
@@ -287,6 +295,17 @@ code {
 
 .estrela {
   color: var(--accent);
+}
+.contagem {
+  display: inline-block;
+  min-width: 1.5em;
+  margin-left: 0.2em;
+  padding: 0 0.45em;
+  border-radius: var(--radius-pill);
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+  font-size: 0.85em;
+  text-align: center;
 }
 
 .botoes-acao {
@@ -312,6 +331,10 @@ code {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+.cabecalho-biblioteca .menu {
+  left: auto;
+  right: 0;
 }
 .menu [role='menuitem'] {
   border: none;
@@ -687,15 +710,15 @@ code {
 .cabecalho-album {
   position: relative;
   padding: 2.5rem 2rem 2rem;
-  overflow: hidden;
 }
 .capa-fundo {
   position: absolute;
-  inset: 0;
+  /* Sai 12px do cabeçalho para a borda do desfoque não aparecer; o clip-path corta no limite do cabeçalho. */
+  inset: -12px;
+  clip-path: inset(12px);
   background-size: cover;
   background-position: center;
   filter: blur(6px) saturate(1.1);
-  transform: scale(1.06);
 }
 .capa-fundo::after {
   content: '';
@@ -900,6 +923,7 @@ code {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  border-radius: var(--radius-lg);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 .visualizador-imagem.com-zoom {
@@ -1297,16 +1321,29 @@ code {
 
 /* ── Imagens do álbum (poster, capa, miniatura) ───────────── */
 .artes-album .arte-linha {
-  display: flex;
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr);
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.75rem;
+}
+.artes-album .arte-controles {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  min-width: 0;
 }
 .artes-album .arte-nome {
-  flex: 1;
   color: var(--text-primary);
 }
+.artes-album .arte-botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.artes-album .arte-botoes .botao { white-space: nowrap; }
 .arte-previa {
-  flex: none;
+  justify-self: center;
   width: 56px;
   height: 56px;
   display: grid;
@@ -1351,3 +1388,216 @@ code {
   display: block;
 }
 .artes-foto { margin-top: 1rem; }
+
+/* ── Roleta do Aleatório ────────────────────────────────── */
+.roleta {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.25rem;
+  background: var(--veu-forte);
+  animation: aparecer var(--motion-base) var(--ease-enter);
+}
+.roleta-topo {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.roleta-rotulo,
+.roleta-legenda {
+  margin: 0;
+  text-align: center;
+  padding: 0 1rem;
+}
+.roleta-rotulo {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+.roleta-legenda {
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  min-height: 1.6em;
+}
+.roleta-janela {
+  position: relative;
+  overflow: hidden;
+  height: 210px;
+  mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
+}
+.roleta-faixa {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  display: flex;
+  gap: 12px;
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.1, 0.65, 0.08, 1);
+}
+.roleta-celula {
+  flex: none;
+  display: grid;
+  place-items: center;
+  height: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface);
+  color: var(--text-secondary);
+  opacity: 0.85;
+  transition: transform var(--motion-base), opacity var(--motion-base), box-shadow var(--motion-base);
+}
+.roleta-celula img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.roleta-celula[data-vencedor='true'] {
+  opacity: 1;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 3px var(--accent), 0 0 32px var(--accent);
+}
+.roleta-marcador {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--accent);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ── Músicas ────────────────────────────────────────────── */
+.grupo-musicas { margin-top: 1.75rem; }
+.grupo-musicas h2 {
+  font-size: 1.2rem;
+  margin: 0 0 0.75rem;
+  color: var(--text-secondary);
+}
+.card-imagem.quadrada { aspect-ratio: 1; }
+
+.cabecalho-musica {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
+.capa-musica {
+  flex: none;
+  width: 220px;
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface-elevated);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+  display: grid;
+  place-items: center;
+}
+.capa-musica img { width: 100%; height: 100%; object-fit: cover; }
+.cabecalho-musica h1 { margin: 0; font-size: 2.2rem; }
+.cabecalho-musica .informacoes > p { margin: 0.25rem 0; }
+
+.lista-faixas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.lista-faixas li button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 0.75rem;
+  border: none;
+  background: none;
+  text-align: left;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.lista-faixas li button:hover { background: var(--surface); }
+.lista-faixas li[data-ativa='true'] button { color: var(--accent); background: var(--surface); }
+.faixa-numero {
+  flex: none;
+  width: 2rem;
+  text-align: right;
+  color: var(--text-secondary);
+}
+.lista-faixas li[data-ativa='true'] .faixa-numero { color: var(--accent); }
+.faixa-duracao {
+  flex: none;
+  margin-left: auto;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.faixa-titulo {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.layout.com-player { padding-bottom: 5.5rem; }
+.barra-player {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1.25rem;
+  background: var(--surface-elevated);
+  border-top: 1px solid var(--border);
+}
+.player-faixa { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+.player-capa {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--surface);
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+}
+.player-capa img { width: 100%; height: 100%; object-fit: cover; }
+.player-textos { display: flex; flex-direction: column; min-width: 0; }
+.player-textos strong,
+.player-textos span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.player-textos span { font-size: 0.85rem; color: var(--text-secondary); }
+.player-centro { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; min-width: 0; }
+.player-botoes { display: flex; align-items: center; gap: 0.5rem; }
+.player-progresso {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.player-progresso input { flex: 1; min-width: 0; accent-color: var(--accent); }
+.player-extras { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; }
+.player-volume { display: flex; align-items: center; gap: 0.4rem; }
+.player-volume input { width: 6rem; accent-color: var(--accent); }
+
+.plataforma-mobile .cabecalho-musica { flex-direction: column; align-items: flex-start; gap: 1rem; }
+.plataforma-mobile .capa-musica { width: 60%; max-width: 240px; }
+.plataforma-mobile .barra-player { grid-template-columns: minmax(0, 1fr) auto; padding: 0.5rem 0.75rem; }
+.plataforma-mobile .player-centro { grid-column: 1 / -1; grid-row: 2; }
+.plataforma-mobile .player-volume { display: none; }
+.plataforma-mobile .layout.com-player,
+.plataforma-mobile.layout.com-player { padding-bottom: 8rem; }

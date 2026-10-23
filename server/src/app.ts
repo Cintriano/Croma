@@ -6,6 +6,7 @@ import { abrirBanco, type Banco } from './db/banco';
 import { rotasArquivos } from './rotas/arquivos';
 import { rotasBibliotecas } from './rotas/bibliotecas';
 import { rotasColecoes } from './rotas/colecoes';
+import { rotasMusicas } from './rotas/musicas';
 import { ErroHttp, STATUS_POR_CODIGO } from './rotas/erros';
 
 export interface OpcoesApp {
@@ -53,6 +54,7 @@ export async function construirApp(opcoes: OpcoesApp): Promise<FastifyInstance> 
       await api.register(rotasBibliotecas);
       await api.register(rotasColecoes);
       await api.register(rotasArquivos);
+      await api.register(rotasMusicas);
     },
     { prefix: '/api' },
   );

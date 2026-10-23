@@ -19,12 +19,12 @@ export function ContagemNiveis({ contagem, onSelecionarNivel }: { contagem: Cont
           aria-label={`Nível ${nivel}: ${plural(quantidade)}`}
           onClick={() => onSelecionarNivel(nivel)}
         >
-          <span className="estrela">★</span>{nivel} {quantidade}
+          <span className="estrela">★</span>{nivel} <span className="contagem">{quantidade}</span>
         </button>
       ))}
       {contagem.semNivel > 0 && (
         <button type="button" className="botao-texto" onClick={() => onSelecionarNivel('sem')}>
-          sem nível {contagem.semNivel}
+          sem nível <span className="contagem">{contagem.semNivel}</span>
         </button>
       )}
     </div>

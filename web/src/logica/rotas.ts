@@ -16,4 +16,6 @@ export const caminhoBiblioteca = (id: number) => `/biblioteca/${id}`;
 export const caminhoAlbum = (album: AlbumRota) => `/album/${album.id}/${slug(album.titulo) || 'album'}`;
 export const caminhoFoto = (album: AlbumRota, fotoId: number) => `${caminhoAlbum(album)}/foto/${fotoId}`;
 export const caminhoConfiguracoes = () => '/configuracoes';
-export const caminhoMusicas = () => '/musicas';
+export const caminhoMusicas = (bibliotecaId: number) => `/musicas/${bibliotecaId}`;
+export const caminhoAlbumMusica = (bibliotecaId: number, album: { id: string; titulo: string }) =>
+  `/musicas/${bibliotecaId}/album/${album.id}/${slug(album.titulo) || 'album'}`;

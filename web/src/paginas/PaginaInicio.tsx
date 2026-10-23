@@ -1,7 +1,6 @@
 import { api } from '../api';
 import { Carregando } from '../componentes/Carregando';
 import { caminhoBiblioteca, caminhoConfiguracoes, caminhoMusicas } from '../logica/rotas';
-import musicas from '../mocks/musicas.json';
 import { usePlataforma } from '../plataforma';
 import { useDados } from '../usarDados';
 
@@ -15,21 +14,13 @@ export function PaginaInicio() {
       <ul className="grade-bibliotecas" aria-label="Bibliotecas">
         {bibliotecas?.map((b) => (
           <li key={b.id}>
-            <a className="card-biblioteca" href={caminhoBiblioteca(b.id)}>
-              <span className="tipo">Fotos</span>
+            <a className="card-biblioteca" href={b.tipo === 'musicas' ? caminhoMusicas(b.id) : caminhoBiblioteca(b.id)}>
+              <span className="tipo">{b.tipo === 'musicas' ? 'Músicas' : 'Fotos'}</span>
               <strong>{b.nome}</strong>
               <span className="texto-suave">{b.totalColecoes === 1 ? '1 álbum' : `${b.totalColecoes} álbuns`}</span>
             </a>
           </li>
         ))}
-        <li>
-          <a className="card-biblioteca em-breve" href={caminhoMusicas()}>
-            <span className="tipo">Músicas</span>
-            <strong>Músicas</strong>
-            <span className="texto-suave">{musicas.albuns.length} álbuns</span>
-            <span className="selo-em-breve">Em breve</span>
-          </a>
-        </li>
       </ul>
       {carregando && bibliotecas === undefined && <Carregando />}
       {!carregando && bibliotecas?.length === 0 && (

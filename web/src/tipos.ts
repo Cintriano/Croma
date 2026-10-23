@@ -14,7 +14,7 @@ export interface Contagem {
 export interface BibliotecaUI {
   id: number;
   nome: string;
-  tipo: 'fotos';
+  tipo: 'fotos' | 'musicas';
   caminho: string;
   totalColecoes: number;
 }
@@ -63,4 +63,26 @@ export interface Aviso {
   tipo: 'pasta-ignorada' | 'sem-metadados' | 'json-invalido' | 'tag-orfa';
   caminho: string;
   mensagem: string;
+}
+
+export interface FaixaMusicaUI {
+  id: string;
+  titulo: string;
+  tamanho: number;
+  /** Segundos; null quando o arquivo não pôde ser lido. */
+  duracao: number | null;
+}
+
+export interface AlbumMusicaUI {
+  id: string;
+  titulo: string;
+  /** Pastas acima do álbum (ex.: "Artistas"); null quando está na raiz. */
+  grupo: string | null;
+  descricao: string | null;
+  capaId: string | null;
+  totalFaixas: number;
+  /** Soma da duração das faixas, em segundos. */
+  duracaoTotal: number;
+  /** Só vem ao abrir o álbum. */
+  faixas?: FaixaMusicaUI[];
 }

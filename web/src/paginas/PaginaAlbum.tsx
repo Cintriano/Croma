@@ -4,6 +4,7 @@ import { api, ErroApi } from '../api';
 import { ArtesFoto } from '../componentes/ArtesFoto';
 import { ApresentacaoSlides } from '../componentes/ApresentacaoSlides';
 import { BotoesAleatorioSlides } from '../componentes/BotoesAleatorioSlides';
+import { Roleta } from '../componentes/Roleta';
 import { Carregando } from '../componentes/Carregando';
 import { ContagemNiveis } from '../componentes/ContagemNiveis';
 import { FiltroNivel } from '../componentes/FiltroNivel';
@@ -22,7 +23,7 @@ import { usePlataforma } from '../plataforma';
 import type { AlbumUI, FotoUI } from '../tipos';
 import { useDados } from '../usarDados';
 
-const CAMPOS_EXIBIDOS = new Set(['titulo', 'tags', 'oculto', 'descricao', 'ano']);
+const CAMPOS_EXIBIDOS = new Set(['titulo', 'tags', 'oculto', 'descricao', 'ano', 'poster', 'capa', 'miniatura', 'id', 'atualizado_em']);
 
 export function PaginaAlbum() {
   const params = useParams();
@@ -42,6 +43,7 @@ export function PaginaAlbum() {
   const [filtro, setFiltro] = useState<FiltroDeNivel>('todos');
   const [ordem, setOrdem] = useState<Ordem>(ORDEM_PADRAO);
   const [configurando, setConfigurando] = useState(false);
+  const [roleta, setRoleta] = useState<{ indice: number } | null>(null);
   const [slides, setSlides] = useState<{ modo: ModoSlides; inicio?: number } | null>(null);
 
   const todas = fotos.dados ?? [];
@@ -86,7 +88,7 @@ export function PaginaAlbum() {
     const indice = sortearIndice(visiveis.length, Math.random, atual);
     if (indice === null) return;
     if (indiceAberto >= 0) navegar(caminhoFoto(a, visiveis[indice].id), { replace: true, state: local.state });
-    else abrirFoto(visiveis[indice]);
+    else setRoleta({ indice });
   };
 
   const salvarTagsFoto = async (foto: FotoUI, novas: string[]) => {
@@ -122,6 +124,7 @@ export function PaginaAlbum() {
             <h1>{a.titulo}</h1>
             <p className="texto-suave">{[colecao.ano, total === 1 ? '1 foto' : `${total} fotos`].filter(Boolean).join(' · ')}</p>
             <ContagemNiveis contagem={a.contagem} onSelecionarNivel={setFiltro} />
+            {typeof colecao.descricao === 'string' && colecao.descricao && <p className="descricao">{colecao.descricao}</p>}
             {a.tags.length > 0 && (
               <ul className="tags-album" aria-label="Tags do álbum">
                 {a.tags.map((tag) => (
@@ -131,7 +134,6 @@ export function PaginaAlbum() {
                 ))}
               </ul>
             )}
-            {typeof colecao.descricao === 'string' && colecao.descricao && <p className="descricao">{colecao.descricao}</p>}
             {outrosCampos.length > 0 && (
               <dl className="campos-extra">
                 {outrosCampos.map(([campo, valor]) => (
@@ -200,6 +202,20 @@ export function PaginaAlbum() {
             )}
             </>
           )}
+        />
+      )}
+      {roleta && (
+        <Roleta
+          etapas={[{
+            rotulo: 'Sorteando uma foto…',
+            itens: visiveis.map((f) => ({ chave: f.id, fotoId: f.id, legenda: f.nome })),
+            vencedor: roleta.indice,
+          }]}
+          onConcluir={() => {
+            setRoleta(null);
+            abrirFoto(visiveis[roleta.indice]);
+          }}
+          onFechar={() => setRoleta(null)}
         />
       )}
       {slides && <ApresentacaoSlides fotos={listaVisualizador} modo={slides.modo} inicio={slides.inicio} onFechar={() => setSlides(null)} />}

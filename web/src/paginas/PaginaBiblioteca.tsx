@@ -4,6 +4,7 @@ import { api } from '../api';
 import { ApresentacaoSlides } from '../componentes/ApresentacaoSlides';
 import { BarraPesquisaTags } from '../componentes/BarraPesquisaTags';
 import { BotoesAleatorioSlides } from '../componentes/BotoesAleatorioSlides';
+import { Roleta, type EtapaRoleta, type ItemRoleta } from '../componentes/Roleta';
 import { Carregando } from '../componentes/Carregando';
 import { CardAlbum, type ModoCard } from '../componentes/CardAlbum';
 import { GradeFotos } from '../componentes/GradeFotos';
@@ -58,6 +59,7 @@ export function PaginaBiblioteca() {
 
   const [visualizando, setVisualizando] = useState<number | null>(null);
   const [slides, setSlides] = useState<{ modo: ModoSlides; inicio?: number } | null>(null);
+  const [roleta, setRoleta] = useState<{ etapas: EtapaRoleta[]; abrir: () => void } | null>(null);
   const [modoCard, setModoCard] = useState<ModoCard>(lerModoCard);
   const mudarModoCard = (modo: ModoCard) => {
     setModoCard(modo);
@@ -98,8 +100,26 @@ export function PaginaBiblioteca() {
     const indice = sortearIndice(fotosDoResultado.length);
     if (indice === null) return;
     const foto = fotosDoResultado[indice];
-    if (pesquisa.busca === 'fotos') setVisualizando(indice);
-    else navegar(caminhoFoto({ id: foto.albumId!, titulo: foto.albumTitulo ?? '' }, foto.id));
+    const itensFotos = (lista: FotoUI[]): ItemRoleta[] => lista.map((f) => ({ chave: f.id, fotoId: f.id, legenda: f.nome }));
+    if (pesquisa.busca === 'fotos') {
+      setRoleta({ etapas: [{ rotulo: 'Sorteando uma foto…', itens: itensFotos(fotosDoResultado), vencedor: indice }], abrir: () => setVisualizando(indice) });
+      return;
+    }
+    // Busca de álbuns: primeiro a roleta de álbuns, depois a de fotos do álbum sorteado.
+    const comFoto = new Set(fotosDoResultado.map((f) => f.albumId));
+    const albunsRoleta = listaAlbuns.filter((a) => comFoto.has(a.id));
+    const fotosDoAlbum = fotosDoResultado.filter((f) => f.albumId === foto.albumId);
+    setRoleta({
+      etapas: [
+        {
+          rotulo: 'Sorteando o álbum…',
+          itens: albunsRoleta.map((a) => ({ chave: a.id, fotoId: a.posterFotoId ?? a.capaFotoId ?? a.miniaturaFotoId ?? null, legenda: a.titulo })),
+          vencedor: albunsRoleta.findIndex((a) => a.id === foto.albumId),
+        },
+        { rotulo: `Sorteando a foto em ${foto.albumTitulo ?? 'álbum'}…`, itens: itensFotos(fotosDoAlbum), vencedor: fotosDoAlbum.indexOf(foto) },
+      ],
+      abrir: () => navegar(caminhoFoto({ id: foto.albumId!, titulo: foto.albumTitulo ?? '' }, foto.id)),
+    });
   };
 
   const alternarSelecao = (albumId: number) =>
@@ -187,6 +207,16 @@ export function PaginaBiblioteca() {
           plataforma={plataforma}
           onFechar={() => setVisualizando(null)}
           onIniciarSlides={(inicio) => { setVisualizando(null); setSlides({ modo: 'sequencia', inicio }); }}
+        />
+      )}
+      {roleta && (
+        <Roleta
+          etapas={roleta.etapas}
+          onConcluir={() => {
+            setRoleta(null);
+            roleta.abrir();
+          }}
+          onFechar={() => setRoleta(null)}
         />
       )}
       {slides && <ApresentacaoSlides fotos={fotosDoResultado} modo={slides.modo} inicio={slides.inicio} onFechar={() => setSlides(null)} />}
