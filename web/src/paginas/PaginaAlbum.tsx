@@ -97,6 +97,14 @@ export function PaginaAlbum() {
     tags.recarregar();
   };
 
+  const reexibir = async () => {
+    try {
+      album.definir(await api.editarAlbum(a.id, { oculto: false }));
+    } catch (falha) {
+      alert((falha as Error).message);
+    }
+  };
+
   const definirArte = async (foto: FotoUI, campo: CampoArte) => {
     try {
       album.definir(await api.editarAlbum(a.id, { artes: { [campo]: foto.id } }));
@@ -117,7 +125,12 @@ export function PaginaAlbum() {
             {(a.posterFotoId ?? a.capaFotoId) ? <img src={urlImagem((a.posterFotoId ?? a.capaFotoId)!, 600)} alt="" /> : <div className="card-sem-imagem">▣</div>}
           </div>
           <div className="informacoes">
-            {a.oculto && <p className="aviso-oculto">Este álbum está oculto</p>}
+            {a.oculto && (
+              <p className="aviso-oculto">
+                Este álbum está oculto
+                <button type="button" className="botao-texto" onClick={reexibir}>Mostrar álbum</button>
+              </p>
+            )}
             <h1>{a.titulo}</h1>
             <p className="texto-suave">{[colecao.ano, total === 1 ? '1 foto' : `${total} fotos`].filter(Boolean).join(' · ')}</p>
             {typeof colecao.descricao === 'string' && colecao.descricao && <p className="descricao">{colecao.descricao}</p>}

@@ -749,12 +749,18 @@ code {
   margin: 0.25rem 0;
 }
 .aviso-oculto {
-  display: inline-block;
-  padding: 0.2rem 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.2rem 0.3rem 0.2rem 0.75rem;
   border-radius: var(--radius-pill);
   border: 1px solid var(--text-secondary);
   color: var(--text-secondary);
   font-size: 0.85rem;
+}
+.aviso-oculto .botao-texto {
+  color: var(--accent);
+  font-size: inherit;
 }
 .descricao {
   max-width: 60ch;
@@ -1233,6 +1239,12 @@ code {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+}
+.edicao-massa .visibilidade {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
 }
 
 /* ── Mobile ─────────────────────────────────────────────── */

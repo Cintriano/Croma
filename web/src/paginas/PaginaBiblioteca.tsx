@@ -225,7 +225,7 @@ export function PaginaBiblioteca() {
 }
 
 function EdicaoEmMassa({ albuns, existentes, onTodos, onConcluido }: {
-  albuns: { id: number; tags: string[]; titulo: string }[];
+  albuns: { id: number; tags: string[]; titulo: string; oculto: boolean }[];
   existentes: { tag: string; usos: number }[];
   onTodos: () => void;
   onConcluido: () => void;
@@ -242,8 +242,19 @@ function EdicaoEmMassa({ albuns, existentes, onTodos, onConcluido }: {
     else onConcluido();
   };
 
+  // Ocultar ou mostrar só mexe nos selecionados que ainda não estão assim.
+  const algumVisivel = albuns.some((a) => !a.oculto);
+  const algumOculto = albuns.some((a) => a.oculto);
+  const definirOculto = async (oculto: boolean) => {
+    const alvos = albuns.filter((a) => a.oculto !== oculto);
+    const resultados = await Promise.allSettled(alvos.map((a) => api.editarAlbum(a.id, { oculto })));
+    const erros = resultados.flatMap((r, i) => (r.status === 'rejected' ? [`${alvos[i].titulo}: ${(r.reason as Error).message}`] : []));
+    if (erros.length) setFalhas(erros);
+    else onConcluido();
+  };
+
   return (
-    <section className="painel edicao-massa" aria-label="Editar tags em massa">
+    <section className="painel edicao-massa" aria-label="Editar álbuns em massa">
       <div className="secao-topo">
         <strong>{albuns.length === 1 ? '1 álbum selecionado' : `${albuns.length} álbuns selecionados`}</strong>
         <button type="button" className="botao-texto" onClick={onTodos}>Selecionar todos</button>
@@ -255,6 +266,11 @@ function EdicaoEmMassa({ albuns, existentes, onTodos, onConcluido }: {
           {falhas.length > 0 && <ul className="mensagem-erro">{falhas.map((f) => <li key={f}>{f}</li>)}</ul>}
           <div className="acoes-formulario">
             <button type="button" className="botao botao-principal" onClick={aplicar}>Aplicar</button>
+          </div>
+          <div className="visibilidade">
+            <span className="texto-suave">Visibilidade:</span>
+            {algumVisivel && <button type="button" className="botao" onClick={() => definirOculto(true)}>Ocultar</button>}
+            {algumOculto && <button type="button" className="botao" onClick={() => definirOculto(false)}>Mostrar</button>}
           </div>
         </>
       )}

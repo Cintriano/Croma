@@ -97,6 +97,33 @@ test('ocultar álbum e vê-lo com "Mostrar ocultos"', async ({ page }) => {
   await expect(page.getByRole('link', { name: /Sem Metadados/ })).toHaveCount(0);
 });
 
+test('reexibir pelo aviso do álbum oculto', async ({ page }) => {
+  await page.goto(`/biblioteca/${bibliotecaId}`);
+  await page.getByRole('button', { name: 'Mostrar ocultos' }).click();
+  await page.getByRole('link', { name: /Sem Metadados/ }).click();
+  await expect(page.getByText('Este álbum está oculto')).toBeVisible();
+  await page.getByRole('button', { name: 'Mostrar álbum' }).click();
+  await expect(page.getByText('Este álbum está oculto')).toHaveCount(0);
+  await page.goto(`/biblioteca/${bibliotecaId}`);
+  await expect(page.getByRole('link', { name: /Sem Metadados/ })).toBeVisible();
+});
+
+test('ocultar e mostrar em massa no modo Selecionar', async ({ page }) => {
+  await page.goto(`/biblioteca/${bibliotecaId}`);
+  await page.getByRole('button', { name: 'Selecionar' }).click();
+  await page.getByRole('link', { name: /Sem Metadados/ }).click();
+  await expect(page.getByRole('button', { name: 'Mostrar', exact: true })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Ocultar', exact: true }).click();
+  await expect(page.getByRole('link', { name: /Sem Metadados/ })).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Mostrar ocultos' }).click();
+  await page.getByRole('button', { name: 'Selecionar' }).click();
+  await page.getByRole('link', { name: /Sem Metadados/ }).click();
+  await page.getByRole('button', { name: 'Mostrar', exact: true }).click();
+  await page.reload();
+  await expect(page.getByRole('link', { name: /Sem Metadados/ })).toBeVisible();
+});
+
 test('trocar o poster pelo ⚙ escolhendo outra foto do álbum', async ({ page }) => {
   await page.goto(`/biblioteca/${bibliotecaId}`);
   await page.getByRole('link', { name: /Viagem Nordeste/ }).click();

@@ -228,10 +228,13 @@ O botão ⚙ no canto superior direito do álbum abre um painel para editar o á
 
 Um álbum oculto continua no disco e no banco, mas some da navegação normal. Serve para tirar da vista álbuns que eu não quero que apareçam na sala ou no celular.
 
-- **Ocultar:** pelo painel ⚙ do álbum (opção **Ocultar este álbum**) ou em massa, no modo Selecionar da biblioteca (botão **Ocultar**). Grava `"oculto": true` no `colecao.json`.
+- **Ocultar:** pelo painel ⚙ do álbum (opção **Ocultar este álbum**) ou em massa, no modo Selecionar da biblioteca (botão **Ocultar**, em Visibilidade). Grava `"oculto": true` no `colecao.json`.
 - **Onde some:** grade da biblioteca, Início, pesquisa por tags, sugestões de tags, Aleatório e Slides da biblioteca, em desktop, mobile e TV.
 - **Como ver de novo:** no desktop, um botão **Mostrar ocultos** na barra da biblioteca exibe os álbuns ocultos com opacidade reduzida e um selo com ícone de olho riscado (cor `--texto-apagado`). A escolha não fica salva: ao recarregar a página, os ocultos voltam a ficar escondidos.
-- **Reexibir:** desmarcar a opção no ⚙ ou usar **Mostrar** no modo Selecionar.
+- **Reexibir:** três caminhos, todos no desktop:
+  - na página do álbum oculto, o aviso "Este álbum está oculto" tem o botão **Mostrar álbum**, que reexibe na hora;
+  - no painel ⚙, desmarcar **Ocultar este álbum** e salvar;
+  - no modo Selecionar da biblioteca (com **Mostrar ocultos** ligado), selecionar os álbuns e usar **Mostrar**. O mesmo painel tem **Ocultar**; cada botão só aparece quando algum selecionado pode mudar.
 - **Link direto:** abrir a URL de um álbum oculto no mobile ou na TV mostra "Álbum não encontrado"; no desktop, o álbum abre com um aviso "Este álbum está oculto".
 - **Contagens:** o card da biblioteca no Início e as contagens de tags não incluem os álbuns ocultos.
 - Ocultar não é proteção: não há login e os arquivos continuam acessíveis a quem estiver na rede de casa e souber o endereço.
