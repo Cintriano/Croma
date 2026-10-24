@@ -55,32 +55,49 @@ describe('M9 · selo de nível', () => {
 describe('M9 · contagem por nível', () => {
   const contagem = { total: 128, nivel1: 40, nivel2: 60, nivel3: 28, semNivel: 0 };
 
-  it('mostra a quantidade de cada nível', () => {
+  it('mostra um bloco por nível com a quantidade de fotos', () => {
     render(<ContagemNiveis contagem={contagem} onSelecionarNivel={() => {}} />);
-    expect(screen.getByRole('button', { name: /nível 1: 40 fotos/i })).toHaveTextContent('★1 40');
+    expect(screen.getByRole('button', { name: /nível 1: 40 fotos/i })).toHaveTextContent('Nível 140 fotos');
     expect(screen.getByRole('button', { name: /nível 2: 60 fotos/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /nível 3: 28 fotos/i })).toBeInTheDocument();
+  });
+
+  it('a barra de cada nível mostra a fatia do total', () => {
+    const { container } = render(<ContagemNiveis contagem={contagem} onSelecionarNivel={() => {}} />);
+    const larguras = [...container.querySelectorAll<HTMLElement>('.nivel-fatia > span')].map((el) => el.style.width);
+    expect(larguras).toEqual(['31%', '47%', '22%']);
   });
 
   it('só mostra "sem nível" quando existem fotos soltas', () => {
     const { rerender } = render(<ContagemNiveis contagem={contagem} onSelecionarNivel={() => {}} />);
     expect(screen.queryByText(/sem nível/i)).not.toBeInTheDocument();
     rerender(<ContagemNiveis contagem={{ ...contagem, semNivel: 5 }} onSelecionarNivel={() => {}} />);
-    expect(screen.getByRole('button', { name: /sem nível 5/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /sem nível: 5 fotos/i })).toBeInTheDocument();
   });
 
-  it('clicar num nível aplica o filtro', async () => {
+  it('nível sem fotos fica desativado', () => {
+    render(<ContagemNiveis contagem={{ ...contagem, nivel3: 0 }} onSelecionarNivel={() => {}} />);
+    expect(screen.getByRole('button', { name: /nível 3: 0 fotos/i })).toBeDisabled();
+  });
+
+  it('clicar num nível aplica o filtro e clicar de novo volta para Todos', async () => {
     const onSelecionarNivel = vi.fn();
-    render(<ContagemNiveis contagem={contagem} onSelecionarNivel={onSelecionarNivel} />);
+    const { rerender } = render(<ContagemNiveis contagem={contagem} onSelecionarNivel={onSelecionarNivel} />);
     await userEvent.click(screen.getByRole('button', { name: /nível 2/i }));
-    expect(onSelecionarNivel).toHaveBeenCalledWith(2);
+    expect(onSelecionarNivel).toHaveBeenLastCalledWith(2);
+
+    rerender(<ContagemNiveis contagem={contagem} ativo={2} onSelecionarNivel={onSelecionarNivel} />);
+    expect(screen.getByRole('button', { name: /nível 2/i })).toHaveAttribute('aria-pressed', 'true');
+    await userEvent.click(screen.getByRole('button', { name: /nível 2/i }));
+    expect(onSelecionarNivel).toHaveBeenLastCalledWith('todos');
   });
 });
 
 describe('M9 · filtro por nível', () => {
-  it('mostra contagens nos botões e desativa nível sem fotos', () => {
+  it('mostra só o nome do nível, sem contagem, e desativa nível sem fotos', () => {
     render(<FiltroNivel contagem={{ total: 3, nivel1: 1, nivel2: 2, nivel3: 0, semNivel: 0 }} valor="todos" onChange={() => {}} />);
-    expect(screen.getByRole('button', { name: /todos/i })).toHaveTextContent('3');
+    expect(screen.getByRole('button', { name: 'Todos' })).toHaveTextContent(/^Todos$/);
+    expect(screen.getByRole('button', { name: 'Nível 2' })).toHaveTextContent(/^★ Nível 2$/);
     expect(screen.getByRole('button', { name: /nível 3/i })).toBeDisabled();
     expect(screen.getByRole('button', { name: /todos/i })).toHaveAttribute('aria-pressed', 'true');
   });

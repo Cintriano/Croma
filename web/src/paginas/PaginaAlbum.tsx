@@ -23,8 +23,6 @@ import { usePlataforma } from '../plataforma';
 import type { AlbumUI, FotoUI } from '../tipos';
 import { useDados } from '../usarDados';
 
-const CAMPOS_EXIBIDOS = new Set(['titulo', 'tags', 'oculto', 'descricao', 'ano', 'poster', 'capa', 'miniatura', 'id', 'atualizado_em']);
-
 export function PaginaAlbum() {
   const params = useParams();
   const id = Number(params.id);
@@ -108,7 +106,6 @@ export function PaginaAlbum() {
   };
 
   const colecao = a.colecao ?? {};
-  const outrosCampos = Object.entries(colecao).filter(([campo, valor]) => !CAMPOS_EXIBIDOS.has(campo) && ['string', 'number'].includes(typeof valor));
   const total = a.contagem.total;
 
   return (
@@ -123,23 +120,19 @@ export function PaginaAlbum() {
             {a.oculto && <p className="aviso-oculto">Este álbum está oculto</p>}
             <h1>{a.titulo}</h1>
             <p className="texto-suave">{[colecao.ano, total === 1 ? '1 foto' : `${total} fotos`].filter(Boolean).join(' · ')}</p>
-            <ContagemNiveis contagem={a.contagem} onSelecionarNivel={setFiltro} />
             {typeof colecao.descricao === 'string' && colecao.descricao && <p className="descricao">{colecao.descricao}</p>}
+            <ContagemNiveis contagem={a.contagem} ativo={filtro} onSelecionarNivel={setFiltro} />
             {a.tags.length > 0 && (
-              <ul className="tags-album" aria-label="Tags do álbum">
-                {a.tags.map((tag) => (
-                  <li key={tag}>
-                    <a href={`${caminhoBiblioteca(a.bibliotecaId!)}${urlDaPesquisa({ tags: [tag], modo: 'todas', busca: 'albuns' })}`}>{tag}</a>
-                  </li>
-                ))}
-              </ul>
-            )}
-            {outrosCampos.length > 0 && (
-              <dl className="campos-extra">
-                {outrosCampos.map(([campo, valor]) => (
-                  <div key={campo}><dt>{campo}</dt><dd>{String(valor)}</dd></div>
-                ))}
-              </dl>
+              <div className="tags-album">
+                <span className="tags-album-rotulo" id="tags-album-rotulo">Tags</span>
+                <ul aria-labelledby="tags-album-rotulo">
+                  {a.tags.map((tag) => (
+                    <li key={tag}>
+                      <a href={`${caminhoBiblioteca(a.bibliotecaId!)}${urlDaPesquisa({ tags: [tag], modo: 'todas', busca: 'albuns' })}`}>{tag}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
             <BotoesAleatorioSlides desativado={visiveis.length === 0} onAleatorio={aleatorio} onSlides={(modo) => setSlides({ modo })} />
           </div>

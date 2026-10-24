@@ -133,7 +133,7 @@ Dentro do álbum, cada foto de uma subpasta de nível mostra um selo no canto su
 
 ### Filtro e ordenação por nível
 
-- **Filtro:** Todos, Nível 1, Nível 2, Nível 3; mostra só as fotos do nível escolhido. Os botões são `Todos`, `★ Nível 1`, `★ Nível 2`, `★ Nível 3` e, se houver fotos soltas, `Sem nível`. A quantidade de fotos aparece num selo arredondado e cinza ao lado do nome, para não ser lida como outro nível (ex.: `Todos [128] · ★ Nível 1 [40] · ★ Nível 2 [60]`); um nível sem fotos aparece desativado.
+- **Filtro:** Todos, Nível 1, Nível 2, Nível 3; mostra só as fotos do nível escolhido. Os botões são `Todos`, `★ Nível 1`, `★ Nível 2`, `★ Nível 3` e, se houver fotos soltas, `Sem nível`. Os botões não mostram quantidade (ela fica nos blocos de fotos por nível do cabeçalho); um nível sem fotos aparece desativado.
 - **Ordenação:** por nível (crescente ou decrescente), além de data de captura e nome.
 - Disponíveis em desktop, mobile e TV; na TV ficam numa fileira de botões acima da grade, navegável por setas.
 - O slide e o botão Aleatório respeitam o filtro ativo.
@@ -148,13 +148,13 @@ A página do álbum tem um cabeçalho com a capa ao fundo, o poster à esquerda 
 │  ┌────────┐                                           │
 │  │        │  Viagem Nordeste                          │
 │  │ poster │  2025 · 128 fotos                         │
-│  │  2:3   │  ★1 40 · ★2 60 · ★3 28                    │
-│  │        │  praia · família · nordeste               │
-│  │        │  Férias de julho                          │
+│  │  2:3   │  Férias de julho                          │
+│  │        │  [Nível 1: 40] [Nível 2: 60] [Nível 3: 28]│
+│  │        │  Tags (praia) (família) (nordeste)        │
 │  └────────┘  [Aleatório]  [Slides ▾]                  │
 │ ░░░░ fim da capa mesclado com o fundo escuro ░░░░░░░░ │
 ├───────────────────────────────────────────────────────┤
-│  Filtro: Todos 128 ★1 40 ★2 60 ★3 28  Ordenar: nível ▾│
+│  Filtro: Todos ★Nível 1 ★Nível 2 ★Nível 3   Ordenar ▾ │
 │  ┌──────★1┐ ┌──────★2┐ ┌──────★1┐ ┌──────★3┐          │
 │  │  foto  │ │  foto  │ │  foto  │ │  foto  │          │
 │  └────────┘ └────────┘ └────────┘ └────────┘          │
@@ -163,8 +163,9 @@ A página do álbum tem um cabeçalho com a capa ao fundo, o poster à esquerda 
 
 - **Capa de fundo:** a `capa.jpg` ocupa toda a largura do cabeçalho, escurecida (ex.: camada preta a 55–65%), e a parte de baixo se mescla em degradê com o fundo escuro da página, escondendo o fim da imagem horizontal.
 - **Poster:** no canto superior esquerdo, sobre a capa, em proporção 2:3.
-- **Informações:** ao lado do poster, vindas do `colecao.json`, nesta ordem: título, ano e quantidade de fotos, contagem por nível, descrição, tags (links que abrem a pesquisa de álbuns pela tag, só quando o álbum tem tags) e demais campos de texto ou número. Ficam de fora o que já aparece em outro lugar ou é interno: `titulo`, `tags`, `oculto`, `descricao`, `ano`, `poster`, `capa`, `miniatura`, `id` e `atualizado_em`.
-- **Contagem por nível:** abaixo do total, uma linha com a quantidade de fotos de cada nível (`★1 40 · ★2 60 · ★3 28`), com a estrela em `--accent` e a quantidade no mesmo selo cinza do filtro. Clicar num nível aplica o filtro correspondente na grade. Fotos soltas na raiz do álbum entram no total, mas não em nenhum nível; se existirem, aparece também `sem nível` com a quantidade. A contagem vem da varredura e é guardada no banco, sem recontar as pastas a cada abertura.
+- **Informações:** ao lado do poster, vindas do `colecao.json`, nesta ordem: título, ano e quantidade de fotos, descrição, fotos por nível e tags. Os demais campos do JSON (como `nome`, `schema`, `tipo` e `criado_em`) não aparecem.
+- **Fotos por nível:** um bloco para cada nível (`★ Nível 1`, `★ Nível 2`, `★ Nível 3`), com a quantidade em destaque ("40 fotos") e uma barra no acento com a fatia daquele nível no total do álbum. Clicar num bloco aplica o filtro correspondente na grade e deixa o bloco com borda no acento; clicar de novo volta para Todos. Nível sem fotos fica desativado. Fotos soltas na raiz do álbum entram no total, mas não em nenhum nível; se existirem, aparece também o bloco `Sem nível`. A contagem vem da varredura e é guardada no banco, sem recontar as pastas a cada abertura.
+- **Tags:** linha com o rótulo "Tags" e as tags do álbum em pílulas (links que abrem a pesquisa de álbuns pela tag); só aparece quando o álbum tem tags.
 - **Botões de ação:** Aleatório (ícone de dado) e Slides (ícone de play, que abre o menu Sequência / Aleatório), logo abaixo das informações. Ambos são botões redondos na cor de acento, com `title` e nome acessível "Aleatório" e "Slides". O menu abre à direita do botão no álbum e à esquerda na biblioteca, onde o botão fica na borda da tela. O cabeçalho do álbum não corta o menu: a capa de fundo desfocada é contida pelo próprio `clip-path`, e não por `overflow: hidden`.
 - **Botão de configuração (⚙):** no canto superior direito, só no desktop; abre a edição do álbum (ver abaixo).
 - No mobile, o poster fica menor e as informações descem para baixo dele; na TV, o primeiro foco da página é o botão Slides.

@@ -1,7 +1,7 @@
 import type { FiltroDeNivel } from '../logica/fotos';
 import type { Contagem, Nivel } from '../tipos';
 
-// Botões "Todos 128 · Nível 1 40 · Nível 2 60 · Nível 3 28" (contagem em selo à parte); nível sem fotos fica desativado.
+// Botões "Todos · Nível 1 · Nível 2 · Nível 3" (a contagem fica nos blocos do cabeçalho); nível sem fotos fica desativado.
 export function FiltroNivel({ contagem, valor, onChange }: { contagem: Contagem; valor: FiltroDeNivel; onChange: (valor: FiltroDeNivel) => void }) {
   const niveis: [Nivel, number][] = [
     [1, contagem.nivel1],
@@ -11,24 +11,23 @@ export function FiltroNivel({ contagem, valor, onChange }: { contagem: Contagem;
   return (
     <div className="filtro-nivel" role="group" aria-label="Filtrar por nível">
       <button type="button" className="chip" aria-pressed={valor === 'todos'} onClick={() => onChange('todos')}>
-        Todos <span className="contagem">{contagem.total}</span>
+        Todos
       </button>
       {niveis.map(([nivel, quantidade]) => (
         <button
           key={nivel}
           type="button"
           className="chip"
-          aria-label={`Nível ${nivel}: ${quantidade}`}
           aria-pressed={valor === nivel}
           disabled={quantidade === 0}
           onClick={() => onChange(nivel)}
         >
-          <span className="estrela">★</span> Nível {nivel} <span className="contagem">{quantidade}</span>
+          <span className="estrela" aria-hidden="true">★</span> Nível {nivel}
         </button>
       ))}
       {contagem.semNivel > 0 && (
-        <button type="button" className="chip" aria-label={`Sem nível: ${contagem.semNivel}`} aria-pressed={valor === 'sem'} onClick={() => onChange('sem')}>
-          Sem nível <span className="contagem">{contagem.semNivel}</span>
+        <button type="button" className="chip" aria-pressed={valor === 'sem'} onClick={() => onChange('sem')}>
+          Sem nível
         </button>
       )}
     </div>

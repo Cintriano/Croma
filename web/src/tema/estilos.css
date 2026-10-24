@@ -296,17 +296,6 @@ code {
 .estrela {
   color: var(--accent);
 }
-.contagem {
-  display: inline-block;
-  min-width: 1.5em;
-  margin-left: 0.2em;
-  padding: 0 0.45em;
-  border-radius: var(--radius-pill);
-  background: var(--surface-elevated);
-  color: var(--text-secondary);
-  font-size: 0.85em;
-  text-align: center;
-}
 
 .botoes-acao {
   display: flex;
@@ -710,6 +699,8 @@ code {
 .cabecalho-album {
   position: relative;
   padding: 2.5rem 2rem 2rem;
+  /* A capa desfocada sai 12px para os lados; clip só na horizontal, para não cortar o menu dos Slides. */
+  overflow-x: clip;
 }
 .capa-fundo {
   position: absolute;
@@ -746,6 +737,10 @@ code {
   height: 100%;
   object-fit: cover;
 }
+.cabecalho-album .informacoes {
+  flex: 1;
+  min-width: 0;
+}
 .informacoes h1 {
   margin: 0;
   font-size: 2.4rem;
@@ -761,49 +756,105 @@ code {
   color: var(--text-secondary);
   font-size: 0.85rem;
 }
+.descricao {
+  max-width: 60ch;
+  color: var(--text-secondary);
+}
+/* Fotos por nível: um bloco por nível, com a quantidade em destaque e a fatia do total numa barra. */
 .contagem-niveis {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--space-sm);
+  max-width: 560px;
+  margin: var(--space-md) 0;
+}
+.nivel-bloco {
   display: flex;
-  gap: 0.25rem;
-  flex-wrap: wrap;
-  margin: 0.25rem 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 0.6rem 0.75rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--veu);
+  color: var(--text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--motion-fast);
+}
+.nivel-bloco:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+.nivel-bloco[aria-pressed='true'] {
+  border-color: var(--accent);
+}
+.nivel-bloco:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+.nivel-rotulo {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.nivel-quantidade {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.nivel-quantidade strong {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.nivel-fatia {
+  align-self: stretch;
+  height: 4px;
+  margin-top: 0.35rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-elevated);
+  overflow: hidden;
+}
+.nivel-fatia > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
 }
 .tags-album {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  margin: 0 0 var(--space-md);
+}
+.tags-album-rotulo {
+  flex: none;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.tags-album ul {
   list-style: none;
   padding: 0;
-  margin: 0.4rem 0;
+  margin: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
 }
 .tags-album a {
   display: inline-block;
-  padding: 0.1rem 0.6rem;
+  padding: 0.15rem 0.7rem;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
+  border: 1px solid var(--border-strong);
+  background: var(--veu);
+  color: var(--text-primary);
   font-size: 0.9rem;
 }
 .tags-album a:hover {
   border-color: var(--accent);
-  color: var(--text-primary);
   text-decoration: none;
-}
-.descricao {
-  max-width: 60ch;
-  color: var(--text-secondary);
-}
-.campos-extra {
-  display: flex;
-  gap: 1.25rem;
-  flex-wrap: wrap;
-  margin: 0.4rem 0;
-}
-.campos-extra dt {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-}
-.campos-extra dd {
-  margin: 0;
 }
 .botao-config {
   position: absolute;
@@ -1211,6 +1262,13 @@ code {
 }
 .plataforma-mobile .informacoes h1 {
   font-size: 1.7rem;
+}
+.plataforma-mobile .informacoes {
+  align-self: stretch;
+  min-width: 0;
+}
+.plataforma-mobile .contagem-niveis {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .plataforma-mobile .grade-fotos {
   grid-template-columns: repeat(3, 1fr);

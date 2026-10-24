@@ -24,7 +24,7 @@ test('página do álbum mostra contagem por nível e filtra ao clicar', async ({
   await page.goto(`/biblioteca/${bibliotecaId}`);
   await page.getByRole('link', { name: /Viagem Nordeste/ }).click();
   await expect(page.getByRole('button', { name: /nível 1: 2 fotos/i })).toBeVisible();
-  await expect(page.getByRole('button', { name: /sem nível 1/i })).toBeVisible();
+  await expect(page.getByRole('button', { name: /sem nível: 1 foto/i })).toBeVisible();
   await page.getByRole('button', { name: /nível 1: 2 fotos/i }).click();
   await expect(page.getByRole('list', { name: 'Fotos' }).getByRole('listitem')).toHaveCount(2);
 });
