@@ -299,7 +299,7 @@ Lista de tags existentes para selecionar, painel ⚙, edição em massa e tags d
 - **Substituído:** os dados de exemplo (`web/src/mocks/musicas.json`), o selo "Em breve" e `tests/web/m14-musicas-mock.test.ts` foram removidos.
 - **Servidor:** `server/src/musicas/varredura.ts` (pasta com áudio = álbum; subpastas viram grupo; capa e descrição de `metadados`; duração de cada faixa por `music-metadata`, guardada em memória) e `server/src/rotas/musicas.ts` (lista, álbum, faixa com Range e capa redimensionada). A biblioteca é do tipo `musicas`, sem tabelas novas; `POST /scan` só varre as de fotos e descarta o cache das de músicas.
 - **Web:** `PaginaMusicas`, `PaginaAlbumMusica`, `CardAlbumMusica`, `musica/Player.tsx` (`<audio>` acima das rotas) e `musica/BarraPlayer.tsx`; regras de fila e formatação de tempo em `logica/fila.ts`.
-- **Testes:** `tests/servidor/musicas.test.ts` (varredura, capas, duração e rotas com Range) e `tests/web/musica.test.ts` (fila, tempo e duração total). A roleta do Aleatório tem `tests/web/roleta.test.tsx`.
+- **Testes:** `tests/servidor/musicas.test.ts` (varredura, capas, duração e rotas com Range) e `tests/web/musica.test.ts` (fila, tempo e duração total). O sorteio orbital do Aleatório tem `tests/web/roleta.test.tsx`.
 
 ### M15 · Testes ponta a ponta da Fase 1
 

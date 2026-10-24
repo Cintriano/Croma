@@ -69,6 +69,7 @@
   --motion-slow: 450ms;
   --ease-enter: cubic-bezier(0.2, 0, 0, 1);
   --ease-exit: cubic-bezier(0.3, 0, 1, 1);
+  --motion-orbit: 2400ms; /* proposta: giro do sorteio orbital (2 × motion-loop) */
 
   /* Medidas do Croma */
   --altura-topo: 56px;

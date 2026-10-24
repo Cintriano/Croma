@@ -1389,7 +1389,9 @@ code {
 }
 .artes-foto { margin-top: 1rem; }
 
-/* ── Roleta do Aleatório ────────────────────────────────── */
+/* ── Sorteio orbital do Aleatório (CAPRA, Parte 11) ─────── */
+/* As vagas giram numa órbita em perspectiva em volta do núcleo e param sob o ponto de acento.
+   Sem brilho, rebote nem zoom: só posição, escala e opacidade. */
 .roleta {
   position: fixed;
   inset: 0;
@@ -1397,9 +1399,9 @@ code {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1.25rem;
+  gap: var(--space-lg);
   background: var(--veu-forte);
-  animation: aparecer var(--motion-base) var(--ease-enter);
+  animation: aparecer var(--motion-screen) var(--ease-enter);
 }
 .roleta-topo {
   position: absolute;
@@ -1422,57 +1424,102 @@ code {
 .roleta-legenda {
   color: var(--text-primary);
   font-size: 1.25rem;
+  font-weight: 600;
   min-height: 1.6em;
+  opacity: 0;
 }
-.roleta-janela {
+.roleta-legenda[data-visivel='true'] {
+  opacity: 1;
+  transition: opacity var(--motion-base) var(--ease-enter);
+}
+.roleta-palco {
+  /* Cada etapa nasce do núcleo: escala de 90% a 100% e opacidade. */
+  animation: orbita-entrar var(--motion-screen) var(--ease-enter);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+@keyframes orbita-entrar {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+.orbita {
+  --cartao: clamp(76px, 17vw, 132px);
   position: relative;
-  overflow: hidden;
-  height: 210px;
-  mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
+  height: calc(var(--cartao) * 3);
+  max-width: 900px;
+  margin: 0 auto;
+  user-select: none;
 }
-.roleta-faixa {
+.orbita-trilha,
+.orbita-nucleo,
+.orbita-cartao {
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 50%;
-  height: 100%;
-  display: flex;
-  gap: 12px;
-  transition-property: transform;
-  transition-timing-function: cubic-bezier(0.1, 0.65, 0.08, 1);
 }
-.roleta-celula {
-  flex: none;
+.orbita-trilha {
+  transform: translate(-50%, -50%);
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+}
+/* Ponto de acento logo abaixo da frente da órbita: a vaga que parar sobre ele é a sorteada. */
+.orbita-trilha::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: calc(100% + var(--cartao) / 2 + var(--space-md));
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.orbita-nucleo {
+  width: 12px;
+  height: 12px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--text-primary);
+}
+.orbita-cartao {
   display: grid;
   place-items: center;
-  height: 100%;
+  width: var(--cartao);
+  height: var(--cartao);
   border-radius: var(--radius-md);
   overflow: hidden;
-  background: var(--surface);
+  background: var(--surface-elevated);
   color: var(--text-secondary);
-  opacity: 0.85;
-  transition: transform var(--motion-base), opacity var(--motion-base), box-shadow var(--motion-base);
+  will-change: transform;
+  transition: box-shadow var(--motion-base) var(--ease-enter), opacity var(--motion-fast) var(--ease-exit);
 }
-.roleta-celula img {
+.orbita-cartao img,
+.orbita-cartao span {
+  opacity: var(--profundidade, 1);
+}
+.orbita-cartao img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-.roleta-celula[data-vencedor='true'] {
-  opacity: 1;
-  transform: scale(1.08);
-  box-shadow: 0 0 0 3px var(--accent), 0 0 32px var(--accent);
-}
-.roleta-marcador {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 2px;
-  margin-left: -1px;
-  background: var(--accent);
-  opacity: 0.6;
   pointer-events: none;
+}
+/* Parada: o vencedor ganha o anel no acento (como o foco, sem brilho); as outras vagas se apagam. */
+.orbita[data-parou='true'] .orbita-cartao:not([data-vencedor]) {
+  opacity: 0.3;
+}
+.orbita[data-parou='true'] .orbita-cartao[data-vencedor] {
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--accent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .roleta,
+  .roleta-palco {
+    animation: aparecer-parado var(--motion-base) linear;
+  }
+}
+@keyframes aparecer-parado {
+  from { opacity: 0; }
 }
 
 /* ── Músicas ────────────────────────────────────────────── */
