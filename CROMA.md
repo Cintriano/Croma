@@ -78,7 +78,39 @@ croma-web (fork do jellyfin-web)  ← toda a identidade visual mora aqui
 - [ ] Tizen Studio + certificado Samsung + Developer Mode na TV
 - [x] Identidade visual: v0.1 "Barras" definida como oficial (05/11/2026)
 - [ ] Implementar a v0.1 no `croma-web` (tema, logos, ícones e telas), no `croma-tizen` (ícone e tile) e no `croma-desktop` (ícone `.ico`)
-- [ ] Detalhar a dinâmica das coleções (adiado a pedido do usuário)
+- [x] Detalhar a dinâmica das coleções (especificada em 05/11/2026; veja "Coleções" abaixo)
+- [ ] Implementar coleções por biblioteca e modo de exibição
+- [ ] Definir o formato estruturado das bibliotecas caseiras (o usuário está desenvolvendo)
+
+## Coleções (especificação, 05/11/2026)
+
+No Jellyfin, as coleções são globais: moram na biblioteca virtual "Coleções". No Croma, cada coleção pertence a uma biblioteca.
+
+- **Posse:** cada coleção tem uma biblioteca dona, gravada como tag reservada no `BoxSet` (`croma-bib-<idDaBiblioteca>`). A coleção é criada dentro da biblioteca e só aparece nela.
+- **Só itens da própria biblioteca:** uma coleção de Filmes não aceita séries. "Adicionar à coleção" lista só as coleções da biblioteca do item.
+- **Sem tela global:** a biblioteca "Coleções" (`/boxsets`) sai do Início e do menu. Toda biblioteca tem a aba "Coleções", inclusive Vídeos e Clipes.
+- **Dois controles de exibição, pôster (vertical) ou miniatura (horizontal):**
+  1. **Por biblioteca:** vale para a aba "Coleções" daquela biblioteca. Todos os cartões de coleção têm o mesmo formato.
+  2. **Por coleção:** vale para os itens dentro dela. Todos os itens têm o mesmo formato. Fica gravado como tag no `BoxSet` (`croma-exibir-miniatura`; sem a tag, é pôster).
+  - Nunca há formatos misturados na mesma tela. O padrão é pôster.
+  - A configuração fica no servidor, não no `localStorage`, para valer igual no desktop e na TV.
+  - Miniatura sem arte horizontal (Thumb) usa o fundo (Backdrop) e, sem nenhum dos dois, a capa gerada.
+- **Tags reservadas:** as que começam com `croma-` não aparecem nas telas de tags.
+- **Migração:** um script atribui dono às coleções que já existem, pela maioria do conteúdo, e conserta coleções órfãs quando uma biblioteca é recriada.
+- **Onde mexer no `croma-web`:**
+  - `libraryRoutes.ts`: abas e rota `/boxsets`;
+  - `useFetchItems.ts`: consulta da aba Coleções;
+  - `components/collectionEditor`: criar coleção e adicionar itens;
+  - `itemDetails/index.js`, em `renderCollectionItemType`: formato dos itens.
+
+## Bibliotecas caseiras (Vídeos e Fotos)
+
+As bibliotecas de arquivos caseiros, de vídeos ou de fotos, têm dois tipos de varredura:
+
+1. **Genérica:** a varredura padrão do Jellyfin, sem estrutura obrigatória.
+2. **Estruturada (Croma):** segue uma estrutura de pastas com níveis, como as pastas `Nivel_1..3` do v1 em `legado/`. **O formato está em desenvolvimento pelo usuário** e será adicionado depois.
+
+A varredura roda no servidor (C#). Por isso, o modo estruturado deve ser um **plugin do Jellyfin**, com resolvedor de itens e leitor de metadados, o que exige instalar o .NET SDK. Até lá, a biblioteca usa o modo genérico.
 
 ## Identidade visual
 

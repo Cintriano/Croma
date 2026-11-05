@@ -60,7 +60,8 @@ Resumo das regras:
 | Repositórios clonados e alinhados na v12.4 | Feito | `repos/` |
 | Identidade v0.1 "Barras" | **Oficial** (05/11/2026): manual, logotipo em curvas, ícones do app e pranchas | `identidade/v0.1-barras/` |
 | Identidade v0.2 (CAPRA, direções A, B e C) | Arquivada | `identidade/v0.2-capra/` |
-| Coleções | Adiado; o usuário vai detalhar como quer que funcionem | — |
+| Coleções por biblioteca e modo de exibição | Especificado (05/11/2026), não implementado | `CROMA.md`, seção "Coleções" |
+| Varredura estruturada (com níveis) das bibliotecas caseiras | Formato em desenvolvimento pelo usuário | `CROMA.md`, seção "Bibliotecas caseiras" |
 
 **Próximo passo:** implementar a v0.1 no `croma-web`, no `croma-tizen` e no `croma-desktop`.
 
