@@ -5,3 +5,11 @@ playwright-report/
 tests/e2e/.biblioteca.json
 *.sqlite
 dados/
+
+# Croma v2: forks do Jellyfin têm git próprio e não entram neste repositório
+repos/
+*.zip
+
+# Material de marca da CAPRA (repositório próprio) e mídia de terceiros usada nas pranchas
+Capra/
+identidade/v0.1-barras/midia/

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Croma — Música na TV</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#A3A3A0;text-decoration:none}
+.mono{font-family:'IBM Plex Mono',monospace}
+.faixa{display:grid;grid-template-columns:56px 1fr 120px;align-items:center;height:42px;padding:0 16px;font-size:21px}
+.capa-pl{position:relative;display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.capa-pl i{display:block}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; box-sizing: border-box; overflow: hidden; background: #0B0B0C; color: #F2F2F0; font-family: 'Archivo', system-ui, sans-serif; padding: 44px 96px 0; display: flex; flex-direction: column; gap: 40px">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; height: 64px; flex-shrink: 0">
+    <div style="display: flex; align-items: center; gap: 72px">
+      <div style="display: flex; align-items: center; gap: 2px; font-size: 32px; font-weight: 800; font-stretch: 125%">
+        <span>CR</span>
+        <svg role="img" aria-label="Croma" width="40" height="24" viewBox="0 0 172 102" style="margin: 0 3px"><rect x="6" y="6" width="160" height="90" fill="none" stroke="#F2F2F0" stroke-width="14"/><rect x="12" y="72" width="21.6" height="18" fill="#C0C0C0"/><rect x="33.4" y="72" width="21.6" height="18" fill="#C0C000"/><rect x="54.9" y="72" width="21.6" height="18" fill="#00C0C0"/><rect x="76.3" y="72" width="21.6" height="18" fill="#00C000"/><rect x="97.7" y="72" width="21.6" height="18" fill="#C000C0"/><rect x="119.1" y="72" width="21.6" height="18" fill="#C00000"/><rect x="140.6" y="72" width="19.4" height="18" fill="#0000C0"/></svg>
+        <span>MA</span>
+      </div>
+      <nav aria-label="Seções" style="display: flex; gap: 36px">
+        <sc-for list="{{nav}}" as="item" hint-placeholder-count="7">
+          <a href="#" style="display: flex; flex-direction: column; gap: 8px; font-size: 22px; font-weight: 600; color: {{item.fg}}">
+            <span>{{item.label}}</span>
+            <span style="height: {{item.h}}; background: {{item.bar}}"></span>
+          </a>
+        </sc-for>
+      </nav>
+    </div>
+    <div style="display: flex; align-items: center; gap: 20px">
+      <button type="button" aria-label="Buscar" style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; background: #17181A; border: 0; color: #F2F2F0">
+        <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+      </button>
+      <button type="button" aria-label="Perfil" style="width: 56px; height: 56px; background: #2A2B2E; border: 0; color: #F2F2F0; font-family: 'Archivo', sans-serif; font-size: 22px; font-weight: 700">D</button>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 64px; min-height: 0">
+
+    <!-- Coluna da capa -->
+    <div style="width: 520px; flex-shrink: 0; display: flex; flex-direction: column; gap: 28px">
+      <div style="width: 520px; height: 520px; box-sizing: border-box; border: 12px solid #F2F2F0; background: #0B0B0C url('../midia/musica/pink-floyd-the-dark-side-of-the-moon-1973.jpg') center / cover; display: flex; flex-direction: column; justify-content: flex-end">
+        <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 10px"><i style="background:#C0C0C0"></i><i style="background:#C0C000"></i><i style="background:#00C0C0"></i><i style="background:#00C000"></i><i style="background:#C000C0"></i><i style="background:#C00000"></i><i style="background:#0000C0"></i></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <span class="mono" style="font-size: 15px; letter-spacing: 0.12em; color: #A3A3A0">PLAYLISTS CROMA · FEITAS POR FAIXA DO ESPECTRO</span>
+        <div style="display: flex; gap: 20px">
+          <sc-for list="{{playlists}}" as="pl" hint-placeholder-count="3">
+            <div style="width: 160px; display: flex; flex-direction: column; gap: 8px">
+              <div style="width: 160px; height: 160px; position: relative">
+                <div class="capa-pl" style="position: absolute; inset: 0">
+                  <sc-for list="{{pl.barras}}" as="b"><i style="background: {{b}}"></i></sc-for>
+                </div>
+                <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 10px; background: #0B0B0C; display: flex; flex-direction: column; gap: 2px">
+                  <span style="font-size: 18px; font-weight: 800; font-stretch: 125%">{{pl.nome}}</span>
+                  <span class="mono" style="font-size: 11px; color: #A3A3A0">λ {{pl.faixa}} nm</span>
+                </div>
+              </div>
+              <span class="mono" style="font-size: 13px; color: #8A8B8E">{{pl.n}} faixas</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coluna de informações e faixas -->
+    <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+      <div class="mono" style="display: flex; align-items: center; gap: 12px; font-size: 16px; letter-spacing: 0.14em; color: #C8E4C8">
+        <span style="width: 16px; height: 16px; background: #00C000"></span>
+        <span>ÁLBUM · λ 530 nm</span>
+      </div>
+      <h1 style="margin: 0; font-size: 56px; font-weight: 800; font-stretch: 125%; line-height: 1">The Dark Side of the Moon</h1>
+      <div style="display: flex; align-items: baseline; gap: 20px">
+        <span style="font-size: 28px; font-weight: 600">Pink Floyd</span>
+        <span class="mono" style="font-size: 18px; color: #A3A3A0">1973 · 10 faixas · 42:52 · FLAC 24/96</span>
+      </div>
+      <div style="display: flex; gap: 16px; padding: 6px 0 10px">
+        <button type="button" style="font-family: 'Archivo', sans-serif; font-size: 24px; font-weight: 700; padding: 14px 36px; background: #F2F2F0; color: #0B0B0C; border: 0; outline: 4px solid #F2F2F0; outline-offset: 4px; display: flex; align-items: center; gap: 12px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#0B0B0C"><path d="M6 4v16l14-8z"/></svg>Tocar
+        </button>
+        <button type="button" style="font-family: 'Archivo', sans-serif; font-size: 24px; font-weight: 600; padding: 14px 32px; background: #17181A; color: #F2F2F0; border: 0">Aleatório</button>
+        <button type="button" style="font-family: 'Archivo', sans-serif; font-size: 24px; font-weight: 600; padding: 14px 24px; background: #17181A; color: #F2F2F0; border: 0">Rádio do álbum</button>
+      </div>
+      <div style="display: flex; flex-direction: column; border-top: 1px solid #2A2B2E; padding-top: 8px">
+        <sc-for list="{{faixas}}" as="f" hint-placeholder-count="10">
+          <div class="faixa" style="background: {{f.bg}}; color: {{f.fg}}">
+            <span class="mono" style="font-size: 16px; color: {{f.nfg}}">{{f.n}}</span>
+            <span style="display: flex; align-items: center; gap: 14px; font-weight: {{f.peso}}">{{f.t}}
+              <span style="display: {{f.eq}}; align-items: flex-end; gap: 3px; height: 18px"><i style="width: 4px; height: 10px; background: #00C000; display: block"></i><i style="width: 4px; height: 18px; background: #00C000; display: block"></i><i style="width: 4px; height: 13px; background: #00C000; display: block"></i></span>
+            </span>
+            <span class="mono" style="font-size: 16px; color: #A3A3A0; text-align: right">{{f.d}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var navItems = [['Início', '#F2F2F0'], ['Filmes', '#C0C000'], ['Séries', '#00C0C0'], ['Música', '#00C000'], ['Fotos', '#C000C0'], ['TV ao vivo', '#C00000'], ['Livros', '#0000C0']];
+    var nav = navItems.map(function (n, i) {
+      var on = i === 3;
+      return { label: n[0], fg: on ? '#F2F2F0' : '#A3A3A0', bar: n[1], h: on ? '6px' : '2px' };
+    });
+
+    /* Comprimento de onda (nm) → cor, em 75% como as barras do padrão de teste. */
+    function lambda(l) {
+      var r = 0, g = 0, b = 0;
+      if (l < 440) { r = -(l - 440) / 60; b = 1; }
+      else if (l < 490) { g = (l - 440) / 50; b = 1; }
+      else if (l < 510) { g = 1; b = -(l - 510) / 20; }
+      else if (l < 580) { r = (l - 510) / 70; g = 1; }
+      else if (l < 645) { r = 1; g = -(l - 645) / 65; }
+      else { r = 1; }
+      var f = l < 420 ? 0.3 + 0.7 * (l - 380) / 40 : l > 700 ? 0.3 + 0.7 * (780 - l) / 80 : 1;
+      function c(v) { return ('0' + Math.round(191 * v * f).toString(16)).slice(-2); }
+      return '#' + c(r) + c(g) + c(b);
+    }
+    function barras(de, ate) {
+      var out = [];
+      for (var i = 0; i < 7; i++) out.push(lambda(de + (ate - de) * i / 6));
+      return out;
+    }
+    var playlists = [
+      { nome: 'Graves', faixa: '590–700', n: 48, barras: barras(590, 700) },
+      { nome: 'Foco', faixa: '450–495', n: 62, barras: barras(450, 495) },
+      { nome: 'Mix Croma', faixa: '380–700', n: 120, barras: barras(400, 700) }
+    ];
+
+    var lista = [
+      ['Speak to Me', '1:05'], ['Breathe (In the Air)', '2:49'], ['On the Run', '3:45'], ['Time', '6:53'],
+      ['The Great Gig in the Sky', '4:44'], ['Money', '6:23'], ['Us and Them', '7:49'],
+      ['Any Colour You Like', '3:26'], ['Brain Damage', '3:46'], ['Eclipse', '2:12']
+    ];
+    var tocando = 3;
+    var faixas = lista.map(function (f, i) {
+      var on = i === tocando;
+      return {
+        n: String(i + 1).padStart(2, '0'), t: f[0], d: f[1],
+        bg: on ? '#17181A' : 'transparent', fg: on ? '#F2F2F0' : (i < tocando ? '#A3A3A0' : '#E4E4E1'),
+        nfg: on ? '#00C000' : '#8A8B8E', peso: on ? '700' : '400', eq: on ? 'flex' : 'none'
+      };
+    });
+    return { nav: nav, playlists: playlists, faixas: faixas };
+  }
+}
+</script>
+</body>
+</html>

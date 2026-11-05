@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Croma — Player carregando</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.mono{font-family:'IBM Plex Mono',monospace}
+.espectro{position:relative;height:12px;background:#17181A;overflow:hidden}
+.espectro b{position:absolute;inset:0;display:block;
+  background:linear-gradient(90deg,#5A00B4 0%,#2A2AFF 18%,#00C0C0 36%,#00C000 52%,#C0C000 68%,#E07000 82%,#C00000 100%);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 12%,#000 28%,transparent 40%);mask-image:linear-gradient(90deg,transparent 0%,#000 12%,#000 28%,transparent 40%);
+  -webkit-mask-size:250% 100%;mask-size:250% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:40% 0;mask-position:40% 0;animation:varre 1.8s linear infinite}
+@keyframes varre{from{-webkit-mask-position:100% 0;mask-position:100% 0}to{-webkit-mask-position:-60% 0;mask-position:-60% 0}}
+@media (prefers-reduced-motion: reduce){.espectro b{animation:none;-webkit-mask-image:none;mask-image:none;opacity:.6}}
+.bt{width:72px;height:72px;display:flex;align-items:center;justify-content:center;background:#17181A;color:#F2F2F0}
+.bt.foco{background:#F2F2F0;color:#0B0B0C;outline:4px solid #F2F2F0;outline-offset:4px}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0B0C; color: #F2F2F0; font-family: 'Archivo', system-ui, sans-serif">
+
+  <!-- Último quadro congelado, bem escurecido -->
+  <div style="position: absolute; inset: 0; background: #0B0B0C url('../midia/filmes/blade-runner-2049-2017-h.jpg') center / cover; filter: grayscale(.6)"></div>
+  <div style="position: absolute; inset: 0; background: rgba(11,11,12,.82)"></div>
+
+  <!-- Topo -->
+  <div style="position: absolute; left: 96px; right: 96px; top: 54px; display: flex; justify-content: space-between; align-items: flex-start">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div class="mono" style="display: flex; align-items: center; gap: 12px; font-size: 16px; letter-spacing: 0.14em; color: #E4E4C8"><span style="width: 16px; height: 16px; background: #C0C000"></span>FILME · 2017</div>
+      <span style="font-size: 48px; font-weight: 800; font-stretch: 125%; line-height: 1">Blade Runner 2049</span>
+    </div>
+    <span class="mono" style="font-size: 32px">21:47</span>
+  </div>
+
+  <!-- Indicador central -->
+  <div style="position: absolute; left: 50%; top: 380px; width: 640px; margin-left: -320px; display: flex; flex-direction: column; gap: 22px; align-items: stretch">
+    <span style="font-size: 40px; font-weight: 800; font-stretch: 125%; text-align: center">Preparando a imagem</span>
+    <div class="espectro" role="progressbar" aria-label="Carregando"><b></b></div>
+    <div class="mono" style="display: flex; justify-content: space-between; font-size: 18px">
+      <span style="color: #F2F2F0">Convertendo para 1080p · 42%</span>
+      <span style="color: #A3A3A0">~6 s</span>
+    </div>
+    <span style="font-size: 20px; line-height: 1.5; color: #E4E4E1; text-align: center">Esta TV não decodifica o áudio DTS-HD do arquivo,<br>então o servidor converte enquanto você assiste.</span>
+  </div>
+
+  <!-- Linha do tempo: assistido, carregado e o resto -->
+  <div style="position: absolute; left: 96px; right: 96px; top: 878px; display: flex; flex-direction: column; gap: 14px">
+    <div style="position: relative; height: 12px">
+      <div style="position: absolute; inset: 0; background: linear-gradient(90deg, #5A00B4 0%, #2A2AFF 18%, #00C0C0 36%, #00C000 52%, #C0C000 68%, #E07000 82%, #C00000 100%)"></div>
+      <div style="position: absolute; top: 0; bottom: 0; left: 46.3%; width: 6.5%; background: rgba(11,11,12,.5)"></div>
+      <div style="position: absolute; top: 0; bottom: 0; right: 0; left: 52.8%; background: rgba(11,11,12,.82)"></div>
+      <span style="position: absolute; left: 46.3%; top: -12px; bottom: -12px; width: 8px; margin-left: -4px; background: #F2F2F0"></span>
+    </div>
+    <div class="mono" style="display: flex; justify-content: space-between; font-size: 18px; color: #A3A3A0">
+      <span style="color: #F2F2F0">1:15:52</span>
+      <span>carregado até 1:26:30</span>
+      <span>−1:28:00 · 2:43:52</span>
+    </div>
+  </div>
+
+  <!-- Controles -->
+  <div style="position: absolute; left: 96px; right: 96px; bottom: 54px; display: flex; justify-content: space-between; align-items: center">
+    <div style="display: flex; gap: 16px">
+      <span class="bt"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="5" width="3" height="14"/><path d="M20 5v14L9 12z"/></svg></span>
+      <span class="bt foco"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4v16l14-8z"/></svg></span>
+      <span class="bt"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M4 5v14l11-7z"/><rect x="17" y="5" width="3" height="14"/></svg></span>
+    </div>
+    <div class="mono" style="display: flex; gap: 10px; font-size: 15px; color: #A3A3A0">
+      <span style="padding: 6px 10px; background: #17181A">2160p → 1080p</span>
+      <span style="padding: 6px 10px; background: #17181A">DTS-HD → AAC 5.1</span>
+      <span style="padding: 6px 10px; background: #17181A; color: #C0C000; display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; background: #C0C000"></span>Convertendo no servidor</span>
+    </div>
+    <span class="mono" style="font-size: 15px; color: #8A8B8E">Rede 3,2 MB/s</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

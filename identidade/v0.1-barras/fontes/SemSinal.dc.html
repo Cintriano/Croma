@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Croma — Sem sinal</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0;background:#000}
+#tela{width:1920px;height:1080px;position:relative;overflow:hidden;background:#0B0B0C;font-family:'Archivo',system-ui,sans-serif;color:#F2F2F0}
+#ruido{position:absolute;inset:0;width:1920px;height:1080px}
+/* Linhas de varredura */
+#linhas{position:absolute;inset:0;background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.28) 2px,rgba(0,0,0,.28) 4px);pointer-events:none}
+/* Faixa que rola de cima para baixo (sincronismo vertical perdido) */
+#faixa{position:absolute;left:0;right:0;top:-260px;height:260px;background:linear-gradient(to bottom,rgba(242,242,240,0),rgba(242,242,240,.10) 45%,rgba(242,242,240,.16) 55%,rgba(242,242,240,0));animation:rola 5.2s linear infinite;pointer-events:none}
+@keyframes rola{to{transform:translateY(1340px)}}
+/* Bordas escurecidas, como um tubo */
+#tubo{position:absolute;inset:0;background:radial-gradient(ellipse 75% 70% at 50% 50%,rgba(0,0,0,0) 55%,rgba(0,0,0,.55) 100%);pointer-events:none}
+#painel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:900px;box-sizing:border-box;background:#0B0B0C;border:12px solid #F2F2F0;padding:44px 52px;display:flex;flex-direction:column;gap:24px}
+.mono{font-family:'IBM Plex Mono',monospace}
+@media (prefers-reduced-motion: reduce){#faixa{animation:none;display:none}}
+</style>
+</helmet>
+<div id="tela" data-modo="{{modo}}">
+  <canvas id="ruido" width="960" height="540" aria-hidden="true"></canvas>
+  <div id="faixa"></div>
+  <div id="linhas"></div>
+  <div id="tubo"></div>
+
+  <sc-if value="{{showPanel}}" hint-placeholder-val="{{ true }}">
+    <div id="painel" role="alert">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <div class="mono" style="display: flex; align-items: center; gap: 14px; font-size: 15px; letter-spacing: 0.14em; color: #A3A3A0">
+          <svg aria-hidden="true" width="44" height="26" viewBox="0 0 172 102">
+            <rect x="6" y="6" width="160" height="90" fill="none" stroke="#F2F2F0" stroke-width="14"></rect>
+            <rect x="12" y="72" width="21.6" height="18" fill="#C0C0C0"></rect>
+            <rect x="33.4" y="72" width="21.6" height="18" fill="#C0C000"></rect>
+            <rect x="54.9" y="72" width="21.6" height="18" fill="#00C0C0"></rect>
+            <rect x="76.3" y="72" width="21.6" height="18" fill="#00C000"></rect>
+            <rect x="97.7" y="72" width="21.6" height="18" fill="#C000C0"></rect>
+            <rect x="119.1" y="72" width="21.6" height="18" fill="#C00000"></rect>
+            <rect x="140.6" y="72" width="19.4" height="18" fill="#0000C0"></rect>
+          </svg>
+          <span>{{rotulo}}</span>
+        </div>
+        <span class="mono" style="font-size: 14px; padding: 6px 12px; color: {{fgTag}}; background: {{corTag}}">{{tag}}</span>
+      </div>
+
+      <h1 style="margin: 0; font-size: 96px; font-weight: 800; font-stretch: 125%; line-height: 0.95; letter-spacing: 0.01em">SEM SINAL</h1>
+      <p style="margin: 0; font-size: 26px; line-height: 1.45; color: #E4E4E1">{{body}}</p>
+
+      <div class="mono" style="display: flex; align-items: center; gap: 14px; font-size: 16px; color: #A3A3A0">
+        <span style="display: inline-block; width: 220px; height: 6px; background: #17181A; position: relative; overflow: hidden">
+          <span id="espera" style="position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: #F2F2F0"></span>
+        </span>
+        <span id="espera-txt">Tentando de novo em 15 s</span>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px">
+        <div style="display: flex; gap: 16px">
+          <button type="button" style="font-family: 'Archivo', sans-serif; font-size: 24px; font-weight: 700; padding: 16px 36px; background: #F2F2F0; color: #0B0B0C; border: 0; outline: 4px solid #F2F2F0; outline-offset: 4px; cursor: pointer">Tentar agora</button>
+          <button type="button" style="font-family: 'Archivo', sans-serif; font-size: 24px; font-weight: 600; padding: 16px 36px; background: transparent; color: #F2F2F0; border: 2px solid #4A4B4F; cursor: pointer">{{botao2}}</button>
+        </div>
+        <span class="mono" style="font-size: 15px; color: #A3A3A0">◂ ▸ navegar · OK confirmar</span>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"showPanel":{"editor":"boolean","default":true},"modo":{"editor":"enum","options":["Servidor","TV ao vivo"],"default":"Servidor"},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var modo = this.props.modo ?? 'Servidor';
+    var tv = modo === 'TV ao vivo';
+    return {
+      showPanel: this.props.showPanel ?? true,
+      modo: modo,
+      rotulo: tv ? 'TV AO VIVO · CANAL 7.1' : 'SERVIDOR · CASA',
+      tag: tv ? 'λ 650 nm' : 'OFFLINE',
+      corTag: tv ? '#C00000' : '#A3A3A0',
+      fgTag: tv ? '#F2F2F0' : '#0B0B0C',
+      body: tv
+        ? 'O canal não está transmitindo agora. Pode ser a antena, o sintonizador ou o próprio canal fora do ar.'
+        : 'O servidor Croma não responde. Confira se o computador está ligado e na mesma rede que a TV.',
+      botao2: tv ? 'Guia de canais' : 'Trocar servidor'
+    };
+  }
+}
+</script>
+<script>
+/* Estática: gera alguns quadros de ruído uma vez e alterna entre eles (barato o bastante para a TV). */
+document.addEventListener('DOMContentLoaded', function () {
+  var cv = document.getElementById('ruido');
+  var ctx = cv.getContext('2d');
+  var W = cv.width, H = cv.height, N = 8;
+  var quadros = [];
+
+  for (var f = 0; f < N; f++) {
+    var img = ctx.createImageData(W, H), d = img.data;
+    for (var yy = 0; yy < H; yy++) {
+      /* Cada linha ganha um viés de brilho próprio: dá as listras horizontais da estática real. */
+      var vies = (Math.random() - 0.5) * 40 + (Math.random() < 0.02 ? 60 : 0);
+      for (var xx = 0; xx < W; xx++) {
+        var v = Math.random() * 255;
+        v = v * v / 255 * 0.85 + vies + 18; // puxa para o escuro, com pontos claros esparsos
+        v = v < 0 ? 0 : v > 255 ? 255 : v;
+        var i = (yy * W + xx) * 4;
+        d[i] = v; d[i + 1] = v; d[i + 2] = v * 1.02 > 255 ? 255 : v * 1.02; d[i + 3] = 255;
+      }
+    }
+    quadros.push(img);
+  }
+
+  var reduzido = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var k = 0, ult = 0, passo = reduzido ? 400 : 1000 / 30;
+  function anima(t) {
+    if (t - ult >= passo) {
+      ult = t;
+      /* Sorteia o quadro e um deslocamento vertical, para a repetição não aparecer. */
+      k = (k + 1 + Math.floor(Math.random() * (N - 1))) % N;
+      var off = Math.floor(Math.random() * H);
+      ctx.putImageData(quadros[k], 0, off);
+      ctx.putImageData(quadros[k], 0, off - H);
+    }
+    requestAnimationFrame(anima);
+  }
+  ctx.putImageData(quadros[0], 0, 0);
+  requestAnimationFrame(anima);
+
+  /* Contagem da nova tentativa (15 s, recomeça). */
+  var barra = document.getElementById('espera'), txt = document.getElementById('espera-txt');
+  if (barra) {
+    var t0 = performance.now(), total = 15000;
+    (function conta(t) {
+      var p = ((t - t0) % total) / total;
+      barra.style.width = (p * 100).toFixed(1) + '%';
+      txt.textContent = 'Tentando de novo em ' + Math.ceil((1 - p) * total / 1000) + ' s';
+      requestAnimationFrame(conta);
+    })(t0);
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Croma — Galeria de filmes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#A3A3A0;text-decoration:none}a:hover{color:#F2F2F0}
+.mono{font-family:'IBM Plex Mono',monospace}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; box-sizing: border-box; overflow: hidden; background: #0B0B0C; color: #F2F2F0; font-family: 'Archivo', system-ui, sans-serif; padding: 44px 96px 0; display: flex; flex-direction: column; gap: 36px">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; height: 64px; flex-shrink: 0">
+    <div style="display: flex; align-items: center; gap: 72px">
+      <div style="display: flex; align-items: center; gap: 2px; font-size: 32px; font-weight: 800; font-stretch: 125%">
+        <span>CR</span>
+        <svg role="img" aria-label="Croma" width="40" height="24" viewBox="0 0 172 102" style="margin: 0 3px">
+          <rect x="6" y="6" width="160" height="90" fill="none" stroke="#F2F2F0" stroke-width="14"></rect>
+          <rect x="12" y="72" width="21.6" height="18" fill="#C0C0C0"></rect>
+          <rect x="33.4" y="72" width="21.6" height="18" fill="#C0C000"></rect>
+          <rect x="54.9" y="72" width="21.6" height="18" fill="#00C0C0"></rect>
+          <rect x="76.3" y="72" width="21.6" height="18" fill="#00C000"></rect>
+          <rect x="97.7" y="72" width="21.6" height="18" fill="#C000C0"></rect>
+          <rect x="119.1" y="72" width="21.6" height="18" fill="#C00000"></rect>
+          <rect x="140.6" y="72" width="19.4" height="18" fill="#0000C0"></rect>
+        </svg>
+        <span>MA</span>
+      </div>
+      <nav aria-label="Seções" style="display: flex; gap: 36px">
+        <sc-for list="{{nav}}" as="item" hint-placeholder-count="7">
+          <a href="#" style="display: flex; flex-direction: column; gap: 8px; font-size: 22px; font-weight: 600; color: {{item.fg}}">
+            <span>{{item.label}}</span>
+            <span style="height: {{item.h}}; background: {{item.bar}}"></span>
+          </a>
+        </sc-for>
+      </nav>
+    </div>
+    <div style="display: flex; align-items: center; gap: 20px">
+      <button type="button" aria-label="Buscar" style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; background: #17181A; border: 0; color: #F2F2F0">
+        <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+      </button>
+      <button type="button" aria-label="Perfil" style="width: 56px; height: 56px; background: #2A2B2E; border: 0; color: #F2F2F0; font-family: 'Archivo', sans-serif; font-size: 22px; font-weight: 700">D</button>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; flex-shrink: 0">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div class="mono" style="display: flex; align-items: center; gap: 12px; font-size: 16px; letter-spacing: 0.14em; color: #E4E4C8">
+        <span style="width: 16px; height: 16px; background: #C0C000"></span>
+        <span>λ 580 nm · 412 FILMES · 38 NÃO VISTOS</span>
+      </div>
+      <h1 style="margin: 0; font-size: 64px; font-weight: 800; font-stretch: 125%; line-height: 1">Filmes</h1>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center">
+      <sc-for list="{{chips}}" as="ch" hint-placeholder-count="6">
+        <span style="font-size: 20px; font-weight: 600; padding: 12px 22px; background: {{ch.bg}}; color: {{ch.fg}}">{{ch.label}}</span>
+      </sc-for>
+      <span class="mono" style="margin-left: 16px; font-size: 16px; color: #A3A3A0">Ordenar: adicionados ▾</span>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(7, 216px); column-gap: 36px; row-gap: 32px">
+    <sc-for list="{{posters}}" as="p" hint-placeholder-count="14">
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <div style="height: 324px; box-sizing: border-box; position: relative; background: {{p.bg}}; box-shadow: inset 0 0 0 400px rgba(11,11,12,{{p.dim}}); outline: {{p.outline}}; outline-offset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 14px 14px 0">
+          <div style="display: flex; justify-content: flex-end; align-items: flex-start; min-height: 26px">
+            <span style="display: {{p.seenDisplay}}; width: 26px; height: 26px; background: #C0C000; align-items: center; justify-content: center">
+              <svg aria-label="Visto" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#0B0B0C" stroke-width="2.6" stroke-linecap="square"><path d="M3 8.5l3.2 3L13 4.5"></path></svg>
+            </span>
+          </div>
+          <div style="display: flex; flex-direction: column">
+            <div style="height: 6px; margin: 0 -14px; background: {{p.trackBg}}; display: flex">
+              <div style="width: {{p.pct}}; background: #C0C000"></div>
+            </div>
+          </div>
+        </div>
+        <div class="mono" style="display: flex; justify-content: space-between; font-size: 14px; color: {{p.capFg}}">
+          <span>{{p.year}} · {{p.dur}}</span>
+          <span>{{p.q}}</span>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var navItems = [
+      ['Início', '#F2F2F0'], ['Filmes', '#C0C000'], ['Séries', '#00C0C0'], ['Música', '#00C000'],
+      ['Fotos', '#C000C0'], ['TV ao vivo', '#C00000'], ['Livros', '#0000C0']
+    ];
+    var nav = navItems.map(function (n, i) {
+      var on = i === 1;
+      return { label: n[0], fg: on ? '#F2F2F0' : '#A3A3A0', bar: n[1], h: on ? '6px' : '2px' };
+    });
+    var chips = ['Todos', 'Não vistos', 'Favoritos', '4K · HDR', 'Gêneros ▾', 'A–Z'].map(function (l, i) {
+      return { label: l, bg: i === 0 ? '#F2F2F0' : '#17181A', fg: i === 0 ? '#0B0B0C' : '#F2F2F0' };
+    });
+    /* Títulos inventados. A capa real vem dos metadados; aqui cada uma é um bloco de cor escura. */
+    /* Pôsteres reais em ../midia/filmes/ (cópias reduzidas da pasta Posters do usuário). */
+    var data = [
+      ['Blade Runner 2049', '2017', '2h 44', '4K HDR', 'blade-runner-2049-2017', 0, false],
+      ['Duna', '2021', '2h 35', '4K HDR', 'duna-2021', 0, true],
+      ['A Chegada', '2016', '1h 56', '4K', 'a-chegada-2016', 46, false],
+      ['Interestelar', '2014', '2h 49', '4K HDR', 'interestelar-2014', 0, true],
+      ['Matrix', '1999', '2h 16', '4K', 'matrix-1999', 0, true],
+      ['1917', '2019', '1h 59', '4K HDR', '1917-2019', 0, false],
+      ['Oppenheimer', '2023', '3h 00', '4K HDR', 'oppenheimer-2023', 0, false],
+      ['O Farol', '2019', '1h 49', '1080p', 'o-farol-2019', 82, false],
+      ['Mad Max: Estrada da Fúria', '2015', '2h 00', '4K HDR', 'mad-max-estrada-da-furia-2015', 0, true],
+      ['La La Land', '2016', '2h 08', '4K', 'la-la-land-cantando-estacoes-2017', 0, false],
+      ['Ex Machina', '2014', '1h 48', '1080p', 'ex-machina-instinto-artificial-2014', 0, false],
+      ['O Show de Truman', '1998', '1h 43', '1080p', 'o-show-de-truman-1998', 12, false],
+      ['Tudo em Todo Lugar ao Mesmo Tempo', '2022', '2h 19', '4K', 'tudo-em-todo-lugar-ao-mesmo-tempo-2022', 0, false],
+      ['Whiplash', '2014', '1h 47', '1080p', 'whiplash-em-busca-da-perfeicao-2014', 0, true]
+    ];
+    var foco = 2;
+    var posters = data.map(function (d, i) {
+      var on = i === foco;
+      return {
+        title: d[0], year: d[1], dur: d[2], q: d[3], bg: "#17181A url('../midia/filmes/" + d[4] + "-v.jpg') center / cover", dim: d[6] ? '0.5' : '0',
+        pct: d[5] + '%', trackBg: d[5] ? 'rgba(11,11,12,.6)' : 'transparent',
+        seenDisplay: d[6] ? 'flex' : 'none',
+        ink: d[6] ? '#A3A3A0' : '#F2F2F0', ink2: '#A3A3A0',
+        outline: on ? '8px solid #F2F2F0' : '0 solid transparent',
+        capFg: on ? '#F2F2F0' : '#8A8B8E'
+      };
+    });
+    return { nav: nav, chips: chips, posters: posters };
+  }
+}
+</script>
+</body>
+</html>

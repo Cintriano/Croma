@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Croma — Direção C, barras em órbita</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#8FB8C5}a:hover{color:#E8ECEE}
+</style>
+</helmet>
+<div style="width: 1600px; height: 1000px; box-sizing: border-box; background: #121416; color: #E8ECEE; font-family: 'Inter', system-ui, sans-serif; padding: 56px 72px; display: flex; flex-direction: column; gap: 32px">
+
+  <div style="display: flex; justify-content: space-between; align-items: flex-end">
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <span style="font-size: 18px; color: #AAB4B9">Direção C</span>
+      <h1 style="margin: 0; font-size: 44px; font-weight: 700; letter-spacing: -0.02em">Barras em órbita</h1>
+    </div>
+    <div style="display: flex; gap: 10px">
+      <span style="font-size: 15px; padding: 8px 16px; border: 1px solid #68737A; border-radius: 999px; color: #AAB4B9">Núcleo</span>
+      <span style="font-size: 15px; padding: 8px 16px; border: 1px solid #68737A; border-radius: 999px; color: #AAB4B9">Órbita insinuada</span>
+      <span style="font-size: 15px; padding: 8px 16px; border: 1px solid #68737A; border-radius: 999px; color: #AAB4B9">Ponto orbital</span>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 32px; flex-grow: 1; min-height: 0">
+
+    <div style="flex: 1.45 1 0; border: 2px solid #2A3035; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 48px">
+      <svg role="img" aria-label="Marca Croma, direção C" width="300" height="300" viewBox="0 0 120 120">
+        <g fill="none" stroke-width="14">
+          <path d="M30.74,87.28 A40,40 0 0 1 20.02,61.40" stroke="#E8ECEE"></path>
+          <path d="M20.02,58.60 A40,40 0 0 1 30.74,32.72" stroke="#D6C58F"></path>
+          <path d="M32.72,30.74 A40,40 0 0 1 58.60,20.02" stroke="#8FB8C5"></path>
+          <path d="M61.40,20.02 A40,40 0 0 1 87.28,30.74" stroke="#9DBBAA"></path>
+          <path d="M89.26,32.72 A40,40 0 0 1 99.98,58.60" stroke="#B3A6C9"></path>
+          <path d="M99.98,61.40 A40,40 0 0 1 89.26,87.28" stroke="#D7AFA3"></path>
+        </g>
+        <circle cx="60" cy="60" r="11" fill="#E8ECEE"></circle>
+        <circle cx="73.68" cy="97.59" r="5" fill="#8FB8C5"></circle>
+      </svg>
+      <div style="display: flex; align-items: baseline; font-size: 120px; font-weight: 600; letter-spacing: -0.03em; line-height: 1">
+        <span>cr</span>
+        <svg role="img" aria-label="o" width="68" height="68" viewBox="0 0 120 120" style="margin: 0 6px 0 8px">
+          <g fill="none" stroke-width="26">
+            <path d="M30.74,87.28 A40,40 0 0 1 20.02,61.40" stroke="#E8ECEE"></path>
+            <path d="M20.02,58.60 A40,40 0 0 1 30.74,32.72" stroke="#D6C58F"></path>
+            <path d="M32.72,30.74 A40,40 0 0 1 58.60,20.02" stroke="#8FB8C5"></path>
+            <path d="M61.40,20.02 A40,40 0 0 1 87.28,30.74" stroke="#9DBBAA"></path>
+            <path d="M89.26,32.72 A40,40 0 0 1 99.98,58.60" stroke="#B3A6C9"></path>
+            <path d="M99.98,61.40 A40,40 0 0 1 89.26,87.28" stroke="#D7AFA3"></path>
+          </g>
+          <circle cx="60" cy="60" r="11" fill="#E8ECEE"></circle>
+        </svg>
+        <span>ma</span>
+      </div>
+    </div>
+
+    <div style="flex: 1 1 0; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; gap: 28px; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <div style="width: 200px; height: 200px; border-radius: 44px; background: #121416; box-shadow: 0 0 0 2px #2A3035; display: flex; align-items: center; justify-content: center">
+            <svg aria-hidden="true" width="136" height="82" viewBox="0 0 200 120">
+              <path d="M36,10 Q100,7.5 164,10 Q188,10 188,34 Q190.5,59.5 188,85 Q188,109 164,109 Q100,111.5 36,109 Q12,109 12,85 Q9.5,59.5 12,34 Q12,10 36,10 Z" fill="none" stroke="#E8ECEE" stroke-width="12"></path>
+              <g transform="translate(64 24) scale(0.6)">
+                <g fill="none" stroke-width="14">
+                  <path d="M30.74,87.28 A40,40 0 0 1 20.02,61.40" stroke="#E8ECEE"></path><path d="M20.02,58.60 A40,40 0 0 1 30.74,32.72" stroke="#D6C58F"></path><path d="M32.72,30.74 A40,40 0 0 1 58.60,20.02" stroke="#8FB8C5"></path><path d="M61.40,20.02 A40,40 0 0 1 87.28,30.74" stroke="#9DBBAA"></path><path d="M89.26,32.72 A40,40 0 0 1 99.98,58.60" stroke="#B3A6C9"></path><path d="M99.98,61.40 A40,40 0 0 1 89.26,87.28" stroke="#D7AFA3"></path>
+                </g>
+                <circle cx="60" cy="60" r="11" fill="#E8ECEE"></circle>
+                <circle cx="73.68" cy="97.59" r="6" fill="#8FB8C5"></circle>
+              </g>
+            </svg>
+          </div>
+          <span style="font-size: 15px; color: #AAB4B9">Ícone de app · 1024 (com a tela)</span>
+        </div>
+        <div style="display: flex; gap: 22px; align-items: flex-end">
+          <div style="display: flex; flex-direction: column; gap: 10px; align-items: center">
+            <div style="width: 64px; height: 64px; border-radius: 14px; box-shadow: 0 0 0 2px #2A3035; display: flex; align-items: center; justify-content: center">
+              <svg aria-hidden="true" width="46" height="46" viewBox="0 0 120 120"><g fill="none" stroke-width="18"><path d="M30.74,87.28 A40,40 0 0 1 20.02,61.40" stroke="#E8ECEE"></path><path d="M20.02,58.60 A40,40 0 0 1 30.74,32.72" stroke="#D6C58F"></path><path d="M32.72,30.74 A40,40 0 0 1 58.60,20.02" stroke="#8FB8C5"></path><path d="M61.40,20.02 A40,40 0 0 1 87.28,30.74" stroke="#9DBBAA"></path><path d="M89.26,32.72 A40,40 0 0 1 99.98,58.60" stroke="#B3A6C9"></path><path d="M99.98,61.40 A40,40 0 0 1 89.26,87.28" stroke="#D7AFA3"></path></g><circle cx="60" cy="60" r="12" fill="#E8ECEE"></circle><circle cx="73.68" cy="97.59" r="7" fill="#8FB8C5"></circle></svg>
+            </div>
+            <span style="font-size: 14px; color: #AAB4B9">64</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px; align-items: center">
+            <div style="width: 32px; height: 32px; border-radius: 7px; box-shadow: 0 0 0 2px #2A3035; display: flex; align-items: center; justify-content: center">
+              <svg aria-hidden="true" width="24" height="24" viewBox="0 0 120 120"><path d="M31.72,88.28 A40,40 0 1 1 88.28,88.28" fill="none" stroke="#8FB8C5" stroke-width="20"></path><circle cx="60" cy="60" r="14" fill="#E8ECEE"></circle></svg>
+            </div>
+            <span style="font-size: 14px; color: #AAB4B9">32</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px; align-items: center">
+            <div style="width: 16px; height: 16px; display: flex; align-items: center; justify-content: center">
+              <svg aria-hidden="true" width="16" height="16" viewBox="0 0 120 120"><path d="M31.72,88.28 A40,40 0 1 1 88.28,88.28" fill="none" stroke="#8FB8C5" stroke-width="26"></path><circle cx="60" cy="60" r="16" fill="#E8ECEE"></circle></svg>
+            </div>
+            <span style="font-size: 14px; color: #AAB4B9">16</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <span style="font-size: 18px; font-weight: 600">Teste de parentesco</span>
+        <div style="display: flex; gap: 20px">
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <img src="assets/ravix-icone-app.svg" alt="Logo filha Ravix" style="width: 120px; height: 120px; border-radius: 26px; box-shadow: 0 0 0 2px #2A3035">
+            <span style="font-size: 14px; color: #AAB4B9">Logo filha</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <img src="assets/croma-logo-filha-icone-app.svg" alt="Logo filha Croma (CR)" style="width: 120px; height: 120px; border-radius: 26px; box-shadow: 0 0 0 2px #2A3035">
+            <span style="font-size: 14px; color: #AAB4B9">Logo filha</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <div style="width: 120px; height: 120px; border-radius: 26px; background: #121416; box-shadow: 0 0 0 2px #2A3035; display: flex; align-items: center; justify-content: center">
+              <svg aria-hidden="true" width="84" height="84" viewBox="0 0 120 120"><g fill="none" stroke-width="14"><path d="M30.74,87.28 A40,40 0 0 1 20.02,61.40" stroke="#E8ECEE"></path><path d="M20.02,58.60 A40,40 0 0 1 30.74,32.72" stroke="#D6C58F"></path><path d="M32.72,30.74 A40,40 0 0 1 58.60,20.02" stroke="#8FB8C5"></path><path d="M61.40,20.02 A40,40 0 0 1 87.28,30.74" stroke="#9DBBAA"></path><path d="M89.26,32.72 A40,40 0 0 1 99.98,58.60" stroke="#B3A6C9"></path><path d="M99.98,61.40 A40,40 0 0 1 89.26,87.28" stroke="#D7AFA3"></path></g><circle cx="60" cy="60" r="11" fill="#E8ECEE"></circle><circle cx="73.68" cy="97.59" r="5" fill="#8FB8C5"></circle></svg>
+            </div>
+            <span style="font-size: 14px; color: #AAB4B9">Marca expressiva</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <span style="font-size: 18px; font-weight: 600">Na interface</span>
+        <div style="display: flex; gap: 16px; align-items: center">
+          <div style="padding: 4px; border-radius: 16px; box-shadow: 0 0 0 3px #8FB8C5">
+            <div style="width: 176px; height: 99px; border-radius: 12px; background: #202428; display: flex; align-items: flex-end">
+              <div style="height: 5px; width: 75%; background: #9DBBAA; border-radius: 0 3px 3px 0"></div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <span style="display: flex; align-items: center; gap: 8px; font-size: 16px"><span style="width: 10px; height: 10px; border-radius: 999px; background: #9DBBAA"></span>Música</span>
+            <span style="font-size: 14px; color: #AAB4B9">O anel vira seletor de mídia no início</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 14px">
+    <span style="font-size: 18px; font-weight: 600">Entrada · 800 ms</span>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px">
+      <div style="display: flex; align-items: center; gap: 14px">
+        <svg aria-hidden="true" width="80" height="80" viewBox="0 0 120 120"><circle cx="60" cy="60" r="11" fill="#E8ECEE"></circle></svg>
+        <span style="font-size: 14px; color: #AAB4B9">0 ms · o núcleo acende</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px">
+        <svg aria-hidden="true" width="80" height="80" viewBox="0 0 120 120"><g fill="none" stroke-width="14"><path d="M30.74,87.28 A40,40 0 0 1 20.02,61.40" stroke="#E8ECEE"></path><path d="M20.02,58.60 A40,40 0 0 1 30.74,32.72" stroke="#D6C58F"></path></g><circle cx="60" cy="60" r="11" fill="#E8ECEE"></circle></svg>
+        <span style="font-size: 14px; color: #AAB4B9">250 ms · as barras entram em órbita</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px">
+        <svg aria-hidden="true" width="80" height="80" viewBox="0 0 120 120"><g fill="none" stroke-width="14"><path d="M30.74,87.28 A40,40 0 0 1 20.02,61.40" stroke="#E8ECEE"></path><path d="M20.02,58.60 A40,40 0 0 1 30.74,32.72" stroke="#D6C58F"></path><path d="M32.72,30.74 A40,40 0 0 1 58.60,20.02" stroke="#8FB8C5"></path><path d="M61.40,20.02 A40,40 0 0 1 87.28,30.74" stroke="#9DBBAA"></path><path d="M89.26,32.72 A40,40 0 0 1 99.98,58.60" stroke="#B3A6C9"></path><path d="M99.98,61.40 A40,40 0 0 1 89.26,87.28" stroke="#D7AFA3"></path></g><circle cx="60" cy="60" r="11" fill="#E8ECEE"></circle></svg>
+        <span style="font-size: 14px; color: #AAB4B9">600 ms · o anel se completa</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px">
+        <svg aria-hidden="true" width="80" height="80" viewBox="0 0 120 120"><g fill="none" stroke-width="14"><path d="M30.74,87.28 A40,40 0 0 1 20.02,61.40" stroke="#E8ECEE"></path><path d="M20.02,58.60 A40,40 0 0 1 30.74,32.72" stroke="#D6C58F"></path><path d="M32.72,30.74 A40,40 0 0 1 58.60,20.02" stroke="#8FB8C5"></path><path d="M61.40,20.02 A40,40 0 0 1 87.28,30.74" stroke="#9DBBAA"></path><path d="M89.26,32.72 A40,40 0 0 1 99.98,58.60" stroke="#B3A6C9"></path><path d="M99.98,61.40 A40,40 0 0 1 89.26,87.28" stroke="#D7AFA3"></path></g><circle cx="60" cy="60" r="11" fill="#E8ECEE"></circle><circle cx="73.68" cy="97.59" r="5" fill="#8FB8C5"></circle></svg>
+        <span style="font-size: 14px; color: #AAB4B9">800 ms · o ponto orbital chega</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1600,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

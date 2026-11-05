@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Croma — Descanso de tela</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0;background:#000}
+#tela{width:1920px;height:1080px;position:relative;overflow:hidden;background:#0B0B0C;font-family:'Archivo',system-ui,sans-serif;color:#F2F2F0;cursor:none}
+#logo{position:absolute;left:0;top:0;will-change:transform}
+#logo svg{display:block}
+#logo .moldura{stroke:var(--cor,#F2F2F0)}
+#logo .cheia{opacity:0}
+#logo.canto .cheia{opacity:1}
+#logo.canto .faixa{opacity:0}
+#rastro{position:absolute;inset:0;pointer-events:none}
+#aviso{position:absolute;left:50%;bottom:64px;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:18px;letter-spacing:0.14em;color:#A3A3A0;opacity:0;transition:opacity 300ms}
+#aviso.on{opacity:1}
+#contador{position:absolute;right:56px;bottom:40px;font-family:'IBM Plex Mono',monospace;font-size:14px;letter-spacing:0.1em;color:#2A2B2E}
+</style>
+</helmet>
+<div id="tela" data-velocidade="{{velocidade}}" data-rastro="{{rastro}}">
+  <div id="contador">BATIDAS 0 · CANTOS 0</div>
+  <svg id="rastro" width="1920" height="1080" aria-hidden="true"></svg>
+
+  <div id="logo" role="img" aria-label="Croma">
+    <svg aria-hidden="true" width="240" height="142" viewBox="0 0 172 102">
+      <g class="cheia">
+        <rect x="12" y="12" width="21.6" height="78" fill="#C0C0C0"></rect>
+        <rect x="33.4" y="12" width="21.6" height="78" fill="#C0C000"></rect>
+        <rect x="54.9" y="12" width="21.6" height="78" fill="#00C0C0"></rect>
+        <rect x="76.3" y="12" width="21.6" height="78" fill="#00C000"></rect>
+        <rect x="97.7" y="12" width="21.6" height="78" fill="#C000C0"></rect>
+        <rect x="119.1" y="12" width="21.6" height="78" fill="#C00000"></rect>
+        <rect x="140.6" y="12" width="19.4" height="78" fill="#0000C0"></rect>
+      </g>
+      <g class="faixa">
+        <rect x="12" y="72" width="21.6" height="18" fill="#C0C0C0"></rect>
+        <rect x="33.4" y="72" width="21.6" height="18" fill="#C0C000"></rect>
+        <rect x="54.9" y="72" width="21.6" height="18" fill="#00C0C0"></rect>
+        <rect x="76.3" y="72" width="21.6" height="18" fill="#00C000"></rect>
+        <rect x="97.7" y="72" width="21.6" height="18" fill="#C000C0"></rect>
+        <rect x="119.1" y="72" width="21.6" height="18" fill="#C00000"></rect>
+        <rect x="140.6" y="72" width="19.4" height="18" fill="#0000C0"></rect>
+      </g>
+      <rect class="moldura" x="6" y="6" width="160" height="90" fill="none" stroke-width="12"></rect>
+    </svg>
+  </div>
+
+  <div id="aviso">CANTO EM CHEIO</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"velocidade":{"editor":"enum","options":["Lenta","Normal","Rápida"],"default":"Normal"},"rastro":{"editor":"boolean","default":false},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      velocidade: this.props.velocidade ?? 'Normal',
+      rastro: (this.props.rastro ?? false) ? '1' : '0'
+    };
+  }
+}
+</script>
+<script>
+/* Animação do descanso de tela. Roda depois do support.js (listener registrado depois). */
+document.addEventListener('DOMContentLoaded', function () {
+  var tela = document.getElementById('tela');
+  var logo = document.getElementById('logo');
+  var aviso = document.getElementById('aviso');
+  var contador = document.getElementById('contador');
+  var rastroSvg = document.getElementById('rastro');
+  var q = new URLSearchParams(location.search);
+
+  /* Ordem das barras: cada batida na borda passa a moldura do símbolo para a próxima cor.
+     O azul usa #3B3BFF, como na barra de progresso da prancha 04, para não sumir no preto. */
+  var cores = ['#F2F2F0', '#C0C000', '#00C0C0', '#00C000', '#C000C0', '#C00000', '#3B3BFF'];
+  var vel = { 'Lenta': 140, 'Normal': 220, 'Rápida': 360 }[q.get('velocidade') || tela.dataset.velocidade] || 220;
+  var rastro = (q.get('rastro') || tela.dataset.rastro) === '1';
+
+  var W = 1920, H = 1080;
+  var w = logo.offsetWidth, h = logo.offsetHeight;
+  /* Posição e direção iniciais sorteadas; ?x= e ?y= fixam a posição (para gerar imagens). */
+  var x = q.get('x') ? +q.get('x') : Math.random() * (W - 240);
+  var y = q.get('y') ? +q.get('y') : Math.random() * (H - 142);
+  var MIN = 25 * Math.PI / 180, MAX = 65 * Math.PI / 180; // longe da horizontal e da vertical
+  var ang = MIN + Math.random() * (MAX - MIN);
+  var sx = Math.random() < 0.5 ? -1 : 1, sy = Math.random() < 0.5 ? -1 : 1;
+  var vx, vy;
+  function aplicaAngulo() { vx = sx * Math.cos(ang) * vel; vy = sy * Math.sin(ang) * vel; }
+  aplicaAngulo();
+  var iCor = 0, batidas = 0, cantos = 0, timerCanto = 0;
+  var pontos = [[x + w / 2, y + h / 2]];
+
+  function aplicaCor() { logo.style.setProperty('--cor', cores[iCor]); }
+  aplicaCor();
+
+  function desenhaRastro() {
+    if (!rastro) return;
+    var d = pontos.map(function (p, i) { return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' ');
+    d += ' L' + (x + w / 2).toFixed(1) + ' ' + (y + h / 2).toFixed(1);
+    rastroSvg.innerHTML = '<path d="' + d + '" fill="none" stroke="#2A2B2E" stroke-width="2" stroke-dasharray="6 10"/>' +
+      pontos.slice(1).map(function (p) { return '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="5" fill="#4A4B4F"/>'; }).join('');
+  }
+
+  function passo(dt) {
+    x += vx * dt;
+    y += vy * dt;
+    var bateuX = false, bateuY = false;
+    if (x <= 0) { x = 0; sx = 1; bateuX = true; }
+    else if (x + w >= W) { x = W - w; sx = -1; bateuX = true; }
+    if (y <= 0) { y = 0; sy = 1; bateuY = true; }
+    else if (y + h >= H) { y = H - h; sy = -1; bateuY = true; }
+    /* A cada batida, o ângulo de saída varia ±12°: a trajetória nunca se repete. */
+    if (bateuX || bateuY) {
+      ang += (Math.random() * 2 - 1) * 12 * Math.PI / 180;
+      ang = Math.min(Math.max(ang, MIN), MAX);
+      aplicaAngulo();
+    }
+
+    if (bateuX || bateuY) {
+      batidas++;
+      iCor = (iCor + 1) % cores.length;
+      aplicaCor();
+      pontos.push([x + w / 2, y + h / 2]);
+      if (pontos.length > 40) pontos.shift();
+      /* Canto em cheio: as duas bordas no mesmo quadro (com uma folga de 4 px). */
+      var perto = function (a, lim) { return Math.abs(a - lim) < 4; };
+      var noCantoX = perto(x, 0) || perto(x + w, W), noCantoY = perto(y, 0) || perto(y + h, H);
+      if (noCantoX && noCantoY) {
+        cantos++;
+        logo.classList.add('canto');
+        aviso.classList.add('on');
+        clearTimeout(timerCanto);
+        timerCanto = setTimeout(function () { logo.classList.remove('canto'); aviso.classList.remove('on'); }, 2400);
+      }
+      contador.textContent = 'BATIDAS ' + batidas + ' · CANTOS ' + cantos;
+    }
+  }
+
+  var ult = null;
+  function quadro(t) {
+    if (ult === null) ult = t;
+    passo(Math.min((t - ult) / 1000, 0.05));
+    ult = t;
+    logo.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)';
+    desenhaRastro();
+    requestAnimationFrame(quadro);
+  }
+
+  /* Espera a fonte para medir o logo com a largura certa. */
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(function () {
+    w = logo.offsetWidth; h = logo.offsetHeight;
+    /* ?simular=N adianta N segundos de física (para gerar imagens estáticas da prancha). */
+    var sim = +(q.get('simular') || 0);
+    for (var s = 0; s < sim * 60; s++) passo(1 / 60);
+    if (q.get('canto') === '1') { x = W - w; y = H - h; logo.classList.add('canto'); aviso.classList.add('on'); }
+    logo.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)';
+    desenhaRastro();
+    if (q.get('canto') !== '1') requestAnimationFrame(quadro); // ?canto=1 fica parado, só para a imagem
+  });
+});
+</script>
+</body>
+</html>

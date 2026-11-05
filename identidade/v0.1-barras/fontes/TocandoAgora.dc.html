@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Croma — Tocando agora</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.mono{font-family:'IBM Plex Mono',monospace}
+.bt{width:72px;height:72px;display:flex;align-items:center;justify-content:center;border:0;background:#17181A;color:#F2F2F0;padding:0}
+.bt.foco{background:#F2F2F0;color:#0B0B0C;outline:4px solid #F2F2F0;outline-offset:4px}
+.bt.on{color:#00C000}
+#analisador{display:flex;gap:6px;height:300px;align-items:stretch}
+#analisador .col{flex:1 1 0;display:flex;flex-direction:column-reverse;gap:4px}
+#analisador .col i{flex:1 1 0;display:block;background:#17181A}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0B0C; color: #F2F2F0; font-family: 'Archivo', system-ui, sans-serif">
+
+  <!-- Topo -->
+  <div style="position: absolute; left: 96px; right: 96px; top: 54px; display: flex; justify-content: space-between; align-items: center">
+    <div class="mono" style="display: flex; align-items: center; gap: 12px; font-size: 16px; letter-spacing: 0.14em; color: #C8E4C8">
+      <span style="width: 16px; height: 16px; background: #00C000"></span>
+      <span>MÚSICA · TOCANDO AGORA</span>
+    </div>
+    <span class="mono" style="font-size: 32px">21:47</span>
+  </div>
+
+  <!-- Capa + a seguir -->
+  <div style="position: absolute; left: 96px; top: 130px; width: 520px; display: flex; flex-direction: column; gap: 26px">
+    <div style="width: 520px; height: 520px; box-sizing: border-box; border: 12px solid #F2F2F0; background: #0B0B0C url('../midia/musica/pink-floyd-the-dark-side-of-the-moon-1973.jpg') center / cover; display: flex; flex-direction: column; justify-content: flex-end">
+      <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 10px"><i style="background:#C0C0C0"></i><i style="background:#C0C000"></i><i style="background:#00C0C0"></i><i style="background:#00C000"></i><i style="background:#C000C0"></i><i style="background:#C00000"></i><i style="background:#0000C0"></i></div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <span class="mono" style="font-size: 14px; letter-spacing: 0.12em; color: #A3A3A0; margin-bottom: 6px">A SEGUIR</span>
+      <div style="display: flex; justify-content: space-between; font-size: 20px"><span>5 · The Great Gig in the Sky</span><span class="mono" style="font-size: 16px; color: #A3A3A0">4:44</span></div>
+      <div style="display: flex; justify-content: space-between; font-size: 20px; color: #A3A3A0"><span>6 · Money</span><span class="mono" style="font-size: 16px">6:23</span></div>
+    </div>
+  </div>
+
+  <!-- Faixa, analisador -->
+  <div style="position: absolute; left: 680px; right: 96px; top: 130px; display: flex; flex-direction: column; gap: 18px">
+    <span class="mono" style="font-size: 16px; letter-spacing: 0.12em; color: #A3A3A0">FAIXA 4 DE 10 · THE DARK SIDE OF THE MOON · 1973</span>
+    <span style="font-size: 120px; font-weight: 800; font-stretch: 125%; line-height: 0.95">Time</span>
+    <span style="font-size: 30px; font-weight: 600">Pink Floyd</span>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 18px">
+      <div id="analisador" aria-hidden="true"></div>
+      <div class="mono" style="display: flex; justify-content: space-between; font-size: 14px; color: #8A8B8E">
+        <span>GRAVES · 700 nm</span>
+        <span>o som pintado pelo comprimento de onda: grave é vermelho, agudo é violeta</span>
+        <span>AGUDOS · 380 nm</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Linha do tempo -->
+  <div style="position: absolute; left: 96px; right: 96px; top: 878px; display: flex; flex-direction: column; gap: 14px">
+    <div style="position: relative; height: 12px">
+      <div style="position: absolute; inset: 0; background: linear-gradient(90deg, #5A00B4 0%, #2A2AFF 18%, #00C0C0 36%, #00C000 52%, #C0C000 68%, #E07000 82%, #C00000 100%)"></div>
+      <div style="position: absolute; top: 0; bottom: 0; right: 0; left: 36.6%; background: rgba(11,11,12,.78)"></div>
+      <span style="position: absolute; left: 36.6%; top: -12px; bottom: -12px; width: 8px; margin-left: -4px; background: #F2F2F0"></span>
+    </div>
+    <div class="mono" style="display: flex; justify-content: space-between; font-size: 18px; color: #A3A3A0">
+      <span style="color: #F2F2F0">2:31</span>
+      <span>−4:22 · 6:53</span>
+    </div>
+  </div>
+
+  <!-- Controles -->
+  <div style="position: absolute; left: 96px; right: 96px; bottom: 54px; display: flex; justify-content: space-between; align-items: center">
+    <div style="display: flex; gap: 16px; align-items: center">
+      <button type="button" class="bt" aria-label="Aleatório">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M3 7h4l10 10h4M3 17h4l10-10h4M18 4l3 3-3 3M18 14l3 3-3 3"/></svg>
+      </button>
+      <button type="button" class="bt" aria-label="Faixa anterior">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="5" width="3" height="14"/><path d="M20 5v14L9 12z"/></svg>
+      </button>
+      <button type="button" class="bt foco" aria-label="Pausar">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg>
+      </button>
+      <button type="button" class="bt" aria-label="Próxima faixa">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M4 5v14l11-7z"/><rect x="17" y="5" width="3" height="14"/></svg>
+      </button>
+      <button type="button" class="bt on" aria-label="Repetir álbum (ligado)">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M4 11V7h14M15 4l3 3-3 3M20 13v4H6M9 20l-3-3 3-3"/></svg>
+      </button>
+    </div>
+    <div class="mono" style="display: flex; gap: 10px; font-size: 15px; color: #A3A3A0">
+      <span style="padding: 6px 10px; background: #17181A">FLAC 24/96</span>
+      <span style="padding: 6px 10px; background: #17181A">Estéreo</span>
+      <span style="padding: 6px 10px; background: #17181A; color: #00C000">Reprodução direta</span>
+    </div>
+    <div style="display: flex; gap: 16px; align-items: center">
+      <button type="button" class="bt" aria-label="Fila">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M4 6h16M4 11h16M4 16h9M17 14v6l4-3z"/></svg>
+      </button>
+      <button type="button" class="bt" aria-label="Ir para o álbum">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><rect x="10" y="10" width="4" height="4" fill="currentColor"/></svg>
+      </button>
+      <button type="button" class="bt" aria-label="Volume">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 9a4 4 0 010 6M19 6.5a7.5 7.5 0 010 11"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+<script>
+/* Analisador de espectro: 40 colunas × 14 blocos. Graves à esquerda (vermelho, 700 nm), agudos à direita (violeta, 380 nm). */
+document.addEventListener('DOMContentLoaded', function () {
+  var raiz = document.getElementById('analisador');
+  var COLS = 40, BLOCOS = 14;
+  function lambda(l) {
+    var r = 0, g = 0, b = 0;
+    if (l < 440) { r = -(l - 440) / 60; b = 1; }
+    else if (l < 490) { g = (l - 440) / 50; b = 1; }
+    else if (l < 510) { g = 1; b = -(l - 510) / 20; }
+    else if (l < 580) { r = (l - 510) / 70; g = 1; }
+    else if (l < 645) { r = 1; g = -(l - 645) / 65; }
+    else { r = 1; }
+    var f = l < 420 ? 0.3 + 0.7 * (l - 380) / 40 : 1;
+    function c(v) { return ('0' + Math.round(191 * v * f).toString(16)).slice(-2); }
+    return '#' + c(r) + c(g) + c(b);
+  }
+  var colunas = [], cores = [];
+  for (var i = 0; i < COLS; i++) {
+    var col = document.createElement('div'); col.className = 'col';
+    for (var k = 0; k < BLOCOS; k++) col.appendChild(document.createElement('i'));
+    raiz.appendChild(col); colunas.push(col);
+    cores.push(lambda(700 - 300 * i / (COLS - 1)));
+  }
+  /* Forma inicial fixa (graves fortes, médios com picos), para a imagem estática sair sempre igual. */
+  var nivel = [], pico = [];
+  for (var j = 0; j < COLS; j++) {
+    var x = j / (COLS - 1);
+    var v = 0.78 - 0.5 * x + 0.18 * Math.sin(j * 1.7) + 0.12 * Math.sin(j * 0.6 + 1);
+    nivel.push(Math.max(0.08, Math.min(1, v)));
+    pico.push(Math.min(1, nivel[j] + 0.12));
+  }
+  function desenha() {
+    for (var c = 0; c < COLS; c++) {
+      var acesos = Math.round(nivel[c] * BLOCOS), p = Math.min(BLOCOS - 1, Math.round(pico[c] * BLOCOS));
+      var blocos = colunas[c].children;
+      for (var k = 0; k < BLOCOS; k++) {
+        blocos[k].style.background = k < acesos ? cores[c] : (k === p ? '#F2F2F0' : '#17181A');
+      }
+    }
+  }
+  desenha();
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var ult = 0, t0 = performance.now();
+  function anima(t) {
+    if (t - ult > 70) {
+      ult = t;
+      var s = (t - t0) / 1000;
+      for (var c = 0; c < COLS; c++) {
+        var x = c / (COLS - 1);
+        var batida = Math.pow(Math.max(0, Math.sin(s * 4.2)), 6) * (1 - x) * 0.5;
+        var alvo = 0.6 - 0.4 * x + 0.16 * Math.sin(s * 2 + c * 0.9) + 0.12 * Math.random() + batida * 0.7;
+        alvo = Math.max(0.05, Math.min(1, alvo));
+        nivel[c] = alvo > nivel[c] ? alvo : nivel[c] - 0.08;
+        pico[c] = nivel[c] >= pico[c] ? nivel[c] : pico[c] - 0.02;
+      }
+      desenha();
+    }
+    requestAnimationFrame(anima);
+  }
+  requestAnimationFrame(anima);
+});
+</script>
+</body>
+</html>

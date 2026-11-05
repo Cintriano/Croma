@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Croma — Busca</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#A3A3A0;text-decoration:none}
+.mono{font-family:'IBM Plex Mono',monospace}
+.rot{font-family:'IBM Plex Mono',monospace;font-size:14px;letter-spacing:0.12em;color:#A3A3A0}
+.teclado{display:grid;grid-template-columns:repeat(6,80px);gap:8px}
+.tecla{height:64px;display:flex;align-items:center;justify-content:center;background:#17181A;font-size:26px;font-weight:600}
+.tecla.foco{background:#F2F2F0;color:#0B0B0C;outline:4px solid #F2F2F0;outline-offset:4px;position:relative;z-index:1}
+.grupo{display:flex;flex-direction:column;gap:16px}
+.cab{display:flex;align-items:center;gap:12px}
+.cab i{width:14px;height:14px;display:block}
+.cab b{font-size:26px;font-weight:700;font-stretch:112%}
+.cab span{font-family:'IBM Plex Mono',monospace;font-size:15px;color:#A3A3A0}
+.res{display:flex;gap:24px;align-items:flex-start}
+.gerada{box-sizing:border-box;background:#17181A;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:0 14px}
+.gerada .q{position:absolute;left:14px;top:14px;width:16px;height:16px}
+.gerada .t{font-size:20px;font-weight:800;font-stretch:125%;line-height:1.05}
+.gerada .i{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#A3A3A0;margin:6px 0 12px}
+.gerada .b{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));margin:0 -14px}
+.gerada .b i{display:block}
+.meta{display:flex;flex-direction:column;gap:6px;padding-top:4px}
+.meta strong{font-size:22px;font-weight:600}
+.meta em{font-style:normal;color:#F2F2F0}
+.meta span{font-family:'IBM Plex Mono',monospace;font-size:14px;color:#A3A3A0}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; box-sizing: border-box; overflow: hidden; background: #0B0B0C; color: #F2F2F0; font-family: 'Archivo', system-ui, sans-serif; padding: 44px 96px 0; display: flex; flex-direction: column; gap: 40px">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; height: 64px; flex-shrink: 0">
+    <div style="display: flex; align-items: center; gap: 72px">
+      <div style="display: flex; align-items: center; gap: 2px; font-size: 32px; font-weight: 800; font-stretch: 125%">
+        <span>CR</span>
+        <svg role="img" aria-label="Croma" width="40" height="24" viewBox="0 0 172 102" style="margin: 0 3px"><rect x="6" y="6" width="160" height="90" fill="none" stroke="#F2F2F0" stroke-width="14"/><rect x="12" y="72" width="21.6" height="18" fill="#C0C0C0"/><rect x="33.4" y="72" width="21.6" height="18" fill="#C0C000"/><rect x="54.9" y="72" width="21.6" height="18" fill="#00C0C0"/><rect x="76.3" y="72" width="21.6" height="18" fill="#00C000"/><rect x="97.7" y="72" width="21.6" height="18" fill="#C000C0"/><rect x="119.1" y="72" width="21.6" height="18" fill="#C00000"/><rect x="140.6" y="72" width="19.4" height="18" fill="#0000C0"/></svg>
+        <span>MA</span>
+      </div>
+      <nav aria-label="Seções" style="display: flex; gap: 36px">
+        <sc-for list="{{nav}}" as="item" hint-placeholder-count="7">
+          <a href="#" style="display: flex; flex-direction: column; gap: 8px; font-size: 22px; font-weight: 600; color: #A3A3A0">
+            <span>{{item.label}}</span>
+            <span style="height: 2px; background: {{item.bar}}"></span>
+          </a>
+        </sc-for>
+      </nav>
+    </div>
+    <div style="display: flex; align-items: center; gap: 20px">
+      <span aria-label="Buscar (ativo)" style="width: 56px; height: 56px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; background: #F2F2F0; color: #0B0B0C">
+        <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+      </span>
+      <span style="width: 56px; height: 56px; background: #2A2B2E; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700">D</span>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 72px; min-height: 0">
+
+    <!-- Teclado -->
+    <div style="width: 520px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px">
+      <div style="height: 72px; box-sizing: border-box; border-bottom: 4px solid #F2F2F0; display: flex; align-items: center; gap: 4px; font-size: 40px; font-weight: 700">
+        <span>blade</span><span style="width: 4px; height: 40px; background: #F2F2F0; display: block"></span>
+      </div>
+      <div class="teclado">
+        <sc-for list="{{teclas}}" as="k"><span class="tecla {{k.cls}}">{{k.c}}</span></sc-for>
+      </div>
+      <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px">
+        <span class="tecla" style="font-size: 20px">Espaço</span>
+        <span class="tecla" aria-label="Apagar">
+          <svg width="30" height="24" viewBox="0 0 30 24" fill="none" stroke="#F2F2F0" stroke-width="2.2" stroke-linecap="square"><path d="M9 3h18v18H9L2 12z"/><path d="M14 8l8 8M22 8l-8 8"/></svg>
+        </span>
+        <span class="tecla" aria-label="Buscar por voz">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F2F2F0" stroke-width="2" stroke-linecap="square"><rect x="9" y="3" width="6" height="11"/><path d="M5 11v1a7 7 0 0014 0v-1M12 19v3"/></svg>
+        </span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 6px">
+        <span class="rot">SUGESTÕES</span>
+        <span style="font-size: 22px; color: #E4E4E1"><b>blade</b> runner 2049</span>
+        <span style="font-size: 22px; color: #A3A3A0"><b style="color: #E4E4E1">blade</b> runner (trilha sonora)</span>
+        <span class="mono" style="font-size: 14px; color: #8A8B8E; margin-top: 4px">Segure o botão do microfone no controle para falar.</span>
+      </div>
+    </div>
+
+    <!-- Resultados -->
+    <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 34px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline">
+        <span style="font-size: 40px; font-weight: 800; font-stretch: 125%">3 resultados para “blade”</span>
+        <span class="mono" style="font-size: 15px; color: #A3A3A0">em todas as bibliotecas</span>
+      </div>
+
+      <div class="grupo">
+        <div class="cab"><i style="background: #C0C000"></i><b>Filmes</b><span>1</span></div>
+        <div class="res">
+          <div style="width: 180px; height: 270px; background: #17181A url('../midia/filmes/blade-runner-2049-2017-v.jpg') center / cover; outline: 8px solid #F2F2F0; flex-shrink: 0"></div>
+          <div class="meta" style="padding-left: 8px">
+            <strong><em>Blade</em> Runner 2049</strong>
+            <span>2017 · 2h 44 · 4K HDR</span>
+            <span>parado em 1:15:52 · faltam 1h 28</span>
+            <div style="width: 240px; height: 6px; background: #2A2B2E; display: flex; margin-top: 6px"><div style="width: 46%; background: #C0C000"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 72px">
+        <div class="grupo">
+          <div class="cab"><i style="background: #00C000"></i><b>Música</b><span>1</span></div>
+          <div class="res">
+            <div class="gerada" style="width: 180px; height: 180px; flex-shrink: 0">
+              <i class="q" style="background: #00C000"></i>
+              <span class="t"><em style="font-style: normal">Blade</em> Runner</span>
+              <span class="i">Vangelis · 1994</span>
+              <div class="b" style="height: 11px"><i style="background:#C0C0C0"></i><i style="background:#C0C000"></i><i style="background:#00C0C0"></i><i style="background:#00C000"></i><i style="background:#C000C0"></i><i style="background:#C00000"></i><i style="background:#0000C0"></i></div>
+            </div>
+            <div class="meta"><strong>Trilha sonora</strong><span>álbum · 12 faixas</span><span>sem capa: capa gerada</span></div>
+          </div>
+        </div>
+        <div class="grupo">
+          <div class="cab"><i style="background: #3B3BFF"></i><b>Livros</b><span>1</span></div>
+          <div class="res">
+            <div class="gerada" style="width: 150px; height: 225px; flex-shrink: 0">
+              <i class="q" style="background: #3B3BFF"></i>
+              <span class="t" style="font-size: 17px">Androides sonham com ovelhas elétricas?</span>
+              <span class="i">Philip K. Dick</span>
+              <div class="b" style="height: 14px"><i style="background:#C0C0C0"></i><i style="background:#C0C000"></i><i style="background:#00C0C0"></i><i style="background:#00C000"></i><i style="background:#C000C0"></i><i style="background:#C00000"></i><i style="background:#0000C0"></i></div>
+            </div>
+            <div class="meta"><strong>Androides sonham…</strong><span>livro · 1968</span><span>tag: <em>blade</em> runner</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mono" style="display: flex; gap: 28px; font-size: 15px; color: #8A8B8E; padding-top: 6px; border-top: 1px solid #2A2B2E">
+        <span style="padding-top: 14px">Nada em Séries, Fotos ou TV ao vivo.</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var nav = [['Início', '#F2F2F0'], ['Filmes', '#C0C000'], ['Séries', '#00C0C0'], ['Música', '#00C000'], ['Fotos', '#C000C0'], ['TV ao vivo', '#C00000'], ['Livros', '#0000C0']].map(function (n) { return { label: n[0], bar: n[1] }; });
+    var chars = 'abcdefghijklmnopqrstuvwxyz0123456789'.split('');
+    var teclas = chars.map(function (c) { return { c: c, cls: c === 'r' ? 'foco' : '' }; });
+    return { nav: nav, teclas: teclas };
+  }
+}
+</script>
+</body>
+</html>

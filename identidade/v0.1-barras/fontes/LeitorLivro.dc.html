@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Croma — Leitor de livros</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.mono{font-family:'IBM Plex Mono',monospace}
+.texto p{margin:0 0 28px;text-indent:2em}
+.texto p.fala{text-indent:0;margin-bottom:6px}
+.bt{height:64px;min-width:64px;padding:0 20px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:10px;background:#17181A;color:#F2F2F0;font-family:'Archivo',sans-serif;font-size:20px;font-weight:600}
+.bt.foco{background:#F2F2F0;color:#0B0B0C;outline:4px solid #F2F2F0;outline-offset:4px}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: {{fundo}}; color: {{tinta}}; font-family: 'Archivo', system-ui, sans-serif">
+
+  <!-- Cabeçalho -->
+  <div class="mono" style="position: absolute; left: 96px; right: 96px; top: 54px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; letter-spacing: 0.12em; color: {{tinta2}}">
+    <span style="display: flex; align-items: center; gap: 12px"><span style="width: 16px; height: 16px; background: #3B3BFF"></span>DOM CASMURRO · MACHADO DE ASSIS · 1899</span>
+    <span>CAPÍTULO I DE CXLVIII</span>
+    <span style="font-size: 24px; letter-spacing: 0">21:47</span>
+  </div>
+
+  <!-- Página -->
+  <div style="position: absolute; left: 50%; top: 150px; width: 1040px; margin-left: -520px; display: flex; flex-direction: column; gap: 36px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span class="mono" style="font-size: 18px; letter-spacing: 0.14em; color: #3B3BFF">CAPÍTULO I</span>
+      <h1 style="margin: 0; font-size: 56px; font-weight: 800; font-stretch: 125%; line-height: 1">Do título</h1>
+    </div>
+    <div class="texto" style="font-size: {{corpo}}; line-height: 1.6; font-weight: 400">
+      <p>Uma noite destas, vindo da cidade para o Engenho Novo, encontrei no trem da Central um rapaz aqui do bairro, que eu conheço de vista e de chapéu. Cumprimentou-me, sentou-se ao pé de mim, falou da lua e dos ministros, e acabou recitando-me versos. A viagem era curta, e os versos pode ser que não fossem inteiramente maus. Sucedeu, porém, que, como eu estava cansado, fechei os olhos três ou quatro vezes; tanto bastou para que ele interrompesse a leitura e metesse os versos no bolso.</p>
+      <p class="fala">— Continue, disse eu acordando.</p>
+      <p class="fala">— Já acabei, murmurou ele.</p>
+      <p class="fala">— São muito bonitos.</p>
+    </div>
+  </div>
+
+  <!-- Virar página -->
+  <span class="mono" style="position: absolute; left: 96px; top: 520px; font-size: 40px; color: {{tinta3}}">◂</span>
+  <span class="mono" style="position: absolute; right: 96px; top: 520px; font-size: 40px; color: {{tinta2}}">▸</span>
+
+  <!-- Progresso -->
+  <div style="position: absolute; left: 96px; right: 96px; top: 900px; display: flex; flex-direction: column; gap: 12px">
+    <div style="height: 6px; background: {{trilho}}; display: flex"><div style="width: 1%; background: #3B3BFF"></div></div>
+    <div class="mono" style="display: flex; justify-content: space-between; font-size: 16px; color: {{tinta2}}">
+      <span>página 1 de 312 · 1%</span>
+      <span>faltam 2 min neste capítulo · cerca de 6 h no livro</span>
+    </div>
+  </div>
+
+  <!-- Controles (aparecem ao apertar OK) -->
+  <div style="position: absolute; left: 96px; right: 96px; bottom: 54px; display: flex; justify-content: space-between; align-items: center">
+    <div style="display: flex; gap: 14px; align-items: center">
+      <span class="bt" aria-label="Diminuir letra"><span style="font-size: 18px">A</span>−</span>
+      <span class="bt foco" aria-label="Aumentar letra"><span style="font-size: 26px">A</span>+</span>
+      <span class="mono" style="font-size: 15px; color: {{tinta2}}; padding: 0 10px">corpo {{corpoTxt}}</span>
+    </div>
+    <div style="display: flex; gap: 14px; align-items: center">
+      <span class="mono" style="font-size: 15px; color: {{tinta2}}; padding-right: 6px">Tema</span>
+      <span class="bt" style="background: #0B0B0C; color: #F2F2F0; box-shadow: inset 0 0 0 2px {{marcaEscuro}}">Escuro</span>
+      <span class="bt" style="background: #F2F2F0; color: #0B0B0C; box-shadow: inset 0 0 0 2px {{marcaPapel}}">Papel</span>
+    </div>
+    <div style="display: flex; gap: 14px">
+      <span class="bt">Capítulos</span>
+      <span class="bt">Marcador</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"tema":{"editor":"enum","options":["Escuro","Papel"],"default":"Escuro"},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var papel = (this.props.tema ?? 'Escuro') === 'Papel';
+    return {
+      fundo: papel ? '#F2F2F0' : '#0B0B0C',
+      tinta: papel ? '#0B0B0C' : '#E4E4E1',
+      tinta2: papel ? '#4A4B4F' : '#A3A3A0',
+      tinta3: papel ? '#A3A3A0' : '#2A2B2E',
+      trilho: papel ? '#D8D8D4' : '#2A2B2E',
+      corpo: '32px', corpoTxt: '32 px',
+      marcaEscuro: papel ? '#2A2B2E' : '#3B3BFF',
+      marcaPapel: papel ? '#3B3BFF' : '#F2F2F0'
+    };
+  }
+}
+</script>
+</body>
+</html>
