@@ -76,10 +76,10 @@ Este repositório (`Cintriano/Croma`) começou como o **Croma v1**, um app próp
 |---|---|
 | `CLAUDE.md`, `CROMA.md`, `identidade/` | **Croma v2**, versionados aqui |
 | `repos/` | Forks do Jellyfin, cada um com git próprio. Ficam no `.gitignore` (veja abaixo) |
-| `web/`, `server/`, `tests/`, `package.json`, `vite.config.ts`, `vitest.config.ts`, `playwright.config.ts`, `tsconfig.json`, `README.md`, `DOCUMENTACAO.md`, `PLANO_IMPLEMENTACAO.md` | **Croma v1 (legado)**. Serve de referência para as tags e o editor de tags (M3, M12 e M13), que precisam ser levados para o v2 |
+| `legado/` | **Croma v1**: app completo de fotos e músicas (`web/`, `server/`, `tests/`, configs e docs próprios). Serve de referência para as tags e o editor de tags (M3, M12 e M13), que precisam ser levados para o v2 |
 | `Capra/` | Material da CAPRA, fora do git |
 
-**Legado intocado até o pull:** a outra máquina tem a biblioteca de Músicas do v1 ainda sem push. Não mova, renomeie ou edite os arquivos do v1 antes desse pull, para não gerar conflito. Depois do pull, o v1 vai para `legado/`.
+**Legado:** o v1 é só referência. Não o evolua; leve as funções para o v2. Para rodá-lo, entre na pasta (`cd legado`, depois `npm install` e `npm run dev`). Os caminhos dele são relativos a `legado/`, inclusive `dados/`.
 
 ### Restaurar `repos/` em outra máquina
 
