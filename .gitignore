@@ -1,16 +1,12 @@
-node_modules/
-dist/
-test-results/
-playwright-report/
-legado/tests/e2e/.biblioteca.json
-*.sqlite
-dados/
+# Cada pasta abaixo é um repositório git próprio, clonado ao lado do hub.
+# Veja CROMA.md, seção "Repositórios".
+croma-identidade/
+croma-servidor/
+croma-web/
+croma-desktop/
+croma-tizen/
+croma-v1/
+jellyfin-server/
 
-# Croma v2: forks do Jellyfin têm git próprio e não entram neste repositório
-repos/
-servidor/
-*.zip
-
-# Material de marca da CAPRA (repositório próprio) e mídia de terceiros usada nas pranchas
+# Material de marca da CAPRA (repositório próprio)
 Capra/
-identidade/v0.1-barras/midia/

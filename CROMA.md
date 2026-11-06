@@ -2,48 +2,58 @@
 
 Versão pessoal do Jellyfin com identidade visual própria. Foco inicial: **Desktop** e **TV Samsung QN90B (Tizen 6.5)**.
 
-## Base de versões
+## Repositórios
 
-| Pasta | Origem (remote `upstream`) | Base | Commit | Branch de trabalho |
-|---|---|---|---|---|
-| `repos/croma-web` | https://github.com/jellyfin/jellyfin-web | `release-12.z` (v12.4) | `0a580ce8d` | `croma` |
-| `repos/croma-tizen` | https://github.com/jellyfin/jellyfin-tizen | `master` | `31408c1` | `croma` |
-| `repos/croma-desktop` | https://github.com/jellyfin/jellyfin-desktop | `master` | `51807f8` | `croma` |
-| `repos/jellyfin-server` | https://github.com/jellyfin/jellyfin | tag `v12.4` | `83d0d0e7f` | só referência (sem fork) |
+O projeto é dividido em repositórios próprios. Este (`Cintriano/Croma`) é o **hub**: visão geral, arquitetura e especificações. Os demais são clonados **dentro da pasta do hub**, cada um com git próprio (ficam no `.gitignore` do hub).
 
-Regra: a versão do web **sempre** casa com a do servidor. Para atualizar: `git fetch upstream` + rebase da `croma`.
+| Pasta | Repositório (privado) | O que é | Branch |
+|---|---|---|---|
+| `croma-identidade/` | https://github.com/Cintriano/croma-identidade | Identidade visual (v0.1 "Barras" oficial), logos e scripts geradores | `main` |
+| `croma-servidor/` | https://github.com/Cintriano/croma-servidor | Scripts e configuração do servidor; futuros plugins C# | `main` |
+| `croma-web/` | https://github.com/Cintriano/croma-web | Interface web compartilhada (fork do jellyfin-web) | `croma` |
+| `croma-desktop/` | https://github.com/Cintriano/croma-desktop | App desktop (fork do jellyfin-desktop) | `croma` |
+| `croma-tizen/` | https://github.com/Cintriano/croma-tizen | App da TV Samsung (fork do jellyfin-tizen) | `croma` |
+| `croma-v1/` | https://github.com/Cintriano/croma-v1 | Croma v1, arquivado (referência para as tags) | `main` |
+| `jellyfin-server/` | https://github.com/jellyfin/jellyfin | Código do servidor oficial, só para consulta | tag `v12.4` |
+
+## Base de versões dos forks
+
+| Fork | Origem (remote `upstream`) | Base | Commit da base |
+|---|---|---|---|
+| `croma-web` | https://github.com/jellyfin/jellyfin-web | `release-12.z` (v12.4) | `0a580ce8d` |
+| `croma-tizen` | https://github.com/jellyfin/jellyfin-tizen | `master` | `31408c1` |
+| `croma-desktop` | https://github.com/jellyfin/jellyfin-desktop | `master` | `51807f8` |
+
+Regra: a versão do web **sempre** casa com a do servidor (v12.4). Para atualizar: `git fetch upstream` + rebase da `croma`.
 
 ### Clonar os repositórios
 
-A pasta `repos/` fica fora do git (`.gitignore`). Em uma máquina nova, rode na raiz do projeto:
+Em uma máquina nova, clone o hub e, dentro dele, os demais:
 
 ```
-git clone --filter=blob:none -o upstream https://github.com/jellyfin/jellyfin-web.git     repos/croma-web
-git clone --filter=blob:none -o upstream https://github.com/jellyfin/jellyfin-tizen.git   repos/croma-tizen
-git clone --filter=blob:none -o upstream https://github.com/jellyfin/jellyfin-desktop.git repos/croma-desktop
-git clone --filter=blob:none -o upstream https://github.com/jellyfin/jellyfin.git         repos/jellyfin-server
+git clone https://github.com/Cintriano/Croma.git
+cd Croma
+git clone https://github.com/Cintriano/croma-identidade.git
+git clone https://github.com/Cintriano/croma-servidor.git
+git clone https://github.com/Cintriano/croma-v1.git
+git clone https://github.com/Cintriano/croma-web.git
+git clone https://github.com/Cintriano/croma-desktop.git
+git clone https://github.com/Cintriano/croma-tizen.git
+git clone --filter=blob:none -o upstream https://github.com/jellyfin/jellyfin.git jellyfin-server
 
-git -C repos/croma-web     switch -c croma 0a580ce8d
-git -C repos/croma-tizen   switch -c croma 31408c1
-git -C repos/croma-desktop switch -c croma 51807f8
-git -C repos/jellyfin-server config core.longpaths true
-git -C repos/jellyfin-server checkout v12.4
+git -C croma-web     remote add upstream https://github.com/jellyfin/jellyfin-web.git
+git -C croma-desktop remote add upstream https://github.com/jellyfin/jellyfin-desktop.git
+git -C croma-tizen   remote add upstream https://github.com/jellyfin/jellyfin-tizen.git
+git -C jellyfin-server checkout v12.4
 ```
 
-- O `--filter=blob:none` baixa o conteúdo dos arquivos sob demanda, o que deixa o clone bem mais leve.
-- Os commits acima são a base em que o projeto foi alinhado. Enquanto a branch `croma` não tiver commits próprios, esses comandos recriam o mesmo estado.
-- Quando a branch `croma` ganhar commits, publique os forks no GitHub do usuário. A partir daí, clone de lá.
+- No Windows, rode também `git -C jellyfin-server config core.longpaths true` antes do checkout.
+- O `--filter=blob:none` baixa o conteúdo dos arquivos sob demanda, o que deixa o clone de referência bem mais leve.
+- Os repositórios são privados: o `git clone` pede login no GitHub (`gh auth login` resolve).
 
 ### Servidor local
 
-O servidor roda com o binário oficial portátil, sem instalador e sem compilar.
-
-1. Baixe `jellyfin_12.4-amd64.zip`, de 199 MB, em https://repo.jellyfin.org/?path=/server/windows/latest-stable/amd64. O MD5 é `d390761b996d08b7bc24e5201c61b72b`. Se o servidor principal estiver lento, use um espelho da lista `?mirrorlist`.
-2. Extraia o zip em `servidor/`, que fica fora do git. O resultado é `servidor/jellyfin/jellyfin.exe`.
-3. Gere o build da interface em `repos/croma-web`: `npm ci`, depois `npm run build:production`.
-4. Rode `scripts/iniciar-servidor.ps1` e abra http://localhost:8096. O banco, a configuração, o cache e os logs ficam em `servidor/dados/`.
-
-O servidor lê o `dist/` direto do disco. Depois de um novo build, basta recarregar a página, sem reiniciar o servidor.
+O passo a passo (binário oficial portátil, build do `croma-web` e script de inicialização) fica no [README do `croma-servidor`](https://github.com/Cintriano/croma-servidor).
 
 ### Outros repositórios de referência
 
@@ -60,8 +70,11 @@ O servidor lê o `dist/` direto do disco. Depois de um novo build, basta recarre
 ## Arquitetura
 
 ```
-croma-web (fork do jellyfin-web)  ← toda a identidade visual mora aqui
-   ├─ build → servidor serve via --webdir → Desktop (carrega a UI do servidor) + navegador
+croma-identidade  ← fonte da verdade da marca (manual, logos, ícones)
+   │  arquivos copiados para:
+   ▼
+croma-web (fork do jellyfin-web)  ← a identidade aplicada na interface mora aqui
+   ├─ build → croma-servidor serve via --webdir → croma-desktop (carrega a UI do servidor) + navegador
    └─ build → croma-tizen empacota o dist/ → .wgt na TV
 ```
 
@@ -85,53 +98,27 @@ croma-web (fork do jellyfin-web)  ← toda a identidade visual mora aqui
 
 ## Pendências
 
-- [x] Instalar o servidor Jellyfin v12.4 oficial: versão portátil em `servidor/`, fora do git (veja "Servidor local")
-- [x] Tema "Croma" e marca no `croma-web` (paleta, fontes, cantos vivos, foco, logos, nome e ícones): commit `e5f1c1a4c` na branch `croma`, **só local**
-- [ ] Publicar os forks no GitHub (`Cintriano/croma-web` etc.). Sem isso, os commits da branch `croma` existem só na máquina CintraMan, e os comandos de clonagem acima recriam apenas a base
+- [x] Instalar o servidor Jellyfin v12.4 oficial no Windows (máquina CintraMan; veja o `croma-servidor`)
+- [ ] Servidor no Linux: script de inicialização equivalente ao `.ps1`
+- [x] Tema "Croma" e marca no `croma-web` (paleta, fontes, cantos vivos, foco, logos, nome e ícones): commit `e5f1c1a4c` na branch `croma`
+- [x] Dividir o projeto em repositórios próprios e publicá-los no GitHub (05/11/2026)
 - [ ] Tizen Studio + certificado Samsung + Developer Mode na TV
 - [x] Identidade visual: v0.1 "Barras" definida como oficial (05/11/2026)
 - [ ] Implementar a v0.1 no `croma-web` (tema, logos, ícones e telas), no `croma-tizen` (ícone e tile) e no `croma-desktop` (ícone `.ico`)
-- [x] Detalhar a dinâmica das coleções (especificada em 05/11/2026; veja "Coleções" abaixo)
+- [x] Detalhar a dinâmica das coleções (especificada em 05/11/2026; veja `specs/colecoes.md`)
 - [ ] Implementar coleções por biblioteca e modo de exibição
 - [ ] Definir o formato estruturado das bibliotecas caseiras (o usuário está desenvolvendo)
 
-## Coleções (especificação, 05/11/2026)
+## Especificações
 
-No Jellyfin, as coleções são globais: moram na biblioteca virtual "Coleções". No Croma, cada coleção pertence a uma biblioteca.
-
-- **Posse:** cada coleção tem uma biblioteca dona, gravada como tag reservada no `BoxSet` (`croma-bib-<idDaBiblioteca>`). A coleção é criada dentro da biblioteca e só aparece nela.
-- **Só itens da própria biblioteca:** uma coleção de Filmes não aceita séries. "Adicionar à coleção" lista só as coleções da biblioteca do item.
-- **Sem tela global:** a biblioteca "Coleções" (`/boxsets`) sai do Início e do menu. Toda biblioteca tem a aba "Coleções", inclusive Vídeos e Clipes.
-- **Dois controles de exibição, pôster (vertical) ou miniatura (horizontal):**
-  1. **Por biblioteca:** vale para a aba "Coleções" daquela biblioteca. Todos os cartões de coleção têm o mesmo formato.
-  2. **Por coleção:** vale para os itens dentro dela. Todos os itens têm o mesmo formato. Fica gravado como tag no `BoxSet` (`croma-exibir-miniatura`; sem a tag, é pôster).
-  - Nunca há formatos misturados na mesma tela. O padrão é pôster.
-  - A configuração fica no servidor, não no `localStorage`, para valer igual no desktop e na TV.
-  - Miniatura sem arte horizontal (Thumb) usa o fundo (Backdrop) e, sem nenhum dos dois, a capa gerada.
-- **Tags reservadas:** as que começam com `croma-` não aparecem nas telas de tags.
-- **Migração:** um script atribui dono às coleções que já existem, pela maioria do conteúdo, e conserta coleções órfãs quando uma biblioteca é recriada.
-- **Onde mexer no `croma-web`:**
-  - `libraryRoutes.ts`: abas e rota `/boxsets`;
-  - `useFetchItems.ts`: consulta da aba Coleções;
-  - `components/collectionEditor`: criar coleção e adicionar itens;
-  - `itemDetails/index.js`, em `renderCollectionItemType`: formato dos itens.
-
-## Bibliotecas caseiras (Vídeos e Fotos)
-
-As bibliotecas de arquivos caseiros, de vídeos ou de fotos, têm dois tipos de varredura:
-
-1. **Genérica:** a varredura padrão do Jellyfin, sem estrutura obrigatória.
-2. **Estruturada (Croma):** segue uma estrutura de pastas com níveis, como as pastas `Nivel_1..3` do v1 em `legado/`. **O formato está em desenvolvimento pelo usuário** e será adicionado depois.
-
-A varredura roda no servidor (C#). Por isso, o modo estruturado deve ser um **plugin do Jellyfin**, com resolvedor de itens e leitor de metadados, o que exige instalar o .NET SDK. Até lá, a biblioteca usa o modo genérico.
+| Arquivo | Assunto | Situação |
+|---|---|---|
+| [`specs/colecoes.md`](specs/colecoes.md) | Coleções por biblioteca e modo de exibição | Especificado, não implementado |
+| [`specs/tags.md`](specs/tags.md) | Tags e editor de tags vindos do v1 | Avaliado, com decisões em aberto |
+| [`specs/bibliotecas-caseiras.md`](specs/bibliotecas-caseiras.md) | Varredura estruturada (níveis) de Vídeos e Fotos | Formato em desenvolvimento pelo usuário |
 
 ## Identidade visual
 
-A identidade oficial é a **v0.1 "Barras"**, decidida em 05/11/2026. O manual está em `identidade/v0.1-barras/MANUAL.md`. Os arquivos prontos para uso ficam em `identidade/v0.1-barras/logos/` (logotipo, símbolo, ícones das bibliotecas e `app/` com os ícones de cada plataforma).
-
-| Versão | Pasta | Status |
-|---|---|---|
-| v0.1 "Barras" | `identidade/v0.1-barras/` | **Oficial** |
-| v0.2 "CAPRA" | `identidade/v0.2-capra/` | Arquivada (referência) |
+A identidade oficial é a **v0.1 "Barras"**, decidida em 05/11/2026, e mora no [`croma-identidade`](https://github.com/Cintriano/croma-identidade). O manual é `croma-identidade/v0.1-barras/MANUAL.md`, e os arquivos prontos para uso ficam em `croma-identidade/v0.1-barras/logos/` (logotipo, símbolo, ícones das bibliotecas e `app/` com os ícones de cada plataforma). A v0.2 "CAPRA" fica arquivada no mesmo repositório.
 
 Canvas com todas as pranchas: https://claude.ai/artifact/AUKTY2yvnHh4ZYk1c7qpLi (páginas "v0.1 Barras" e "v0.2 Direções CAPRA").
