@@ -8,6 +8,7 @@ dados/
 
 # Croma v2: forks do Jellyfin têm git próprio e não entram neste repositório
 repos/
+servidor/
 *.zip
 
 # Material de marca da CAPRA (repositório próprio) e mídia de terceiros usada nas pranchas

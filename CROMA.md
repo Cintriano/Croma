@@ -34,6 +34,17 @@ git -C repos/jellyfin-server checkout v12.4
 - Os commits acima são a base em que o projeto foi alinhado. Enquanto a branch `croma` não tiver commits próprios, esses comandos recriam o mesmo estado.
 - Quando a branch `croma` ganhar commits, publique os forks no GitHub do usuário. A partir daí, clone de lá.
 
+### Servidor local
+
+O servidor roda com o binário oficial portátil, sem instalador e sem compilar.
+
+1. Baixe `jellyfin_12.4-amd64.zip`, de 199 MB, em https://repo.jellyfin.org/?path=/server/windows/latest-stable/amd64. O MD5 é `d390761b996d08b7bc24e5201c61b72b`. Se o servidor principal estiver lento, use um espelho da lista `?mirrorlist`.
+2. Extraia o zip em `servidor/`, que fica fora do git. O resultado é `servidor/jellyfin/jellyfin.exe`.
+3. Gere o build da interface em `repos/croma-web`: `npm ci`, depois `npm run build:production`.
+4. Rode `scripts/iniciar-servidor.ps1` e abra http://localhost:8096. O banco, a configuração, o cache e os logs ficam em `servidor/dados/`.
+
+O servidor lê o `dist/` direto do disco. Depois de um novo build, basta recarregar a página, sem reiniciar o servidor.
+
 ### Outros repositórios de referência
 
 | Repositório | Para quê |
@@ -74,7 +85,9 @@ croma-web (fork do jellyfin-web)  ← toda a identidade visual mora aqui
 
 ## Pendências
 
-- [ ] Instalar o servidor Jellyfin v12.4 oficial (binário; não precisa compilar)
+- [x] Instalar o servidor Jellyfin v12.4 oficial: versão portátil em `servidor/`, fora do git (veja "Servidor local")
+- [x] Tema "Croma" e marca no `croma-web` (paleta, fontes, cantos vivos, foco, logos, nome e ícones): commit `e5f1c1a4c` na branch `croma`, **só local**
+- [ ] Publicar os forks no GitHub (`Cintriano/croma-web` etc.). Sem isso, os commits da branch `croma` existem só na máquina CintraMan, e os comandos de clonagem acima recriam apenas a base
 - [ ] Tizen Studio + certificado Samsung + Developer Mode na TV
 - [x] Identidade visual: v0.1 "Barras" definida como oficial (05/11/2026)
 - [ ] Implementar a v0.1 no `croma-web` (tema, logos, ícones e telas), no `croma-tizen` (ícone e tile) e no `croma-desktop` (ícone `.ico`)
