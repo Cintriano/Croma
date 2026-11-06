@@ -44,7 +44,7 @@ croma-identidade (manual, logos, ícones)
 - **Licença:** o código é GPL, e o nome e o logo "Jellyfin" não podem ser usados no produto.
 - **Máquinas:** o projeto roda em mais de uma máquina.
   - **CintraMan (Windows):** servidor portátil instalado. A conexão é lenta: downloads grandes levam dezenas de minutos, então prefira espelhos rápidos e `curl -C -` para retomar. O .NET SDK não está instalado.
-  - **Linux (Fedora):** tem `gh` (logado como Cintriano), Node, git e o runtime do .NET, mas não o SDK. O servidor ainda não foi instalado aqui.
+  - **Linux (Fedora, usuário `cintra_man`, pasta `~/Documentos/Projetos/Codes/Croma`):** tem `gh` (logado como Cintriano), Node, git, Chrome, o runtime do .NET (mas não o SDK) e o `git-filter-repo` (em `~/.local/bin`, instalado com `pip --user`). O git global está como "Your Name": cada repositório do projeto tem `user.name Cintriano` e o e-mail do usuário configurados localmente; faça o mesmo num clone novo. O servidor ainda não foi instalado aqui. A conexão é razoável (os clones completos levaram poucos minutos).
 
 ## Identidade visual oficial: v0.1 "Barras"
 
@@ -86,6 +86,8 @@ Resumo das regras:
 | Tags e editor de tags (vindos do v1) | Avaliado, com decisões em aberto | `specs/tags.md` |
 | Varredura estruturada (com níveis) das bibliotecas caseiras | Formato em desenvolvimento pelo usuário | `specs/bibliotecas-caseiras.md` |
 | `croma-tizen` e `croma-desktop` | Não iniciados (ícones, nomes, empacotamento) | `croma-tizen/`, `croma-desktop/` |
+
+**Última sessão (05–06/11/2026, máquina Linux):** o projeto foi dividido em repositórios próprios (decisões do usuário: hub em `Cintriano/Croma`, v1 em repositório arquivado, forks como repositórios comuns e privados). Todos os repositórios estão limpos e sincronizados com o GitHub.
 
 **Próximos passos:**
 1. O usuário conclui o assistente em http://localhost:8096: cria a conta de administrador (a senha é dele) e adiciona uma biblioteca de teste.
