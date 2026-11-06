@@ -29,7 +29,7 @@ repos/croma-web (fork jellyfin-web, release-12.z / v12.4)
 - **Versões casadas:** a versão do web precisa bater com a do servidor (v12.4).
 - **Base do web:** use o `jellyfin-web`, não o `jellyfin-vue`. Só o `jellyfin-web` tem layout de TV (`.layout-tv`, `layoutManager.tv`) e a integração com o Tizen.
 - **Licença:** o código é GPL, e o nome e o logo "Jellyfin" não podem ser usados no produto.
-- **Máquina:** o .NET SDK não está instalado. Node 24, git, Edge e Chrome estão.
+- **Máquinas:** o .NET SDK não está instalado. Node 24, git, Edge e Chrome estão. A conexão da máquina CintraMan é lenta: downloads grandes levam dezenas de minutos, então prefira espelhos rápidos e `curl -C -` para retomar.
 
 ## Identidade visual oficial: v0.1 "Barras"
 
@@ -60,10 +60,46 @@ Resumo das regras:
 | Repositórios clonados e alinhados na v12.4 | Feito | `repos/` |
 | Identidade v0.1 "Barras" | **Oficial** (05/11/2026): manual, logotipo em curvas, ícones do app e pranchas | `identidade/v0.1-barras/` |
 | Identidade v0.2 (CAPRA, direções A, B e C) | Arquivada | `identidade/v0.2-capra/` |
+| Servidor Jellyfin v12.4 portátil | Instalado e rodando na máquina CintraMan; o assistente inicial ainda não foi concluído | `servidor/`, `scripts/iniciar-servidor.ps1`, `CROMA.md` ("Servidor local") |
+| Tema "Croma" e marca no `croma-web` | Feito: paleta, fontes Archivo e IBM Plex Mono, cantos vivos, foco, logos, ícones, nome e textos | commit `e5f1c1a4c` na branch `croma`, **só local**; cópia em `patches/croma-web/` |
+| Componentes e telas especiais da v0.1 (capa gerada, calibração, sem sinal, espectro no player) | Não iniciado | `croma-web` |
 | Coleções por biblioteca e modo de exibição | Especificado (05/11/2026), não implementado | `CROMA.md`, seção "Coleções" |
+| Tags e editor de tags (vindos do v1) | Avaliado, não implementado | veja "Tags" abaixo |
 | Varredura estruturada (com níveis) das bibliotecas caseiras | Formato em desenvolvimento pelo usuário | `CROMA.md`, seção "Bibliotecas caseiras" |
+| `croma-tizen` e `croma-desktop` | Não iniciados (ícones, nomes, empacotamento) | `repos/` |
 
-**Próximo passo:** implementar a v0.1 no `croma-web`, no `croma-tizen` e no `croma-desktop`.
+**Próximos passos:**
+1. O usuário conclui o assistente em http://localhost:8096: cria a conta de administrador (a senha é dele) e adiciona uma biblioteca de teste.
+2. Publicar o fork `croma-web` no GitHub. O usuário cria o repositório vazio `Cintriano/croma-web`, e o Claude adiciona o `origin` e faz o push da branch `croma`. O `gh` não está instalado.
+3. Implementar as coleções por biblioteca, como especificado no `CROMA.md`.
+4. Implementar as tags.
+
+**Na outra máquina, para recuperar o tema:** clone os forks (`CROMA.md`, seção "Clonar os repositórios") e aplique o patch:
+
+```
+git -C repos/croma-web am ../../patches/croma-web/*.patch
+```
+
+O patch fica dispensável quando o fork estiver publicado.
+
+### Tags (avaliação de 05/11/2026)
+
+- O Jellyfin já tem tags nativas: o campo `Tags` em todo item e o filtro `?tags=`, que funciona no modo "qualquer". A lista de tags vem de `/Items/Filters`. O `PhotoProvider` lê as palavras-chave (Keywords) do arquivo para o campo `Tags`.
+- **Plano:** levar para TypeScript, no `croma-web`, a lógica pura do v1 (`legado/web/src/logica/tagPicker.ts`, `edicaoMassa.ts` e `pesquisa.ts`, e `legado/server/src/busca/tags.ts`), trocando só a camada de API.
+- **O que fazer no cliente:**
+  - modo "todas" da pesquisa;
+  - tags herdadas do álbum;
+  - edição em massa: uma chamada `POST /Items/{id}` por item;
+  - níveis: lidos do nome da pasta pai `Nivel_N`;
+  - álbum oculto: tag reservada mais `excludeTags`.
+- **Riscos:**
+  - Uma atualização de metadados pode sobrescrever as tags com as Keywords do arquivo. Por isso, trave o campo Tags (`LockedFields`) ao editar.
+  - A pasta `metadados/` do v1 precisa de um arquivo `.ignore`.
+- **Decisões em aberto, ainda sem resposta do usuário:**
+  1. Onde as tags ficam salvas: só no Jellyfin com um script de backup e importação dos JSONs do v1 (recomendado), ou num plugin C# com os arquivos como fonte da verdade.
+  2. Níveis: achatar as pastas no cliente ou convertê-los em tags.
+  3. Escopo: tags só em Fotos ou em todas as bibliotecas.
+- O plugin de varredura estruturada ("Bibliotecas caseiras") pode resolver os níveis e a importação das tags de uma vez, mas exige instalar o .NET SDK.
 
 **Canvas de design:** https://claude.ai/artifact/AUKTY2yvnHh4ZYk1c7qpLi (tipo Design; páginas "v0.1 Barras" e "v0.2 Direções CAPRA"; arquivos em `project/` e `project/v02/`).
 - Antes de publicar nele, leia o `project/canvas.json`.
@@ -76,6 +112,9 @@ Este repositório (`Cintriano/Croma`) começou como o **Croma v1**, um app próp
 | Caminho | O que é |
 |---|---|
 | `CLAUDE.md`, `CROMA.md`, `identidade/` | **Croma v2**, versionados aqui |
+| `scripts/` | Scripts do v2, como o `iniciar-servidor.ps1` |
+| `patches/croma-web/` | Commits da branch `croma` exportados com `git format-patch`. São a cópia versionada enquanto o fork não estiver publicado. Gere de novo a cada commit no `croma-web` |
+| `servidor/` | Servidor Jellyfin portátil e os dados dele. Fica fora do git |
 | `repos/` | Forks do Jellyfin, cada um com git próprio. Ficam no `.gitignore` (veja abaixo) |
 | `legado/` | **Croma v1**: app completo de fotos e músicas (`web/`, `server/`, `tests/`, configs e docs próprios). Serve de referência para as tags e o editor de tags (M3, M12 e M13), que precisam ser levados para o v2 |
 | `Capra/` | Material da CAPRA, fora do git |
